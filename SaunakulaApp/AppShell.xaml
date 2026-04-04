@@ -1,14 +1,39 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Shell
-    x:Class="SaunakulaApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:SaunakulaApp"
-    Title="SaunakulaApp">
+    xmlns:views="clr-namespace:SaunakulaApp.Views"
+    x:Class="SaunakulaApp.AppShell"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarBackgroundColor="#FFFFFF"
+    Shell.TabBarForegroundColor="#5A7C5E"
+    Shell.TabBarUnselectedColor="#7A8A7D"
+    Shell.TabBarTitleColor="#5A7C5E">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            Icon="icon_home.png"
+            Route="HomePage"
+            ContentTemplate="{DataTemplate views:HomePage}" />
+
+        <ShellContent
+            Title="Search"
+            Icon="icon_search.png"
+            Route="SearchPage"
+            ContentTemplate="{DataTemplate views:SearchPage}" />
+
+        <ShellContent
+            Title="Bookings"
+            Icon="icon_calendar.png"
+            Route="BookingsPage"
+            ContentTemplate="{DataTemplate views:BookingsPage}" />
+
+        <ShellContent
+            Title="Profile"
+            Icon="icon_profile.png"
+            Route="ProfilePage"
+            ContentTemplate="{DataTemplate views:ProfilePage}" />
+    </TabBar>
 
 </Shell>
