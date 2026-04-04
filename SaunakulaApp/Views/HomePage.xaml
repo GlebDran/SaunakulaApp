@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SaunakulaApp.Views.HomePage"
+    Shell.NavBarIsVisible="False">
+
+    <ScrollView BackgroundColor="{StaticResource Background}">
+        <VerticalStackLayout Spacing="0">
+
+            <!-- Header -->
+            <VerticalStackLayout Padding="20,52,20,16">
+                <Label Text="Mõnus saunapuhkus"
+                       Style="{StaticResource TitleLabel}" />
+                <Label Text="Saue vald, vähem kui 10 km Tallinnast"
+                       Style="{StaticResource MutedLabel}"
+                       Margin="0,4,0,0"/>
+            </VerticalStackLayout>
+
+            <!-- Search Bar -->
+            <Frame Margin="20,0,20,24"
+                   CornerRadius="16"
+                   BackgroundColor="{StaticResource CardBackground}"
+                   BorderColor="{StaticResource Border}"
+                   Padding="16,0"
+                   HeightRequest="52"
+                   HasShadow="False">
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="12"
+                      VerticalOptions="Center">
+                    <Image Source="search.png" WidthRequest="20" HeightRequest="20"
+                           VerticalOptions="Center"/>
+                    <Entry Grid.Column="1"
+                           x:Name="SearchEntry"
+                           Placeholder="Otsi puhkemaja..."
+                           BackgroundColor="Transparent"
+                           HeightRequest="52"
+                           TextChanged="SearchEntry_TextChanged"/>
+                </Grid>
+            </Frame>
+
+            <!-- Featured Section -->
+            <Label Text="Featured"
+                   FontSize="20" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="20,0,20,12"/>
+
+            <CollectionView x:Name="FeaturedView"
+                            HeightRequest="340"
+                            Margin="20,0,0,0">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal"
+                                       ItemSpacing="16"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Style="{StaticResource Card}"
+                               WidthRequest="280"
+                               Margin="0,4,0,8">
+                            <Grid RowDefinitions="200,Auto">
+
+                                <!-- Photo -->
+                                <Image Source="{Binding Image}"
+                                       Aspect="AspectFill"
+                                       HeightRequest="200"/>
+
+                                <!-- Info -->
+                                <VerticalStackLayout Grid.Row="1"
+                                                     Padding="14,12"
+                                                     Spacing="6">
+                                    <Label Text="{Binding DisplayTitle}"
+                                           FontSize="17"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Grid ColumnDefinitions="16,*" ColumnSpacing="4">
+                                        <Label Text="📍" FontSize="12" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1"
+                                               Text="Saue vald, Harjumaa"
+                                               Style="{StaticResource MutedLabel}"
+                                               FontSize="12"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Grid ColumnDefinitions="16,Auto,Auto" ColumnSpacing="4">
+                                            <Label Text="⭐" FontSize="12"/>
+                                            <Label Grid.Column="1"
+                                                   Text="4.9"
+                                                   FontSize="13" FontAttributes="Bold"
+                                                   TextColor="{StaticResource TextPrimary}"
+                                                   VerticalOptions="Center"/>
+                                            <Label Grid.Column="2"
+                                                   Text="(48)"
+                                                   Style="{StaticResource MutedLabel}"
+                                                   FontSize="12"
+                                                   VerticalOptions="Center"/>
+                                        </Grid>
+                                        <VerticalStackLayout Grid.Column="1"
+                                                             HorizontalOptions="End">
+                                            <Label Text="{Binding DisplayPrice}"
+                                                   FontSize="18" FontAttributes="Bold"
+                                                   TextColor="{StaticResource Primary}"
+                                                   HorizontalOptions="End"/>
+                                            <Label Text="/24h"
+                                                   FontSize="11"
+                                                   TextColor="{StaticResource TextSecondary}"
+                                                   HorizontalOptions="End"/>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </VerticalStackLayout>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Popular Section -->
+            <Label Text="Kõik majad"
+                   FontSize="20" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="20,24,20,12"/>
+
+            <CollectionView x:Name="AllHousesView"
+                            Margin="20,0,20,32"
+                            SelectionMode="Single"
+                            SelectionChanged="House_SelectionChanged">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                                     Span="2"
+                                     HorizontalItemSpacing="12"
+                                     VerticalItemSpacing="12"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Style="{StaticResource Card}" Padding="0">
+                            <Grid RowDefinitions="140,Auto">
+
+                                <Image Source="{Binding Image}"
+                                       Aspect="AspectFill"
+                                       HeightRequest="140"/>
+
+                                <VerticalStackLayout Grid.Row="1"
+                                                     Padding="10,8"
+                                                     Spacing="4">
+                                    <Label Text="{Binding DisplayTitle}"
+                                           FontSize="14" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           LineBreakMode="TailTruncation"/>
+                                    <Grid ColumnDefinitions="12,*" ColumnSpacing="3">
+                                        <Label Text="⭐" FontSize="10"/>
+                                        <Label Grid.Column="1"
+                                               Text="4.9"
+                                               FontSize="12" FontAttributes="Bold"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
+                                    <Label Text="{Binding DisplayPrice}"
+                                           FontSize="14" FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}"/>
+                                </VerticalStackLayout>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
