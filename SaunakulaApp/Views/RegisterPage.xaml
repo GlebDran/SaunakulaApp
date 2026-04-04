@@ -1,12 +1,139 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SaunakulaApp.Views.RegisterPage"
-             Title="RegisterPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SaunakulaApp.Views.RegisterPage"
+    Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="28,60,28,28" Spacing="0">
+
+            <!-- Header -->
+            <VerticalStackLayout Spacing="8" Margin="0,0,0,40">
+                <Label Text="🌲"
+                       FontSize="52"
+                       HorizontalOptions="Center"/>
+                <Label Text="Loo konto"
+                       FontSize="28" FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}"
+                       HorizontalOptions="Center"/>
+                <Label Text="Liitu Saunaküla perega"
+                       Style="{StaticResource MutedLabel}"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Full Name -->
+            <Label Text="Täisnimi"
+                   FontSize="14" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="0,0,0,6"/>
+            <Frame CornerRadius="14"
+                   BackgroundColor="{StaticResource MutedBackground}"
+                   BorderColor="Transparent"
+                   Padding="16,0" HeightRequest="52"
+                   HasShadow="False" Margin="0,0,0,16">
+                <Entry x:Name="NameEntry"
+                       Placeholder="Eesnimi Perekonnanimi"
+                       BackgroundColor="Transparent"
+                       HeightRequest="52"/>
+            </Frame>
+
+            <!-- Email -->
+            <Label Text="E-post"
+                   FontSize="14" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="0,0,0,6"/>
+            <Frame CornerRadius="14"
+                   BackgroundColor="{StaticResource MutedBackground}"
+                   BorderColor="Transparent"
+                   Padding="16,0" HeightRequest="52"
+                   HasShadow="False" Margin="0,0,0,16">
+                <Entry x:Name="EmailEntry"
+                       Placeholder="sinu@email.ee"
+                       Keyboard="Email"
+                       BackgroundColor="Transparent"
+                       HeightRequest="52"/>
+            </Frame>
+
+            <!-- Phone -->
+            <Label Text="Telefoninumber"
+                   FontSize="14" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="0,0,0,6"/>
+            <Frame CornerRadius="14"
+                   BackgroundColor="{StaticResource MutedBackground}"
+                   BorderColor="Transparent"
+                   Padding="16,0" HeightRequest="52"
+                   HasShadow="False" Margin="0,0,0,16">
+                <Entry x:Name="PhoneEntry"
+                       Placeholder="+372 5000 000"
+                       Keyboard="Telephone"
+                       BackgroundColor="Transparent"
+                       HeightRequest="52"/>
+            </Frame>
+
+            <!-- Password -->
+            <Label Text="Parool"
+                   FontSize="14" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="0,0,0,6"/>
+            <Frame CornerRadius="14"
+                   BackgroundColor="{StaticResource MutedBackground}"
+                   BorderColor="Transparent"
+                   Padding="16,0" HeightRequest="52"
+                   HasShadow="False" Margin="0,0,0,16">
+                <Entry x:Name="PasswordEntry"
+                       Placeholder="••••••••"
+                       IsPassword="True"
+                       BackgroundColor="Transparent"
+                       HeightRequest="52"/>
+            </Frame>
+
+            <!-- Confirm Password -->
+            <Label Text="Korda parooli"
+                   FontSize="14" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="0,0,0,6"/>
+            <Frame CornerRadius="14"
+                   BackgroundColor="{StaticResource MutedBackground}"
+                   BorderColor="Transparent"
+                   Padding="16,0" HeightRequest="52"
+                   HasShadow="False" Margin="0,0,0,8">
+                <Entry x:Name="ConfirmPasswordEntry"
+                       Placeholder="••••••••"
+                       IsPassword="True"
+                       BackgroundColor="Transparent"
+                       HeightRequest="52"/>
+            </Frame>
+
+            <!-- Error -->
+            <Label x:Name="ErrorLabel"
+                   TextColor="{StaticResource Destructive}"
+                   FontSize="13"
+                   IsVisible="False"
+                   Margin="0,0,0,8"/>
+
+            <!-- Register Button -->
+            <Button Text="Registreeru"
+                    Style="{StaticResource PrimaryButton}"
+                    Clicked="Register_Clicked"
+                    Margin="0,16,0,0"/>
+
+            <!-- Back to login -->
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   Spacing="4"
+                                   Margin="0,24,0,0">
+                <Label Text="On juba konto?"
+                       Style="{StaticResource MutedLabel}"/>
+                <Label Text="Logi sisse"
+                       FontSize="14" FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="GoToLogin_Tapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
