@@ -1,25 +1,34 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using SaunakulaApp.Services;
+using SaunakulaApp.Views;
 
-namespace SaunakulaApp
+namespace SaunakulaApp;
+
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
 
-#if DEBUG
-    		builder.Logging.AddDebug();
-#endif
+        // Services
+        builder.Services.AddSingleton<DatabaseService>();
+        builder.Services.AddSingleton<HouseService>();
+        builder.Services.AddSingleton<SessionService>();
 
-            return builder.Build();
-        }
+        // Views (добавим по мере создания)
+        builder.Services.AddTransient<HomePage>();
+        builder.Services.AddTransient<HouseDetailsPage>();
+        builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<RegisterPage>();
+        builder.Services.AddTransient<ProfilePage>();
+        builder.Services.AddTransient<BookingPage>();
+
+        return builder.Build();
     }
 }
