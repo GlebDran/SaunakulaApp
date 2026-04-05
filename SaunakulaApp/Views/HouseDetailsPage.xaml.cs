@@ -39,7 +39,6 @@ public partial class HouseDetailsPage : ContentPage
         DayPriceLabel.Text = $"€{_house.Price24h}";
         RegularPriceLabel.Text = $"€{_house.Price24hRegular}";
         BottomPriceLabel.Text = $"€{_house.Price24h}";
-        LoadMap();
 
         AmenitiesView.ItemsSource = _house.GetAmenities(lang);
 
@@ -50,8 +49,8 @@ public partial class HouseDetailsPage : ContentPage
         _photoCount = photos.Count;
         PhotoGallery.ItemsSource = photos;
         BuildDots(_photoCount);
+        LoadMap();
 
-        // Подписываемся на скролл только один раз
         if (!_scrollHandlerAttached)
         {
             PhotoGallery.Scrolled += OnGalleryScrolled;
@@ -80,8 +79,6 @@ public partial class HouseDetailsPage : ContentPage
     private void OnGalleryScrolled(object? sender, ItemsViewScrolledEventArgs e)
     {
         if (_photoCount <= 1) return;
-
-        // Вычисляем индекс по горизонтальному смещению
         var itemWidth = Math.Max(Width, 1);
         var idx = (int)Math.Round(e.HorizontalOffset / itemWidth);
         idx = Math.Clamp(idx, 0, _photoCount - 1);
@@ -102,47 +99,25 @@ public partial class HouseDetailsPage : ContentPage
         }
     }
 
-    private void Back_Tapped(object sender, TappedEventArgs e)
-        => Shell.Current.GoToAsync("..");
-
-    private async void Book_Clicked(object sender, EventArgs e)
-    {
-        if (_session.IsLoggedIn)
-            await Shell.Current.GoToAsync(
-                $"{nameof(BookingPage)}?houseId={_house?.Id}");
-        else
-            await Shell.Current.GoToAsync(nameof(LoginPage));
-    }
-
     private void LoadMap()
     {
-        var html = @"
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-        <style>
-            * { margin:0; padding:0; }
-            body { height:200px; overflow:hidden; }
-            iframe { width:100%; height:200px; border:0; }
-        </style>
-    </head>
-    <body>
-        <iframe
-            src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2031.8!2d24.5131448!3d59.3635824!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4692bde914230565%3A0xa6fff1cee72bb1fe!2sSaunakyla!5e0!3m2!1sen!2see!4v1'
-            allowfullscreen='' loading='lazy'
-            referrerpolicy='no-referrer-when-downgrade'>
-        </iframe>
-    </body>
-    </html>";
-
+        var html = @"<!DOCTYPE html>
+<html>
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <style>* { margin:0; padding:0; } body { height:200px; overflow:hidden; } iframe { width:100%; height:200px; border:0; }</style>
+</head>
+<body>
+    <iframe src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2031.8!2d24.5131448!3d59.3635824!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4692bde914230565%3A0xa6fff1cee72bb1fe!2sSaunakyla!5e0!3m2!1sen!2see!4v1' allowfullscreen='' loading='lazy' referrerpolicy='no-referrer-when-downgrade'></iframe>
+</body>
+</html>";
         MapView.Source = new HtmlWebViewSource { Html = html };
     }
 
     private void OpenMaps_Clicked(object sender, EventArgs e)
     {
-        var url = "https://www.google.com/maps/place/Saunak%C3%BCla/@59.3635824,24.5131448,17z";
-        Launcher.Default.OpenAsync(new Uri(url));
+        Launcher.Default.OpenAsync(
+            new Uri("https://www.google.com/maps/place/Saunak%C3%BCla/@59.3635824,24.5131448,17z"));
     }
 
     private void Call_Tapped(object sender, TappedEventArgs e)
@@ -153,12 +128,31 @@ public partial class HouseDetailsPage : ContentPage
 
     private async void Email_Tapped(object sender, TappedEventArgs e)
     {
-        var message = new Email.EmailMessage
+        try
         {
-            Subject = $"Broneeringu päring – {_house?.GetTitle(_session.Language)}",
-            Body = "",
-            To = new List<string> { "sauna@saunamaailm.ee" }
-        };
-        await Email.Default.ComposeAsync(message);
+            var message = new EmailMessage
+            {
+                Subject = $"Broneeringu päring – {_house?.GetTitle(_session.Language)}",
+                Body = "",
+                To = new List<string> { "sauna@saunamaailm.ee" }
+            };
+            await Email.Default.ComposeAsync(message);
+        }
+        catch (FeatureNotSupportedException)
+        {
+            await DisplayAlert("Viga", "E-post ei ole toetatud", "OK");
+        }
+    }
+
+    private void Back_Tapped(object sender, TappedEventArgs e)
+        => Shell.Current.GoToAsync("..");
+
+    private async void Book_Clicked(object sender, EventArgs e)
+    {
+        if (_session.IsLoggedIn)
+            await Shell.Current.GoToAsync(
+                $"{nameof(BookingPage)}?houseId={_house?.Id}");
+        else
+            await Shell.Current.GoToAsync(nameof(LoginPage));
     }
 }

@@ -1,4 +1,3 @@
-using System.Xml;
 using SaunakulaApp.Services;
 
 namespace SaunakulaApp.Views;
@@ -31,7 +30,6 @@ public partial class ProfilePage : ContentPage
 
         var user = _session.CurrentUser!;
 
-        // Avatar — первые буквы имени
         var parts = user.FullName.Split(' ');
         AvatarLabel.Text = parts.Length >= 2
             ? $"{parts[0][0]}{parts[1][0]}"
@@ -39,16 +37,13 @@ public partial class ProfilePage : ContentPage
 
         NameLabel.Text = user.FullName;
         EmailLabel.Text = user.Email;
-        PhoneLabel.Text = string.IsNullOrEmpty(user.Phone)
-            ? "" : user.Phone;
+        PhoneLabel.Text = string.IsNullOrEmpty(user.Phone) ? "" : user.Phone;
         MemberSinceLabel.Text = user.CreatedAt.ToString("MM.yyyy");
 
-        // Кол-во броней
         await _db.InitAsync();
         var bookings = await _db.GetBookingsByUserAsync(user.Id);
         BookingsCountLabel.Text = bookings.Count.ToString();
 
-        // Подсветить активный язык
         UpdateLanguageUI(_session.Language);
     }
 
@@ -64,7 +59,6 @@ public partial class ProfilePage : ContentPage
         LangEn.BackgroundColor = lang == "en" ? active : inactive;
         LangFi.BackgroundColor = lang == "fi" ? active : inactive;
 
-        // Цвет текста
         SetLangTextColor(LangEt, lang == "et");
         SetLangTextColor(LangRu, lang == "ru");
         SetLangTextColor(LangEn, lang == "en");
@@ -85,20 +79,16 @@ public partial class ProfilePage : ContentPage
         }
     }
 
-    private void LangEt_Tapped(object sender, TappedEventArgs e)
-        => SetLanguage("et");
-    private void LangRu_Tapped(object sender, TappedEventArgs e)
-        => SetLanguage("ru");
-    private void LangEn_Tapped(object sender, TappedEventArgs e)
-        => SetLanguage("en");
-    private void LangFi_Tapped(object sender, TappedEventArgs e)
-        => SetLanguage("fi");
+    private void LangEt_Tapped(object sender, TappedEventArgs e) => SetLanguage("et");
+    private void LangRu_Tapped(object sender, TappedEventArgs e) => SetLanguage("ru");
+    private void LangEn_Tapped(object sender, TappedEventArgs e) => SetLanguage("en");
+    private void LangFi_Tapped(object sender, TappedEventArgs e) => SetLanguage("fi");
 
     private void SetLanguage(string lang)
     {
         _session.SetLanguage(lang);
         UpdateLanguageUI(lang);
-        DisplayAlert("✅", $"Keel muudetud / Язык изменён", "OK");
+        DisplayAlert("✅", "Keel muudetud / Язык изменён", "OK");
     }
 
     // ── Menu actions ──────────────────────────────────────────
@@ -116,6 +106,24 @@ public partial class ProfilePage : ContentPage
         => await Browser.Default.OpenAsync(
             "https://saunakula.ee",
             BrowserLaunchMode.SystemPreferred);
+
+    private async void Email_Tapped(object sender, TappedEventArgs e)
+    {
+        try
+        {
+            var message = new EmailMessage
+            {
+                Subject = "Küsimus / Вопрос",
+                Body = "",
+                To = new List<string> { "sauna@saunamaailm.ee" }
+            };
+            await Email.Default.ComposeAsync(message);
+        }
+        catch (FeatureNotSupportedException)
+        {
+            await DisplayAlert("Viga", "E-post ei ole toetatud", "OK");
+        }
+    }
 
     private async void Login_Clicked(object sender, EventArgs e)
         => await Shell.Current.GoToAsync(nameof(LoginPage));
@@ -136,16 +144,5 @@ public partial class ProfilePage : ContentPage
         _session.Logout();
         LoggedInView.IsVisible = false;
         NotLoggedInView.IsVisible = true;
-    }
-
-    private async void Email_Tapped(object sender, TappedEventArgs e)
-    {
-        var message = new Email.EmailMessage
-        {
-            Subject = "Küsimus / Вопрос",
-            Body = "",
-            To = new List<string> { "sauna@saunamaailm.ee" }
-        };
-        await Email.Default.ComposeAsync(message);
     }
 }
