@@ -12,67 +12,27 @@
 
                 <!-- Photo Gallery -->
                 <Grid HeightRequest="300">
+
                     <CollectionView x:Name="PhotoGallery"
-                    HeightRequest="300"
-                    HorizontalScrollBarVisibility="Never">
+                                    HeightRequest="300"
+                                    HorizontalScrollBarVisibility="Never">
                         <CollectionView.ItemsLayout>
                             <LinearItemsLayout Orientation="Horizontal"
-                               SnapPointsType="MandatorySingle"
-                               SnapPointsAlignment="Center"/>
+                                               SnapPointsType="MandatorySingle"
+                                               SnapPointsAlignment="Center"/>
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Image Source="{Binding .}"
-                       Aspect="AspectFill"
-                       WidthRequest="{Binding Source={RelativeSource
-                           AncestorType={x:Type Page}},
-                           Path=Width}"
-                       HeightRequest="300"/>
+                                       Aspect="AspectFill"
+                                       HeightRequest="300"
+                                       WidthRequest="400"/>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
 
                     <!-- Gradient overlay -->
                     <BoxView VerticalOptions="End" HeightRequest="80">
-                        <BoxView.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                <GradientStop Color="Transparent" Offset="0"/>
-                                <GradientStop Color="#CC000000" Offset="1"/>
-                            </LinearGradientBrush>
-                        </BoxView.Background>
-                    </BoxView>
-
-                    <!-- Back button -->
-                    <Frame WidthRequest="40" HeightRequest="40"
-           CornerRadius="20"
-           BackgroundColor="#EEFFFFFF"
-           BorderColor="Transparent"
-           Padding="0"
-           Margin="16,48,0,0"
-           HorizontalOptions="Start"
-           VerticalOptions="Start"
-           HasShadow="False">
-                        <Label Text="‹" FontSize="26" FontAttributes="Bold"
-               TextColor="{StaticResource TextPrimary}"
-               HorizontalOptions="Center"
-               VerticalOptions="Center">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="Back_Tapped"/>
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </Frame>
-
-                    <!-- Dots indicator -->
-                    <HorizontalStackLayout x:Name="DotsLayout"
-                           HorizontalOptions="Center"
-                           VerticalOptions="End"
-                           Spacing="6"
-                           Margin="0,0,0,14"/>
-                </Grid>
-
-                <!-- Gradient overlay -->
-                    <BoxView VerticalOptions="End"
-                             HeightRequest="80">
                         <BoxView.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                 <GradientStop Color="Transparent" Offset="0"/>
@@ -91,7 +51,7 @@
                            HorizontalOptions="Start"
                            VerticalOptions="Start"
                            HasShadow="False">
-                        <Label Text="‹"
+                        <Label Text="&#8249;"
                                FontSize="26" FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"
                                HorizontalOptions="Center"
@@ -102,19 +62,21 @@
                         </Label>
                     </Frame>
 
-                    <!-- Image dots indicator -->
+                    <!-- Dots indicator -->
                     <HorizontalStackLayout x:Name="DotsLayout"
                                            HorizontalOptions="Center"
                                            VerticalOptions="End"
                                            Spacing="6"
-                                           Margin="0,0,0,12"/>
+                                           Margin="0,0,0,14"/>
+
                 </Grid>
 
                 <!-- Content -->
                 <VerticalStackLayout Padding="20,20" Spacing="20">
 
-                    <!-- Title + Rating -->
+                    <!-- Title + Location + Rating -->
                     <VerticalStackLayout Spacing="8">
+
                         <Label x:Name="TitleLabel"
                                FontSize="24" FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
@@ -137,16 +99,21 @@
                                        VerticalOptions="Center"/>
                             </HorizontalStackLayout>
                         </Grid>
+
                     </VerticalStackLayout>
 
                     <!-- Quick Info Cards -->
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+
                         <Frame Grid.Column="0"
                                BackgroundColor="{StaticResource SecondaryBackground}"
-                               CornerRadius="12" Padding="10" BorderColor="Transparent">
+                               CornerRadius="12" Padding="10"
+                               BorderColor="Transparent">
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                                <Label Text="👥" FontSize="18" HorizontalOptions="Center"/>
-                                <Label Text="Kuni" FontSize="10"
+                                <Label Text="👥" FontSize="18"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Kuni"
+                                       FontSize="10"
                                        TextColor="{StaticResource TextSecondary}"
                                        HorizontalOptions="Center"/>
                                 <Label x:Name="GuestsLabel"
@@ -158,10 +125,13 @@
 
                         <Frame Grid.Column="1"
                                BackgroundColor="{StaticResource SecondaryBackground}"
-                               CornerRadius="12" Padding="10" BorderColor="Transparent">
+                               CornerRadius="12" Padding="10"
+                               BorderColor="Transparent">
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                                <Label Text="📐" FontSize="18" HorizontalOptions="Center"/>
-                                <Label Text="Suurus" FontSize="10"
+                                <Label Text="📐" FontSize="18"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Suurus"
+                                       FontSize="10"
                                        TextColor="{StaticResource TextSecondary}"
                                        HorizontalOptions="Center"/>
                                 <Label x:Name="SizeLabel"
@@ -173,10 +143,13 @@
 
                         <Frame Grid.Column="2"
                                BackgroundColor="{StaticResource SecondaryBackground}"
-                               CornerRadius="12" Padding="10" BorderColor="Transparent">
+                               CornerRadius="12" Padding="10"
+                               BorderColor="Transparent">
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                                <Label Text="⏱" FontSize="18" HorizontalOptions="Center"/>
-                                <Label Text="Min aeg" FontSize="10"
+                                <Label Text="⏱" FontSize="18"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Min aeg"
+                                       FontSize="10"
                                        TextColor="{StaticResource TextSecondary}"
                                        HorizontalOptions="Center"/>
                                 <Label x:Name="MinHoursLabel"
@@ -185,6 +158,7 @@
                                        HorizontalOptions="Center"/>
                             </VerticalStackLayout>
                         </Frame>
+
                     </Grid>
 
                     <!-- Description -->
@@ -240,38 +214,61 @@
                                FontSize="18" FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
                         <Frame BackgroundColor="{StaticResource SecondaryBackground}"
-                               CornerRadius="12" Padding="16" BorderColor="Transparent">
+                               CornerRadius="12" Padding="16"
+                               BorderColor="Transparent">
                             <VerticalStackLayout Spacing="10">
+
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <Label Text="Tunnihind (esimesed 4-7h)"
+                                    <Label Text="Tunnihind (4–7h)"
                                            Style="{StaticResource MutedLabel}"/>
                                     <Label x:Name="HourlyPriceLabel"
                                            Grid.Column="1"
                                            FontAttributes="Bold"
                                            TextColor="{StaticResource TextPrimary}"/>
                                 </Grid>
+
                                 <BoxView HeightRequest="1"
                                          BackgroundColor="{StaticResource Border}"/>
-                                <Grid ColumnDefinitions="*,Auto">
+
+                                <Grid ColumnDefinitions="*,Auto,Auto">
                                     <Label Text="24h hind"
                                            Style="{StaticResource MutedLabel}"/>
-                                    <Label x:Name="DayPriceLabel"
+                                    <Label x:Name="RegularPriceLabel"
                                            Grid.Column="1"
+                                           FontSize="13"
+                                           TextColor="{StaticResource TextSecondary}"
+                                           TextDecorations="Strikethrough"
+                                           Margin="0,0,8,0"
+                                           VerticalOptions="Center"/>
+                                    <Label x:Name="DayPriceLabel"
+                                           Grid.Column="2"
                                            FontSize="16" FontAttributes="Bold"
                                            TextColor="{StaticResource Primary}"/>
                                 </Grid>
+
+                                <BoxView HeightRequest="1"
+                                         BackgroundColor="{StaticResource Border}"/>
+
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="⏱" FontSize="13"/>
+                                    <Label Text="Minimaalne broneerimisaeg 4h"
+                                           Style="{StaticResource MutedLabel}"
+                                           FontSize="12"
+                                           VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+
                             </VerticalStackLayout>
                         </Frame>
                     </VerticalStackLayout>
 
-                    <!-- Spacer for bottom bar -->
+                    <!-- Spacer -->
                     <BoxView HeightRequest="20"/>
 
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Bottom Bar: Price + Book button -->
+        <!-- Bottom Bar -->
         <Grid Grid.Row="1"
               ColumnDefinitions="*,*"
               Padding="20,12"
