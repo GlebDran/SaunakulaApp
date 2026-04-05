@@ -25,8 +25,8 @@
                             <DataTemplate>
                                 <Image Source="{Binding .}"
                                        Aspect="AspectFill"
-                                       HeightRequest="300"
-                                       WidthRequest="400"/>
+                                       WidthRequest="400"
+                                       HeightRequest="300"/>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
@@ -74,7 +74,7 @@
                 <!-- Content -->
                 <VerticalStackLayout Padding="20,20" Spacing="20">
 
-                    <!-- Title + Location + Rating -->
+                    <!-- Title + Rating -->
                     <VerticalStackLayout Spacing="8">
 
                         <Label x:Name="TitleLabel"
@@ -112,8 +112,7 @@
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
                                 <Label Text="👥" FontSize="18"
                                        HorizontalOptions="Center"/>
-                                <Label Text="Kuni"
-                                       FontSize="10"
+                                <Label Text="Kuni" FontSize="10"
                                        TextColor="{StaticResource TextSecondary}"
                                        HorizontalOptions="Center"/>
                                 <Label x:Name="GuestsLabel"
@@ -130,8 +129,7 @@
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
                                 <Label Text="📐" FontSize="18"
                                        HorizontalOptions="Center"/>
-                                <Label Text="Suurus"
-                                       FontSize="10"
+                                <Label Text="Suurus" FontSize="10"
                                        TextColor="{StaticResource TextSecondary}"
                                        HorizontalOptions="Center"/>
                                 <Label x:Name="SizeLabel"
@@ -148,8 +146,7 @@
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
                                 <Label Text="⏱" FontSize="18"
                                        HorizontalOptions="Center"/>
-                                <Label Text="Min aeg"
-                                       FontSize="10"
+                                <Label Text="Min aeg" FontSize="10"
                                        TextColor="{StaticResource TextSecondary}"
                                        HorizontalOptions="Center"/>
                                 <Label x:Name="MinHoursLabel"
@@ -261,10 +258,10 @@
                         </Frame>
                     </VerticalStackLayout>
 
-                    <!-- Spacer -->
                     <BoxView HeightRequest="20"/>
 
                 </VerticalStackLayout>
+
             </VerticalStackLayout>
         </ScrollView>
 
