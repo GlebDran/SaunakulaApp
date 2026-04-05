@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SaunakulaApp.Views.SearchPage"
+    Shell.NavBarIsVisible="False">
+
+    <VerticalStackLayout Padding="20,52,20,20" Spacing="16">
+        <Label Text="Otsi"
+               Style="{StaticResource TitleLabel}"/>
+        <Label Text="Otsi puhkemaja kuupäeva ja külaliste arvu järgi"
+               Style="{StaticResource MutedLabel}"/>
+
+        <Frame CornerRadius="14"
+               BackgroundColor="{StaticResource MutedBackground}"
+               BorderColor="Transparent"
+               Padding="16,0" HeightRequest="52"
+               HasShadow="False">
+            <Entry Placeholder="Otsi puhkemaja..."
+                   BackgroundColor="Transparent"
+                   HeightRequest="52"/>
+        </Frame>
+
+        <VerticalStackLayout VerticalOptions="CenterAndExpand"
+                             HorizontalOptions="Center"
+                             Spacing="12">
+            <Label Text="🔍" FontSize="52"
+                   HorizontalOptions="Center"/>
+            <Label Text="Otsingufunktsioon tulemas"
+                   FontSize="16" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   HorizontalOptions="Center"/>
+            <Label Text="Praegu kasuta avalehet majade sirvimiseks"
+                   Style="{StaticResource MutedLabel}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+        </VerticalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

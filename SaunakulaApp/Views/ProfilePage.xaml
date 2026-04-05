@@ -1,12 +1,256 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SaunakulaApp.Views.ProfilePage"
-             Title="ProfilePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
-</ContentPage>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SaunakulaApp.Views.ProfilePage"
+    Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- Header -->
+            <VerticalStackLayout Padding="20,52,20,16">
+                <Label Text="Profiil"
+                       Style="{StaticResource TitleLabel}"/>
+                <Label Text="Halda oma kontot"
+                       Style="{StaticResource MutedLabel}"
+                       Margin="0,4,0,0"/>
+            </VerticalStackLayout>
+
+            <!-- Not logged in -->
+            <VerticalStackLayout x:Name="NotLoggedInView"
+                                 IsVisible="False"
+                                 Padding="28,40"
+                                 Spacing="16"
+                                 HorizontalOptions="Center">
+                <Label Text="👤" FontSize="64"
+                       HorizontalOptions="Center"/>
+                <Label Text="Logi sisse, et näha profiili"
+                       FontSize="16" FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
+                <Button Text="Logi sisse"
+                        Style="{StaticResource PrimaryButton}"
+                        Clicked="Login_Clicked"/>
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                    <Label Text="Pole kontot?"
+                           Style="{StaticResource MutedLabel}"/>
+                    <Label Text="Registreeru"
+                           FontSize="14" FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Register_Tapped"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- Logged in content -->
+            <VerticalStackLayout x:Name="LoggedInView"
+                                 IsVisible="False"
+                                 Spacing="0">
+
+                <!-- Profile Card (gradient) -->
+                <Frame Margin="20,0,20,24"
+                       CornerRadius="20"
+                       Padding="20"
+                       BorderColor="Transparent"
+                       HasShadow="False">
+                    <Frame.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#5A7C5E" Offset="0"/>
+                            <GradientStop Color="#3D5C41" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Frame.Background>
+
+                    <VerticalStackLayout Spacing="16">
+                        <!-- Avatar + Name -->
+                        <Grid ColumnDefinitions="64,*" ColumnSpacing="16">
+                            <Frame WidthRequest="64" HeightRequest="64"
+                                   CornerRadius="32"
+                                   BackgroundColor="#33FFFFFF"
+                                   BorderColor="Transparent"
+                                   Padding="0">
+                                <Label x:Name="AvatarLabel"
+                                       FontSize="26" FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="4">
+                                <Label x:Name="NameLabel"
+                                       FontSize="20" FontAttributes="Bold"
+                                       TextColor="White"/>
+                                <Label x:Name="EmailLabel"
+                                       FontSize="13"
+                                       TextColor="#CCFFFFFF"/>
+                                <Label x:Name="PhoneLabel"
+                                       FontSize="13"
+                                       TextColor="#CCFFFFFF"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Stats -->
+                        <BoxView HeightRequest="1"
+                                 BackgroundColor="#33FFFFFF"/>
+                        <Grid ColumnDefinitions="*,*,*">
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
+                                <Label x:Name="BookingsCountLabel"
+                                       FontSize="24" FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Broneeringut"
+                                       FontSize="11"
+                                       TextColor="#CCFFFFFF"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1"
+                                                 HorizontalOptions="Center"
+                                                 Spacing="2">
+                                <BoxView WidthRequest="1"
+                                         BackgroundColor="#33FFFFFF"
+                                         HorizontalOptions="Start"/>
+                                <Label x:Name="MemberSinceLabel"
+                                       FontSize="13" FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Liige alates"
+                                       FontSize="11"
+                                       TextColor="#CCFFFFFF"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2"
+                                                 HorizontalOptions="Center"
+                                                 Spacing="2">
+                                <Label Text="⭐"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="VIP"
+                                       FontSize="11"
+                                       TextColor="#CCFFFFFF"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Language selector -->
+                <Label Text="Keel / Язык / Language / Kieli"
+                       FontSize="16" FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}"
+                       Margin="20,0,20,12"/>
+
+                <Grid ColumnDefinitions="*,*,*,*"
+                      ColumnSpacing="8"
+                      Margin="20,0,20,24">
+                    <Frame x:Name="LangEt"
+                           CornerRadius="12" Padding="8"
+                           BackgroundColor="{StaticResource Primary}"
+                           BorderColor="Transparent"
+                           HasShadow="False">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="🇪🇪" FontSize="20"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="ET"
+                                   FontSize="12" FontAttributes="Bold"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LangEt_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <Frame x:Name="LangRu"
+                           Grid.Column="1"
+                           CornerRadius="12" Padding="8"
+                           BackgroundColor="{StaticResource SecondaryBackground}"
+                           BorderColor="Transparent"
+                           HasShadow="False">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="🇷🇺" FontSize="20"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="RU"
+                                   FontSize="12" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LangRu_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <Frame x:Name="LangEn"
+                           Grid.Column="2"
+                           CornerRadius="12" Padding="8"
+                           BackgroundColor="{StaticResource SecondaryBackground}"
+                           BorderColor="Transparent"
+                           HasShadow="False">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="🇬🇧" FontSize="20"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="EN"
+                                   FontSize="12" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LangEn_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <Frame x:Name="LangFi"
+                           Grid.Column="3"
+                           CornerRadius="12" Padding="8"
+                           BackgroundColor="{StaticResource SecondaryBackground}"
+                           BorderColor="Transparent"
+                           HasShadow="False">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="🇫🇮" FontSize="20"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="FI"
+                                   FontSize="12" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LangFi_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </Grid>
+
+                <!-- Menu -->
+                <Label Text="Konto"
+                       FontSize="16" FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}"
+                       Margin="20,0,20,12"/>
+
+                <Frame Style="{StaticResource Card}"
+                       Margin="20,0,20,24"
+                       Padding="0">
+                    <VerticalStackLayout Spacing="0">
+
+                        <!-- My Bookings -->
+                        <Grid ColumnDefinitions="44,*,24"
+                              Padding="16,14"
+                              ColumnSpacing="8">
+                            <Frame WidthRequest="36" HeightRequest="36"
+                                   CornerRadius="18"
+                                   BackgroundColor="{StaticResource PrimaryExtraLight}"
+                                   BorderColor="Transparent" Padding="0">
+                                <Label Text="📅" FontSize="16"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <Label Grid.Column="1"
+                                   Text="Minu broneerimine"
+                                   FontSize="15"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="2"
+                                   Text="›" FontSize="20"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   VerticalOptions="Center"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="MyBookings_Tapped"/>

@@ -21,13 +21,15 @@ public static class MauiProgram
         builder.Services.AddSingleton<HouseService>();
         builder.Services.AddSingleton<SessionService>();
 
-        // Views (добавим по мере создания)
+        // Views
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<HouseDetailsPage>();
+        builder.Services.AddTransient<BookingPage>();
+        builder.Services.AddTransient<BookingsPage>();
+        builder.Services.AddTransient<ProfilePage>();
+        builder.Services.AddTransient<SearchPage>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<RegisterPage>();
-        builder.Services.AddTransient<ProfilePage>();
-        builder.Services.AddTransient<BookingPage>();
 
         return builder.Build();
     }
