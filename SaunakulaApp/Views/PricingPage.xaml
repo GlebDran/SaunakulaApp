@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SaunakulaApp.Views.PricingPage"
+    Shell.NavBarIsVisible="False">
+
+    <ScrollView BackgroundColor="{StaticResource Background}">
+        <VerticalStackLayout Spacing="0">
+
+            <!-- Header -->
+            <VerticalStackLayout Padding="20,52,20,8">
+                <Label Text="Hinnakiri"
+                       Style="{StaticResource TitleLabel}"/>
+                <Label Text="Tutvu hindadega ja broneeri sobiv maja"
+                       Style="{StaticResource MutedLabel}"
+                       Margin="0,4,0,0"/>
+            </VerticalStackLayout>
+
+            <!-- Promo banner PäevaSPA -->
+            <Frame Margin="20,16,20,8"
+                   CornerRadius="16"
+                   Padding="16"
+                   BorderColor="Transparent"
+                   HasShadow="False">
+                <Frame.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#5A7C5E" Offset="0"/>
+                        <GradientStop Color="#3D5C41" Offset="1"/>
+                    </LinearGradientBrush>
+                </Frame.Background>
+                <Grid ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Spacing="4">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="🌿" FontSize="16"/>
+                            <Label Text="PäevaSPA -40%"
+                                   FontSize="16" FontAttributes="Bold"
+                                   TextColor="White"/>
+                        </HorizontalStackLayout>
+                        <Label Text="E–N kl 10:00–17:00"
+                               FontSize="13"
+                               TextColor="#CCFFFFFF"/>
+                        <Label Text="Jahimehe maja ja Vene maja"
+                               FontSize="12"
+                               TextColor="#AAFFFFFF"/>
+                    </VerticalStackLayout>
+                    <Label Grid.Column="1"
+                           Text="57€/h"
+                           FontSize="22" FontAttributes="Bold"
+                           TextColor="White"
+                           VerticalOptions="Center"/>
+                </Grid>
+            </Frame>
+
+            <!-- Info chips -->
+            <ScrollView Orientation="Horizontal"
+                        HorizontalScrollBarVisibility="Never"
+                        Margin="20,12,0,20">
+                <HorizontalStackLayout Spacing="8">
+                    <Frame CornerRadius="20" Padding="10,6"
+                           BackgroundColor="{StaticResource PrimaryExtraLight}"
+                           BorderColor="Transparent" HasShadow="False">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="🕐" FontSize="13"/>
+                            <Label Text="Avatud 24/7"
+                                   FontSize="12" FontAttributes="Bold"
+                                   TextColor="{StaticResource Primary}"/>
+                        </HorizontalStackLayout>
+                    </Frame>
+                    <Frame CornerRadius="20" Padding="10,6"
+                           BackgroundColor="{StaticResource PrimaryExtraLight}"
+                           BorderColor="Transparent" HasShadow="False">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="🅿️" FontSize="13"/>
+                            <Label Text="Tasuta parkimine"
+                                   FontSize="12" FontAttributes="Bold"
+                                   TextColor="{StaticResource Primary}"/>
+                        </HorizontalStackLayout>
+                    </Frame>
+                    <Frame CornerRadius="20" Padding="10,6"
+                           BackgroundColor="{StaticResource PrimaryExtraLight}"
+                           BorderColor="Transparent" HasShadow="False">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="🎁" FontSize="13"/>
+                            <Label Text="Viht + vesi kingituseks"
+                                   FontSize="12" FontAttributes="Bold"
+                                   TextColor="{StaticResource Primary}"/>
+                        </HorizontalStackLayout>
+                    </Frame>
+                    <Frame CornerRadius="20" Padding="10,6"
+                           BackgroundColor="{StaticResource PrimaryExtraLight}"
+                           BorderColor="Transparent" HasShadow="False">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="📶" FontSize="13"/>
+                            <Label Text="Tasuta WiFi"
+                                   FontSize="12" FontAttributes="Bold"
+                                   TextColor="{StaticResource Primary}"/>
+                        </HorizontalStackLayout>
+                    </Frame>
+                </HorizontalStackLayout>
+            </ScrollView>
+
+            <!-- House pricing cards -->
+            <CollectionView x:Name="PricingList"
+                            Margin="20,0,20,24"
+                            SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Style="{StaticResource Card}"
+                               Padding="0"
+                               Margin="0,0,0,16">
+                            <VerticalStackLayout Spacing="0">
+
+                                <!-- House photo + name -->
+                                <Grid HeightRequest="160">
+                                    <Image Source="{Binding Image}"
+                                           Aspect="AspectFill"
+                                           HeightRequest="160"/>
+                                    <BoxView VerticalOptions="End"
+                                             HeightRequest="60">
+                                        <BoxView.Background>
+                                            <LinearGradientBrush
+                                                StartPoint="0,0"
+                                                EndPoint="0,1">
+                                                <GradientStop Color="Transparent"
+                                                              Offset="0"/>
+                                                <GradientStop Color="#CC000000"
+                                                              Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </BoxView.Background>
+                                    </BoxView>
+                                    <VerticalStackLayout
+                                        VerticalOptions="End"
+                                        Padding="14,0,14,12"
+                                        Spacing="2">
+                                        <Label Text="{Binding DisplayTitle}"
+                                               FontSize="18" FontAttributes="Bold"
+                                               TextColor="White"/>
+                                        <Label Text="{Binding GuestsText}"
+                                               FontSize="12"
+                                               TextColor="#CCFFFFFF"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <!-- Pricing details -->
+                                <VerticalStackLayout Padding="14,14,14,0"
+                                                     Spacing="10">
+
+                                    <!-- Hourly price row -->
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label Text="Tunnihind (4–7h)"
+                                                   Style="{StaticResource MutedLabel}"
+                                                   FontSize="12"/>
+                                            <Label Text="{Binding HourlyText}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource TextPrimary}"/>
+                                        </VerticalStackLayout>
+                                        <VerticalStackLayout Grid.Column="1"
+                                                             HorizontalOptions="End"
+                                                             Spacing="2">
+                                            <Label Text="24h hind"
+                                                   Style="{StaticResource MutedLabel}"
+                                                   FontSize="12"
+                                                   HorizontalOptions="End"/>
+                                            <HorizontalStackLayout
+                                                Spacing="6"
+                                                HorizontalOptions="End">
+                                                <Label Text="{Binding RegularPriceText}"
+                                                       FontSize="12"
+                                                       TextColor="{StaticResource TextSecondary}"
+                                                       TextDecorations="Strikethrough"
+                                                       VerticalOptions="Center"/>
+                                                <Label Text="{Binding DayPriceText}"
+                                                       FontSize="18"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{StaticResource Primary}"/>
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+                                    </Grid>
+
+                                    <BoxView HeightRequest="1"
+                                             BackgroundColor="{StaticResource Border}"/>
+
+                                    <!-- Min hours note -->
+                                    <HorizontalStackLayout Spacing="6">
+                                        <Label Text="⏱" FontSize="13"/>
+                                        <Label Text="{Binding MinHoursText}"
+                                               Style="{StaticResource MutedLabel}"
+                                               FontSize="12"
+                                               VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
+
+                                </VerticalStackLayout>
+
+                                <!-- Buttons -->
+                                <Grid ColumnDefinitions="*,*"
+                                      ColumnSpacing="10"
+                                      Padding="14,12,14,14">
+                                    <Button Text="Lisainfo"
+                                            Style="{StaticResource SecondaryButton}"
+                                            HeightRequest="46"
+                                            CommandParameter="{Binding HouseId}"
+                                            Clicked="Details_Clicked"/>
+                                    <Button Grid.Column="1"
+                                            Text="Broneeri"
+                                            Style="{StaticResource PrimaryButton}"
+                                            HeightRequest="46"
+                                            CommandParameter="{Binding HouseId}"
+                                            Clicked="Book_Clicked"/>
+                                </Grid>
+
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Extras table -->
+            <Label Text="Lisateenused"
+                   FontSize="18" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="20,0,20,12"/>
+
+            <Frame Style="{StaticResource Card}"
+                   Margin="20,0,20,32"
+                   Padding="0">
+                <VerticalStackLayout Spacing="0">
+
+                    <Grid ColumnDefinitions="*,Auto" Padding="16,12"
+                          BackgroundColor="{StaticResource SecondaryBackground}">
+                        <Label Text="Teenus" FontSize="13" FontAttributes="Bold"
+                               TextColor="{StaticResource TextSecondary}"/>
+                        <Label Grid.Column="1" Text="Hind"
+                               FontSize="13" FontAttributes="Bold"
+                               TextColor="{StaticResource TextSecondary}"/>
+                    </Grid>
+
+                    <BoxView HeightRequest="1"
+                             BackgroundColor="{StaticResource Border}"/>
+
+                    <!-- Rows -->
+                    <Grid ColumnDefinitions="*,Auto" Padding="16,12">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🛁" FontSize="16"/>
+                            <Label Text="Kümblustünn (etteteatamine!)"
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1" Text="140 €"
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource Primary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
+
+                    <Grid ColumnDefinitions="*,Auto" Padding="16,12">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🌿" FontSize="16"/>
+                            <Label Text="Kaaseviht"
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1" Text="6 €"
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
+
+                    <Grid ColumnDefinitions="*,Auto" Padding="16,12">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🌳" FontSize="16"/>
+                            <Label Text="Tammeviht"
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1" Text="7 €"
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
+
+                    <Grid ColumnDefinitions="*,Auto" Padding="16,12">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🛏" FontSize="16"/>
+                            <Label Text="Saunalina rent"
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1" Text="5 €"
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
+
+                    <Grid ColumnDefinitions="*,Auto" Padding="16,12">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🌸" FontSize="16"/>
+                            <Label Text="Saunaaroom"
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1" Text="7 €"
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
+
+                    <Grid ColumnDefinitions="*,Auto" Padding="16,12">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🔥" FontSize="16"/>
+                            <Label Text="Grillsüsi"
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1" Text="7 €"
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
+
+                    <Grid ColumnDefinitions="*,Auto" Padding="16,12">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🥤" FontSize="16"/>
+                            <Label Text="Alkoholivabad joogid al."
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1" Text="3 €"
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
+
+                    <Grid ColumnDefinitions="*,Auto" Padding="16,12">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🍷" FontSize="16"/>
+                            <Label Text="Alkohoolsed joogid al."
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1" Text="5 €"
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

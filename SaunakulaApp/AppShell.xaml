@@ -18,10 +18,10 @@
             ContentTemplate="{DataTemplate views:HomePage}" />
 
         <ShellContent
-            Title="Search"
-            Icon="icon_search.png"
-            Route="SearchPage"
-            ContentTemplate="{DataTemplate views:SearchPage}" />
+    Title="Hinnad"
+    Icon="icon_pricing.png"
+    Route="PricingPage"
+    ContentTemplate="{DataTemplate views:PricingPage}" />
 
         <ShellContent
             Title="Bookings"
