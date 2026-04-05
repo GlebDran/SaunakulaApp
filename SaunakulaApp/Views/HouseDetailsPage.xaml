@@ -10,13 +10,67 @@
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Spacing="0">
 
-                <!-- Photo + Back button -->
+                <!-- Photo Gallery -->
                 <Grid HeightRequest="300">
-                    <Image x:Name="MainImage"
-                           Aspect="AspectFill"
-                           HeightRequest="300"/>
+                    <CollectionView x:Name="PhotoGallery"
+                    HeightRequest="300"
+                    HorizontalScrollBarVisibility="Never">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Horizontal"
+                               SnapPointsType="MandatorySingle"
+                               SnapPointsAlignment="Center"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding .}"
+                       Aspect="AspectFill"
+                       WidthRequest="{Binding Source={RelativeSource
+                           AncestorType={x:Type Page}},
+                           Path=Width}"
+                       HeightRequest="300"/>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
                     <!-- Gradient overlay -->
+                    <BoxView VerticalOptions="End" HeightRequest="80">
+                        <BoxView.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="Transparent" Offset="0"/>
+                                <GradientStop Color="#CC000000" Offset="1"/>
+                            </LinearGradientBrush>
+                        </BoxView.Background>
+                    </BoxView>
+
+                    <!-- Back button -->
+                    <Frame WidthRequest="40" HeightRequest="40"
+           CornerRadius="20"
+           BackgroundColor="#EEFFFFFF"
+           BorderColor="Transparent"
+           Padding="0"
+           Margin="16,48,0,0"
+           HorizontalOptions="Start"
+           VerticalOptions="Start"
+           HasShadow="False">
+                        <Label Text="‹" FontSize="26" FontAttributes="Bold"
+               TextColor="{StaticResource TextPrimary}"
+               HorizontalOptions="Center"
+               VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Back_Tapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Frame>
+
+                    <!-- Dots indicator -->
+                    <HorizontalStackLayout x:Name="DotsLayout"
+                           HorizontalOptions="Center"
+                           VerticalOptions="End"
+                           Spacing="6"
+                           Margin="0,0,0,14"/>
+                </Grid>
+
+                <!-- Gradient overlay -->
                     <BoxView VerticalOptions="End"
                              HeightRequest="80">
                         <BoxView.Background>
