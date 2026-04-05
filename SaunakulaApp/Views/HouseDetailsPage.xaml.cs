@@ -39,6 +39,7 @@ public partial class HouseDetailsPage : ContentPage
         DayPriceLabel.Text = $"€{_house.Price24h}";
         RegularPriceLabel.Text = $"€{_house.Price24hRegular}";
         BottomPriceLabel.Text = $"€{_house.Price24h}";
+        LoadMap();
 
         AmenitiesView.ItemsSource = _house.GetAmenities(lang);
 
@@ -111,5 +112,53 @@ public partial class HouseDetailsPage : ContentPage
                 $"{nameof(BookingPage)}?houseId={_house?.Id}");
         else
             await Shell.Current.GoToAsync(nameof(LoginPage));
+    }
+
+    private void LoadMap()
+    {
+        var html = @"
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <style>
+            * { margin:0; padding:0; }
+            body { height:200px; overflow:hidden; }
+            iframe { width:100%; height:200px; border:0; }
+        </style>
+    </head>
+    <body>
+        <iframe
+            src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2031.8!2d24.5131448!3d59.3635824!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4692bde914230565%3A0xa6fff1cee72bb1fe!2sSaunakyla!5e0!3m2!1sen!2see!4v1'
+            allowfullscreen='' loading='lazy'
+            referrerpolicy='no-referrer-when-downgrade'>
+        </iframe>
+    </body>
+    </html>";
+
+        MapView.Source = new HtmlWebViewSource { Html = html };
+    }
+
+    private void OpenMaps_Clicked(object sender, EventArgs e)
+    {
+        var url = "https://www.google.com/maps/place/Saunak%C3%BCla/@59.3635824,24.5131448,17z";
+        Launcher.Default.OpenAsync(new Uri(url));
+    }
+
+    private void Call_Tapped(object sender, TappedEventArgs e)
+    {
+        if (PhoneDialer.Default.IsSupported)
+            PhoneDialer.Default.Open("+37255000075");
+    }
+
+    private async void Email_Tapped(object sender, TappedEventArgs e)
+    {
+        var message = new Email.EmailMessage
+        {
+            Subject = $"Broneeringu päring – {_house?.GetTitle(_session.Language)}",
+            Body = "",
+            To = new List<string> { "sauna@saunamaailm.ee" }
+        };
+        await Email.Default.ComposeAsync(message);
     }
 }

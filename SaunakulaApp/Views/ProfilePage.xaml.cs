@@ -137,4 +137,15 @@ public partial class ProfilePage : ContentPage
         LoggedInView.IsVisible = false;
         NotLoggedInView.IsVisible = true;
     }
+
+    private async void Email_Tapped(object sender, TappedEventArgs e)
+    {
+        var message = new Email.EmailMessage
+        {
+            Subject = "Küsimus / Вопрос",
+            Body = "",
+            To = new List<string> { "sauna@saunamaailm.ee" }
+        };
+        await Email.Default.ComposeAsync(message);
+    }
 }
