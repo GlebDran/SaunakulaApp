@@ -17,6 +17,41 @@
                        Margin="0,4,0,0"/>
             </VerticalStackLayout>
 
+            <!-- PäevaSPA promo banner -->
+            <Frame Margin="20,0,20,0"
+       CornerRadius="16"
+       Padding="14,12"
+       BorderColor="Transparent"
+       HasShadow="False">
+                <Frame.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#5A7C5E" Offset="0"/>
+                        <GradientStop Color="#3D5C41" Offset="1"/>
+                    </LinearGradientBrush>
+                </Frame.Background>
+                <Grid ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Spacing="3">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="🌿" FontSize="14"/>
+                            <Label Text="PäevaSPA -40%"
+                       FontSize="15" FontAttributes="Bold"
+                       TextColor="White"/>
+                        </HorizontalStackLayout>
+                        <Label Text="E–N kl 10:00–17:00 · Jahimehe &amp; Vene maja"
+                   FontSize="11"
+                   TextColor="#CCFFFFFF"/>
+                    </VerticalStackLayout>
+                    <Label Grid.Column="1"
+               Text="57€/h"
+               FontSize="20" FontAttributes="Bold"
+               TextColor="White"
+               VerticalOptions="Center"/>
+                </Grid>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="PromoBanner_Tapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+
             <!-- Search Bar -->
             <Frame Margin="20,0,20,24"
                    CornerRadius="16"
