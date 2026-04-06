@@ -10,30 +10,36 @@
     Shell.TabBarUnselectedColor="#7A8A7D"
     Shell.TabBarTitleColor="#5A7C5E">
 
+    <!-- Splash — без таббара -->
+    <ShellContent
+        Route="SplashPage"
+        Shell.TabBarIsVisible="False"
+        ContentTemplate="{DataTemplate views:SplashPage}"/>
+
     <TabBar>
         <ShellContent
             Title="Home"
             Icon="icon_home.png"
             Route="HomePage"
-            ContentTemplate="{DataTemplate views:HomePage}" />
+            ContentTemplate="{DataTemplate views:HomePage}"/>
 
         <ShellContent
-    Title="Hinnad"
-    Icon="icon_pricing.png"
-    Route="PricingPage"
-    ContentTemplate="{DataTemplate views:PricingPage}" />
+            Title="Hinnad"
+            Icon="icon_pricing.png"
+            Route="PricingPage"
+            ContentTemplate="{DataTemplate views:PricingPage}"/>
 
         <ShellContent
-            Title="Bookings"
+            Title="Broneerimine"
             Icon="icon_calendar.png"
             Route="BookingsPage"
-            ContentTemplate="{DataTemplate views:BookingsPage}" />
+            ContentTemplate="{DataTemplate views:BookingsPage}"/>
 
         <ShellContent
-            Title="Profile"
+            Title="Profiil"
             Icon="icon_profile.png"
             Route="ProfilePage"
-            ContentTemplate="{DataTemplate views:ProfilePage}" />
+            ContentTemplate="{DataTemplate views:ProfilePage}"/>
     </TabBar>
 
 </Shell>

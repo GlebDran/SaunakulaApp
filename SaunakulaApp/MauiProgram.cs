@@ -20,6 +20,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<DatabaseService>();
         builder.Services.AddSingleton<HouseService>();
         builder.Services.AddSingleton<SessionService>();
+        builder.Services.AddTransient<SplashPage>();
 
         // Views
         builder.Services.AddTransient<HomePage>();

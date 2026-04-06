@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SaunakulaApp.Views.SplashPage"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="#5A7C5E">
+
+    <Grid>
+        <VerticalStackLayout
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Spacing="24">
+
+            <!-- Logo / Icon -->
+            <Frame WidthRequest="100" HeightRequest="100"
+                   CornerRadius="50"
+                   BackgroundColor="#33FFFFFF"
+                   BorderColor="Transparent"
+                   HorizontalOptions="Center"
+                   Padding="0">
+                <Label Text="🌲"
+                       FontSize="52"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Frame>
+
+            <!-- App name -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                <Label Text="Saunaküla"
+                       FontSize="36" FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+                <Label Text="Saunapuhkus Tallinna lähedal"
+                       FontSize="14"
+                       TextColor="#CCFFFFFF"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Loading indicator -->
+            <ActivityIndicator x:Name="Loader"
+                               IsRunning="True"
+                               Color="White"
+                               HorizontalOptions="Center"
+                               Margin="0,16,0,0"/>
+
+        </VerticalStackLayout>
+
+        <!-- Version at bottom -->
+        <Label Text="v1.0"
+               FontSize="12"
+               TextColor="#66FFFFFF"
+               HorizontalOptions="Center"
+               VerticalOptions="End"
+               Margin="0,0,0,40"/>
+    </Grid>
+
+</ContentPage>
