@@ -27,7 +27,9 @@ public partial class HomePage : ContentPage
         var houses = await _houseService.GetAllAsync();
         var lang = _session.Language;
 
-        _allDisplayed = houses.Select(h => new HouseDisplay(h, lang)).ToList();
+        _allDisplayed = houses
+            .Select(h => new HouseDisplay(h, lang))
+            .ToList();
 
         FeaturedView.ItemsSource = _allDisplayed.Take(2).ToList();
         AllHousesView.ItemsSource = _allDisplayed;
@@ -49,9 +51,14 @@ public partial class HomePage : ContentPage
         await Shell.Current.GoToAsync(
             $"{nameof(HouseDetailsPage)}?houseId={hd.House.Id}");
     }
+
+    private async void PromoBanner_Tapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            $"{nameof(HouseDetailsPage)}?houseId=vene");
+    }
 }
 
-// Вспомогательный класс для отображения с учётом языка
 public class HouseDisplay
 {
     public House House { get; }
@@ -64,12 +71,5 @@ public class HouseDisplay
         House = house;
         DisplayTitle = house.GetTitle(lang);
         DisplayPrice = $"€{house.Price24h}";
-    }
-
-    private async void PromoBanner_Tapped(object sender, TappedEventArgs e)
-    {
-        // Открываем Vene maja — там есть PäevaSPA
-        await Shell.Current.GoToAsync(
-            $"{nameof(HouseDetailsPage)}?houseId=vene");
     }
 }
