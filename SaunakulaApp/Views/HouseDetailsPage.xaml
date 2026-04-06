@@ -43,24 +43,26 @@
 
                     <!-- Back button -->
                     <Frame WidthRequest="40" HeightRequest="40"
-                           CornerRadius="20"
-                           BackgroundColor="#EEFFFFFF"
-                           BorderColor="Transparent"
-                           Padding="0"
-                           Margin="16,48,0,0"
-                           HorizontalOptions="Start"
-                           VerticalOptions="Start"
-                           HasShadow="False">
-                        <Label Text="&#8249;"
-                               FontSize="26" FontAttributes="Bold"
-                               TextColor="{StaticResource TextPrimary}"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center">
+       CornerRadius="20"
+       BackgroundColor="#EEFFFFFF"
+       BorderColor="Transparent"
+       Padding="0"
+       Margin="0,48,16,0"
+       HorizontalOptions="End"
+       VerticalOptions="Start"
+       HasShadow="False">
+                        <Label x:Name="FavLabel"
+           Text="🤍"
+           FontSize="20"
+           HorizontalOptions="Center"
+           VerticalOptions="Center">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="Back_Tapped"/>
+                                <TapGestureRecognizer Tapped="Favourite_Tapped"/>
                             </Label.GestureRecognizers>
                         </Label>
                     </Frame>
+
+
 
                     <!-- Dots indicator -->
                     <HorizontalStackLayout x:Name="DotsLayout"

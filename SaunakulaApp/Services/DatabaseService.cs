@@ -14,6 +14,7 @@ public class DatabaseService
         _db = new SQLiteAsyncConnection(path);
         await _db.CreateTableAsync<User>();
         await _db.CreateTableAsync<Booking>();
+        await _db.CreateTableAsync<Favourite>();
     }
 
     // Users
@@ -31,5 +32,32 @@ public class DatabaseService
     {
         return _db.ExecuteAsync(
             "UPDATE Booking SET Status='Cancelled' WHERE Id=?", id);
+    }
+    // ─── FAVOURITES ───────────────────────────────────────────
+    public Task<List<Favourite>> GetFavouritesByUserAsync(int userId)
+        => _db.Table<Favourite>().Where(f => f.UserId == userId).ToListAsync();
+
+    public async Task<bool> IsFavouriteAsync(int userId, string houseId)
+    {
+        var count = await _db.Table<Favourite>()
+            .Where(f => f.UserId == userId && f.HouseId == houseId)
+            .CountAsync();
+        return count > 0;
+    }
+
+    public async Task ToggleFavouriteAsync(int userId, string houseId)
+    {
+        var existing = await _db.Table<Favourite>()
+            .Where(f => f.UserId == userId && f.HouseId == houseId)
+            .FirstOrDefaultAsync();
+
+        if (existing != null)
+            await _db.DeleteAsync(existing);
+        else
+            await _db.InsertAsync(new Favourite
+            {
+                UserId = userId,
+                HouseId = houseId
+            });
     }
 }

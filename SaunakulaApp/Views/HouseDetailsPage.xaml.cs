@@ -7,6 +7,7 @@ namespace SaunakulaApp.Views;
 public partial class HouseDetailsPage : ContentPage
 {
     private readonly HouseService _houseService;
+    private readonly DatabaseService _db;
     private readonly SessionService _session;
     private House? _house;
     private int _photoCount = 0;
@@ -14,10 +15,13 @@ public partial class HouseDetailsPage : ContentPage
 
     public string HouseId { get; set; } = "";
 
-    public HouseDetailsPage(HouseService houseService, SessionService session)
+    public HouseDetailsPage(HouseService houseService,
+                            DatabaseService db,
+                            SessionService session)
     {
         InitializeComponent();
         _houseService = houseService;
+        _db = db;
         _session = session;
     }
 
@@ -50,6 +54,7 @@ public partial class HouseDetailsPage : ContentPage
         PhotoGallery.ItemsSource = photos;
         BuildDots(_photoCount);
         LoadMap();
+        await UpdateFavouriteButton();
 
         if (!_scrollHandlerAttached)
         {
@@ -57,6 +62,8 @@ public partial class HouseDetailsPage : ContentPage
             _scrollHandlerAttached = true;
         }
     }
+
+    // ── Gallery ───────────────────────────────────────────────
 
     private void BuildDots(int count)
     {
@@ -99,6 +106,8 @@ public partial class HouseDetailsPage : ContentPage
         }
     }
 
+    // ── Map ───────────────────────────────────────────────────
+
     private void LoadMap()
     {
         var html = @"<!DOCTYPE html>
@@ -119,6 +128,37 @@ public partial class HouseDetailsPage : ContentPage
         Launcher.Default.OpenAsync(
             new Uri("https://www.google.com/maps/place/Saunak%C3%BCla/@59.3635824,24.5131448,17z"));
     }
+
+    // ── Favourites ────────────────────────────────────────────
+
+    private async Task UpdateFavouriteButton()
+    {
+        if (!_session.IsLoggedIn || _house is null)
+        {
+            FavLabel.Text = "🤍";
+            return;
+        }
+        await _db.InitAsync();
+        var isFav = await _db.IsFavouriteAsync(
+            _session.CurrentUser!.Id, _house.Id);
+        FavLabel.Text = isFav ? "❤️" : "🤍";
+    }
+
+    private async void Favourite_Tapped(object sender, TappedEventArgs e)
+    {
+        if (!_session.IsLoggedIn)
+        {
+            await Shell.Current.GoToAsync(nameof(LoginPage));
+            return;
+        }
+        if (_house is null) return;
+
+        await _db.InitAsync();
+        await _db.ToggleFavouriteAsync(_session.CurrentUser!.Id, _house.Id);
+        await UpdateFavouriteButton();
+    }
+
+    // ── Contact ───────────────────────────────────────────────
 
     private void Call_Tapped(object sender, TappedEventArgs e)
     {
@@ -143,6 +183,8 @@ public partial class HouseDetailsPage : ContentPage
             await DisplayAlert("Viga", "E-post ei ole toetatud", "OK");
         }
     }
+
+    // ── Navigation ────────────────────────────────────────────
 
     private void Back_Tapped(object sender, TappedEventArgs e)
         => Shell.Current.GoToAsync("..");
