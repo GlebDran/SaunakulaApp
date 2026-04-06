@@ -217,6 +217,38 @@
                     </Frame>
                 </Grid>
 
+                <Label Text="Välimus"
+       FontSize="16" FontAttributes="Bold"
+       TextColor="{StaticResource TextPrimary}"
+       Margin="20,0,20,12"/>
+
+                <Frame Style="{StaticResource Card}"
+       Margin="20,0,20,24"
+       Padding="0">
+                    <Grid ColumnDefinitions="44,*,Auto"
+          Padding="16,14" ColumnSpacing="8">
+                        <Frame WidthRequest="36" HeightRequest="36"
+               CornerRadius="18"
+               BackgroundColor="{StaticResource PrimaryExtraLight}"
+               BorderColor="Transparent" Padding="0">
+                            <Label Text="🌙" FontSize="16"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"/>
+                        </Frame>
+                        <Label Grid.Column="1"
+               Text="Tume režiim"
+               FontSize="15"
+               TextColor="{StaticResource TextPrimary}"
+               VerticalOptions="Center"/>
+                        <Switch x:Name="DarkModeSwitch"
+                Grid.Column="2"
+                OnColor="{StaticResource Primary}"
+                ThumbColor="White"
+                Toggled="DarkMode_Toggled"
+                VerticalOptions="Center"/>
+                    </Grid>
+                </Frame>
+
                 <!-- Menu -->
                 <Label Text="Konto"
                        FontSize="16" FontAttributes="Bold"

@@ -45,6 +45,14 @@ public partial class ProfilePage : ContentPage
         BookingsCountLabel.Text = bookings.Count.ToString();
 
         UpdateLanguageUI(_session.Language);
+        DarkModeSwitch.IsToggled = _session.IsDarkMode;
+    }
+
+    // ── Dark mode ─────────────────────────────────────────────
+
+    private void DarkMode_Toggled(object sender, ToggledEventArgs e)
+    {
+        _session.SetDarkMode(e.Value);
     }
 
     // ── Language ──────────────────────────────────────────────

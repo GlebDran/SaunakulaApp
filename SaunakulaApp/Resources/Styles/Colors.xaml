@@ -23,4 +23,11 @@
     <Color x:Key="StarColor">#F59E0B</Color>
     <Color x:Key="Border">#E8EDE7</Color>
 
+    <!-- Dark theme colors -->
+    <Color x:Key="DarkBackground">#1A2420</Color>
+    <Color x:Key="DarkCard">#2D3B2F</Color>
+    <Color x:Key="DarkPrimary">#8BA888</Color>
+    <Color x:Key="DarkText">#E8EDE7</Color>
+    <Color x:Key="DarkTextSecondary">#A0B09D</Color>
+
 </ResourceDictionary>
