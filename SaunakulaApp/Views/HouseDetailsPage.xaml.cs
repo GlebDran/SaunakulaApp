@@ -125,11 +125,9 @@ public partial class HouseDetailsPage : ContentPage
 
     private void OpenMaps_Clicked(object sender, EventArgs e)
     {
-        // geo: URI открывает карту с маркером на месте
         var geoUri = DeviceInfo.Platform == DevicePlatform.iOS
             ? "maps://?ll=59.3635824,24.5131448&q=Saunaküla"
             : "geo:59.3635824,24.5131448?q=59.3635824,24.5131448(Saunaküla)";
-
         Launcher.Default.OpenAsync(new Uri(geoUri));
     }
 
@@ -194,6 +192,11 @@ public partial class HouseDetailsPage : ContentPage
             await DisplayAlert("E-post", "sauna@saunamaailm.ee", "OK");
         }
     }
+
+    private async void Instagram_Tapped(object sender, TappedEventArgs e)
+        => await Browser.Default.OpenAsync(
+            "https://www.instagram.com/sauna.kula/",
+            BrowserLaunchMode.SystemPreferred);
 
     // ── Navigation ────────────────────────────────────────────
 
