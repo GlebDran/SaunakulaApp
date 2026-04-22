@@ -1,3 +1,4 @@
+using System.Text.Json;
 using SaunakulaApp.Models;
 using SaunakulaApp.Services;
 
@@ -12,6 +13,19 @@ public partial class BookingPage : ContentPage
 
     private House? _house;
     private int _guests = 2;
+    private decimal _houseTotal = 0;
+
+    // Допы с количеством
+    private readonly List<AddonDisplay> _addons = new()
+    {
+        new AddonDisplay("viht_kase",   "Kaaseviht",   "Birch whisk",  "Koivuvihta",   "Берёзовый веник",  "🌿", 6),
+        new AddonDisplay("viht_tamm",   "Tammeviht",   "Oak whisk",    "Tammivihta",   "Дубовый веник",    "🍂", 7),
+        new AddonDisplay("lina",        "Saunalina",   "Sauna towel",  "Saunapyyhe",   "Полотенце",        "🛁", 5),
+        new AddonDisplay("aroom",       "Saunaaroom",  "Sauna aroma",  "Saunaaromi",   "Аромат для сауны", "🌸", 7),
+        new AddonDisplay("susi",        "Grillsüsi",   "Charcoal",     "Grillihiili",  "Уголь для гриля",  "🔥", 7),
+        new AddonDisplay("sytik",       "Süütevedelik","Lighter fluid","Sytytysaine",  "Жидкость для розжига", "💧", 6),
+        new AddonDisplay("tunn",        "Kümblustünn", "Hot tub",      "Kylpytynnyri", "Купель",           "🛁", 140),
+    };
 
     public string HouseId { get; set; } = "";
 
@@ -38,19 +52,23 @@ public partial class BookingPage : ContentPage
         HouseImage.Source = _house.Image;
         HousePriceLabel.Text = $"€{_house.PricePerHour}/h  |  €{_house.Price24h}/24h";
 
-        // Начальные даты
         CheckInPicker.Date = DateTime.Today;
         CheckOutPicker.Date = DateTime.Today.AddDays(1);
+
+        // Обновляем язык допов
+        foreach (var a in _addons) a.SetLang(lang);
+        AddonsView.ItemsSource = null;
+        AddonsView.ItemsSource = _addons;
 
         UpdatePrice();
     }
 
+    // ── Dates & Guests ────────────────────────────────────────
+
     private void DatePicker_DateSelected(object sender, DateChangedEventArgs e)
     {
-        // Check-out не может быть раньше check-in
         if (CheckOutPicker.Date <= CheckInPicker.Date)
             CheckOutPicker.Date = CheckInPicker.Date.AddDays(1);
-
         UpdatePrice();
     }
 
@@ -67,6 +85,41 @@ public partial class BookingPage : ContentPage
         GuestsLabel.Text = $"{_guests} külalist";
     }
 
+    // ── Addons ────────────────────────────────────────────────
+
+    private void AddAddon_Tapped(object sender, TappedEventArgs e)
+    {
+        if (e.Parameter is not string id) return;
+        var addon = _addons.FirstOrDefault(a => a.Id == id);
+        if (addon is null) return;
+
+        addon.Count++;
+        addon.IsSelected = addon.Count > 0;
+
+        // Обновить UI
+        AddonsView.ItemsSource = null;
+        AddonsView.ItemsSource = _addons;
+
+        UpdatePrice();
+    }
+
+    private void RemoveAddon_Tapped(object sender, TappedEventArgs e)
+    {
+        if (e.Parameter is not string id) return;
+        var addon = _addons.FirstOrDefault(a => a.Id == id);
+        if (addon is null) return;
+
+        if (addon.Count > 0) addon.Count--;
+        addon.IsSelected = addon.Count > 0;
+
+        AddonsView.ItemsSource = null;
+        AddonsView.ItemsSource = _addons;
+
+        UpdatePrice();
+    }
+
+    // ── Price calculation ─────────────────────────────────────
+
     private void UpdatePrice()
     {
         if (_house is null) return;
@@ -76,27 +129,24 @@ public partial class BookingPage : ContentPage
         var hours = (end - start).TotalHours;
         var days = (end - start).TotalDays;
 
-        decimal total;
+        _houseTotal = days >= 1
+            ? (decimal)Math.Ceiling(days) * _house.Price24h
+            : (decimal)Math.Ceiling(hours) * _house.PricePerHour;
 
-        if (days >= 1)
-        {
-            // Считаем по суткам
-            total = (decimal)Math.Ceiling(days) * _house.Price24h;
-            NightsLabel.Text =
-                $"€{_house.Price24h} × {(int)Math.Ceiling(days)} ööd";
-        }
-        else
-        {
-            // Считаем по часам
-            total = (decimal)Math.Ceiling(hours) * _house.PricePerHour;
-            NightsLabel.Text =
-                $"€{_house.PricePerHour} × {(int)Math.Ceiling(hours)}h";
-        }
+        var addonsTotal = _addons.Sum(a => a.Price * a.Count);
 
-        SubtotalLabel.Text = $"€{total:F0}";
-        TotalLabel.Text = $"€{total:F0}";
-        ConfirmButton.IsEnabled = total > 0;
+        NightsLabel.Text = days >= 1
+            ? $"€{_house.Price24h} × {(int)Math.Ceiling(days)} ööd"
+            : $"€{_house.PricePerHour} × {(int)Math.Ceiling(hours)}h";
+
+        SubtotalLabel.Text = $"€{_houseTotal:F0}";
+        AddonsLabel.Text = addonsTotal > 0 ? $"€{addonsTotal:F0}" : "€0";
+        TotalLabel.Text = $"€{(_houseTotal + addonsTotal):F0}";
+
+        ConfirmButton.IsEnabled = _houseTotal > 0;
     }
+
+    // ── Confirm ───────────────────────────────────────────────
 
     private async void Confirm_Clicked(object sender, EventArgs e)
     {
@@ -107,9 +157,21 @@ public partial class BookingPage : ContentPage
         var days = (end - start).TotalDays;
         var hours = (end - start).TotalHours;
 
-        decimal total = days >= 1
+        decimal houseTotal = days >= 1
             ? (decimal)Math.Ceiling(days) * _house.Price24h
             : (decimal)Math.Ceiling(hours) * _house.PricePerHour;
+
+        var selectedAddons = _addons.Where(a => a.Count > 0).ToList();
+        decimal addonsTotal = selectedAddons.Sum(a => a.Price * a.Count);
+
+        // Сохраняем допы как JSON
+        var addonsJson = JsonSerializer.Serialize(
+            selectedAddons.Select(a => new { a.Id, a.Count, a.Price }));
+
+        // Текст допов для отображения
+        var addonsDisplay = selectedAddons.Any()
+            ? string.Join(", ", selectedAddons.Select(a => $"{a.DisplayName} ×{a.Count}"))
+            : "";
 
         var booking = new Booking
         {
@@ -118,7 +180,10 @@ public partial class BookingPage : ContentPage
             StartDateTime = start,
             EndDateTime = end,
             GuestCount = _guests,
-            TotalPrice = total,
+            TotalPrice = houseTotal + addonsTotal,
+            AddonsJson = addonsJson,
+            AddonsTotal = addonsTotal,
+            AddonsDisplay = addonsDisplay,
             Notes = NotesEditor.Text ?? "",
             Status = "Confirmed",
             CreatedAt = DateTime.Now
@@ -126,18 +191,60 @@ public partial class BookingPage : ContentPage
 
         await _db.InsertBookingAsync(booking);
 
+        var addonsSummary = addonsDisplay.Any()
+            ? $"\nLisateenused: {addonsDisplay}"
+            : "";
+
         await DisplayAlert(
             "✅ Broneering kinnitatud!",
             $"{_house.GetTitle(_session.Language)}\n" +
             $"{start:dd.MM.yyyy} – {end:dd.MM.yyyy}\n" +
-            $"Külalisi: {_guests}\n" +
-            $"Kokku: €{total:F0}",
+            $"Külalisi: {_guests}" +
+            addonsSummary +
+            $"\nKokku: €{houseTotal + addonsTotal:F0}",
             "OK");
 
-        // Возвращаемся на главную
         await Shell.Current.GoToAsync("//HomePage");
     }
 
     private void Back_Tapped(object sender, TappedEventArgs e)
         => Shell.Current.GoToAsync("..");
+}
+
+// ── Addon display model ───────────────────────────────────────
+public class AddonDisplay
+{
+    public string Id { get; }
+    public decimal Price { get; }
+    public string Icon { get; }
+    public int Count { get; set; } = 0;
+    public bool IsSelected { get; set; } = false;
+
+    private readonly string _nameEt, _nameEn, _nameRu, _nameFi;
+    private string _currentLang = "et";
+
+    public string DisplayName => _currentLang switch
+    {
+        "ru" => _nameRu,
+        "en" => _nameEn,
+        "fi" => _nameFi,
+        _ => _nameEt
+    };
+
+    public string DisplayPrice => Count > 1
+        ? $"€{Price} × {Count} = €{Price * Count}"
+        : $"€{Price}";
+
+    public string CountText => Count > 0 ? Count.ToString() : "0";
+
+    public AddonDisplay(string id, string et, string en, string fi,
+                        string ru, string icon, decimal price)
+    {
+        Id = id;
+        _nameEt = et; _nameEn = en; _nameFi = fi; _nameRu = ru;
+        Icon = icon;
+        Price = price;
+    }
+
+    public void SetLang(string lang) => _currentLang = lang;
 }
