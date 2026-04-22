@@ -6,12 +6,16 @@ public partial class ProfilePage : ContentPage
 {
     private readonly SessionService _session;
     private readonly DatabaseService _db;
+    private readonly HouseService _houseService;
 
-    public ProfilePage(SessionService session, DatabaseService db)
+    public ProfilePage(SessionService session,
+                       DatabaseService db,
+                       HouseService houseService)
     {
         InitializeComponent();
         _session = session;
         _db = db;
+        _houseService = houseService;
     }
 
     protected override async void OnAppearing()
@@ -46,6 +50,38 @@ public partial class ProfilePage : ContentPage
 
         UpdateLanguageUI(_session.Language);
         DarkModeSwitch.IsToggled = _session.IsDarkMode;
+
+        await LoadFavourites();
+    }
+
+    // ── Favourites ────────────────────────────────────────────
+
+    private async Task LoadFavourites()
+    {
+        if (!_session.IsLoggedIn) return;
+
+        var favourites = await _db.GetFavouritesByUserAsync(
+            _session.CurrentUser!.Id);
+
+        var allHouses = await _houseService.GetAllAsync();
+        var lang = _session.Language;
+
+        var favHouses = favourites
+            .Select(f => allHouses.FirstOrDefault(h => h.Id == f.HouseId))
+            .Where(h => h != null)
+            .Select(h => new FavDisplay(h!, lang))
+            .ToList();
+
+        FavouritesView.ItemsSource = favHouses;
+    }
+
+    private async void Favourite_SelectionChanged(
+        object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is not FavDisplay fav) return;
+        FavouritesView.SelectedItem = null;
+        await Shell.Current.GoToAsync(
+            $"{nameof(HouseDetailsPage)}?houseId={fav.HouseId}");
     }
 
     // ── Dark mode ─────────────────────────────────────────────
@@ -104,10 +140,12 @@ public partial class ProfilePage : ContentPage
     private async void MyBookings_Tapped(object sender, TappedEventArgs e)
         => await Shell.Current.GoToAsync("//BookingsPage");
 
-    private void Call_Tapped(object sender, TappedEventArgs e)
+    private async void Call_Tapped(object sender, TappedEventArgs e)
     {
         if (PhoneDialer.Default.IsSupported)
             PhoneDialer.Default.Open("+37255000075");
+        else
+            await DisplayAlert("Telefon", "+372 5500 075", "OK");
     }
 
     private async void Website_Tapped(object sender, TappedEventArgs e)
@@ -119,6 +157,11 @@ public partial class ProfilePage : ContentPage
     {
         try
         {
+            if (!Email.Default.IsComposeSupported)
+            {
+                await DisplayAlert("E-post", "sauna@saunamaailm.ee", "OK");
+                return;
+            }
             var message = new EmailMessage
             {
                 Subject = "Küsimus / Вопрос",
@@ -129,7 +172,7 @@ public partial class ProfilePage : ContentPage
         }
         catch (FeatureNotSupportedException)
         {
-            await DisplayAlert("Viga", "E-post ei ole toetatud", "OK");
+            await DisplayAlert("E-post", "sauna@saunamaailm.ee", "OK");
         }
     }
 
@@ -152,5 +195,22 @@ public partial class ProfilePage : ContentPage
         _session.Logout();
         LoggedInView.IsVisible = false;
         NotLoggedInView.IsVisible = true;
+    }
+}
+
+// ── Display model для избранных ───────────────────────────────
+public class FavDisplay
+{
+    public string HouseId { get; }
+    public string DisplayTitle { get; }
+    public string DisplayPrice { get; }
+    public string Image { get; }
+
+    public FavDisplay(SaunakulaApp.Models.House house, string lang)
+    {
+        HouseId = house.Id;
+        DisplayTitle = house.GetTitle(lang);
+        DisplayPrice = $"€{house.Price24h}";
+        Image = house.Image;
     }
 }

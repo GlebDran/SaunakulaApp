@@ -160,16 +160,23 @@ public partial class HouseDetailsPage : ContentPage
 
     // ── Contact ───────────────────────────────────────────────
 
-    private void Call_Tapped(object sender, TappedEventArgs e)
+    private async void Call_Tapped(object sender, TappedEventArgs e)
     {
         if (PhoneDialer.Default.IsSupported)
             PhoneDialer.Default.Open("+37255000075");
+        else
+            await DisplayAlert("Telefon", "+372 5500 075", "OK");
     }
 
     private async void Email_Tapped(object sender, TappedEventArgs e)
     {
         try
         {
+            if (!Email.Default.IsComposeSupported)
+            {
+                await DisplayAlert("E-post", "sauna@saunamaailm.ee", "OK");
+                return;
+            }
             var message = new EmailMessage
             {
                 Subject = $"Broneeringu päring – {_house?.GetTitle(_session.Language)}",
@@ -180,7 +187,7 @@ public partial class HouseDetailsPage : ContentPage
         }
         catch (FeatureNotSupportedException)
         {
-            await DisplayAlert("Viga", "E-post ei ole toetatud", "OK");
+            await DisplayAlert("E-post", "sauna@saunamaailm.ee", "OK");
         }
     }
 
