@@ -9,20 +9,43 @@
         <VerticalStackLayout Spacing="0">
 
             <!-- Header -->
-            <VerticalStackLayout Padding="20,52,20,16">
-                <Label Text="Mõnus saunapuhkus"
-                       Style="{StaticResource TitleLabel}"/>
-                <Label Text="Saue vald, vähem kui 10 km Tallinnast"
-                       Style="{StaticResource MutedLabel}"
-                       Margin="0,4,0,0"/>
-            </VerticalStackLayout>
+            <Grid Padding="20,52,20,16" ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Spacing="2">
+                    <Label x:Name="GreetingLabel"
+                           Text="Tere tulemast! 👋"
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"/>
+                    <Label Text="Mõnus saunapuhkus"
+                           FontSize="26" FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"/>
+                    <Label Text="Saue vald · vähem kui 10 km Tallinnast"
+                           FontSize="12"
+                           TextColor="{StaticResource TextSecondary}"/>
+                </VerticalStackLayout>
+                <Frame Grid.Column="1"
+                       WidthRequest="44" HeightRequest="44"
+                       CornerRadius="22"
+                       BackgroundColor="{StaticResource PrimaryExtraLight}"
+                       BorderColor="Transparent"
+                       Padding="0"
+                       VerticalOptions="Center"
+                       HasShadow="False">
+                    <Label x:Name="AvatarLabel"
+                           Text="👤"
+                           FontSize="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Avatar_Tapped"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Frame>
+            </Grid>
 
             <!-- PäevaSPA promo banner -->
-            <Frame Margin="20,0,20,16"
-                   CornerRadius="16"
-                   Padding="14,12"
-                   BorderColor="Transparent"
-                   HasShadow="False">
+            <Frame Margin="20,0,20,20"
+                   CornerRadius="16" Padding="14,12"
+                   BorderColor="Transparent" HasShadow="False">
                 <Frame.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="#5A7C5E" Offset="0"/>
@@ -38,160 +61,232 @@
                                    TextColor="White"/>
                         </HorizontalStackLayout>
                         <Label Text="E–N kl 10:00–17:00 · Jahimehe &amp; Vene maja"
-                               FontSize="11"
-                               TextColor="#CCFFFFFF"/>
+                               FontSize="11" TextColor="#CCFFFFFF"/>
                     </VerticalStackLayout>
-                    <Label Grid.Column="1"
-                           Text="57€/h"
+                    <Label Grid.Column="1" Text="57€/h"
                            FontSize="20" FontAttributes="Bold"
-                           TextColor="White"
-                           VerticalOptions="Center"/>
+                           TextColor="White" VerticalOptions="Center"/>
                 </Grid>
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Tapped="PromoBanner_Tapped"/>
                 </Frame.GestureRecognizers>
             </Frame>
 
-            <!-- Search Bar -->
-            <Frame Margin="20,0,20,24"
-                   CornerRadius="16"
-                   BackgroundColor="{StaticResource CardBackground}"
-                   BorderColor="{StaticResource Border}"
-                   Padding="16,0"
-                   HeightRequest="52"
-                   HasShadow="False">
-                <Grid ColumnDefinitions="24,*" ColumnSpacing="12"
-                      VerticalOptions="Center">
-                    <Image Source="search.png"
-                           WidthRequest="20" HeightRequest="20"
-                           VerticalOptions="Center"/>
-                    <Entry Grid.Column="1"
-                           x:Name="SearchEntry"
-                           Placeholder="Otsi puhkemaja..."
-                           BackgroundColor="Transparent"
-                           HeightRequest="52"
-                           TextChanged="SearchEntry_TextChanged"/>
-                </Grid>
-            </Frame>
-
-            <!-- Featured Section -->
-            <Label Text="Featured"
-                   FontSize="20" FontAttributes="Bold"
+            <!-- Categories -->
+            <Label Text="Vali tegevus"
+                   FontSize="16" FontAttributes="Bold"
                    TextColor="{StaticResource TextPrimary}"
                    Margin="20,0,20,12"/>
 
-            <CollectionView x:Name="FeaturedView"
-                            HeightRequest="340"
-                            Margin="20,0,0,0">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Horizontal"
-                                       ItemSpacing="16"/>
-                </CollectionView.ItemsLayout>
+            <ScrollView Orientation="Horizontal"
+                        HorizontalScrollBarVisibility="Never"
+                        Margin="20,0,0,20">
+                <HorizontalStackLayout Spacing="10">
+
+                    <Frame x:Name="CatAll" CornerRadius="20" Padding="14,8"
+                           BackgroundColor="{StaticResource Primary}"
+                           BorderColor="Transparent" HasShadow="False">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="🏠" FontSize="14"/>
+                            <Label Text="Kõik" FontSize="13" FontAttributes="Bold"
+                                   TextColor="White" VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="CatAll_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <Frame x:Name="CatSaun" CornerRadius="20" Padding="14,8"
+                           BackgroundColor="{StaticResource SecondaryBackground}"
+                           BorderColor="Transparent" HasShadow="False">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="🔥" FontSize="14"/>
+                            <Label Text="Saun" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="CatSaun_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <Frame x:Name="CatBassein" CornerRadius="20" Padding="14,8"
+                           BackgroundColor="{StaticResource SecondaryBackground}"
+                           BorderColor="Transparent" HasShadow="False">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="💧" FontSize="14"/>
+                            <Label Text="Bassein" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="CatBassein_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <Frame x:Name="CatKaraoke" CornerRadius="20" Padding="14,8"
+                           BackgroundColor="{StaticResource SecondaryBackground}"
+                           BorderColor="Transparent" HasShadow="False">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="🎤" FontSize="14"/>
+                            <Label Text="Karaoke" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="CatKaraoke_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <Frame x:Name="CatSuur" CornerRadius="20" Padding="14,8"
+                           BackgroundColor="{StaticResource SecondaryBackground}"
+                           BorderColor="Transparent" HasShadow="False">
+                        <HorizontalStackLayout Spacing="6">
+                            <Label Text="👥" FontSize="14"/>
+                            <Label Text="Suur grupp" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="CatSuur_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                </HorizontalStackLayout>
+            </ScrollView>
+
+            <!-- Featured house -->
+            <Label Text="Külaliste lemmik"
+                   FontSize="16" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="20,0,20,12"/>
+
+            <Frame Style="{StaticResource Card}"
+                   Margin="20,0,20,24" Padding="0">
+                <Grid RowDefinitions="220,Auto">
+
+                    <Image x:Name="FeaturedImage"
+                           Aspect="AspectFill" HeightRequest="220"/>
+
+                    <BoxView VerticalOptions="End" HeightRequest="80">
+                        <BoxView.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="Transparent" Offset="0"/>
+                                <GradientStop Color="#CC000000" Offset="1"/>
+                            </LinearGradientBrush>
+                        </BoxView.Background>
+                    </BoxView>
+
+                    <Frame HorizontalOptions="Start" VerticalOptions="Start"
+                           Margin="12,12,0,0" CornerRadius="12"
+                           BackgroundColor="#5A7C5E"
+                           BorderColor="Transparent"
+                           Padding="8,4" HasShadow="False">
+                        <Label Text="⭐ Külaliste lemmik"
+                               FontSize="11" FontAttributes="Bold"
+                               TextColor="White"/>
+                    </Frame>
+
+                    <VerticalStackLayout VerticalOptions="End"
+                                         HorizontalOptions="End"
+                                         Margin="0,0,12,12" Spacing="0">
+                        <Label x:Name="FeaturedPrice"
+                               FontSize="22" FontAttributes="Bold"
+                               TextColor="White" HorizontalOptions="End"/>
+                        <Label Text="/24h" FontSize="11"
+                               TextColor="#CCFFFFFF" HorizontalOptions="End"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Row="1" Padding="14,12" Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="3">
+                                <Label x:Name="FeaturedTitle"
+                                       FontSize="18" FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimary}"/>
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="📍" FontSize="12"/>
+                                    <Label Text="Saue vald, Harjumaa"
+                                           Style="{StaticResource MutedLabel}"
+                                           FontSize="12" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                            <HorizontalStackLayout Grid.Column="1" Spacing="4"
+                                                   VerticalOptions="Center">
+                                <Label Text="👥" FontSize="12"/>
+                                <Label x:Name="FeaturedGuests"
+                                       FontSize="13" FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <Button Text="Vaata lähemalt"
+                                    Style="{StaticResource SecondaryButton}"
+                                    HeightRequest="44"
+                                    Clicked="FeaturedDetails_Clicked"/>
+                            <Button Grid.Column="1" Text="Broneeri"
+                                    Style="{StaticResource PrimaryButton}"
+                                    HeightRequest="44"
+                                    Clicked="FeaturedBook_Clicked"/>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                </Grid>
+            </Frame>
+
+            <!-- All houses list -->
+            <Label Text="Kõik majad"
+                   FontSize="16" FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="20,0,20,12"/>
+
+            <CollectionView x:Name="HousesView"
+                            Margin="20,0,20,32"
+                            SelectionMode="None">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame Style="{StaticResource Card}"
-                               WidthRequest="280"
-                               Margin="0,4,0,8">
-                            <Grid RowDefinitions="200,Auto">
-
+                               Padding="0" Margin="0,0,0,14">
+                            <Grid ColumnDefinitions="120,*">
                                 <Image Source="{Binding Image}"
                                        Aspect="AspectFill"
-                                       HeightRequest="200"/>
-
-                                <VerticalStackLayout Grid.Row="1"
-                                                     Padding="14,12"
-                                                     Spacing="6">
+                                       WidthRequest="120"
+                                       HeightRequest="120"/>
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Padding="12,10"
+                                                     Spacing="5"
+                                                     VerticalOptions="Center">
                                     <Label Text="{Binding DisplayTitle}"
-                                           FontSize="17" FontAttributes="Bold"
-                                           TextColor="{StaticResource TextPrimary}"/>
-                                    <Grid ColumnDefinitions="16,*" ColumnSpacing="4">
-                                        <Label Text="📍" FontSize="12"
-                                               VerticalOptions="Center"/>
-                                        <Label Grid.Column="1"
-                                               Text="Saue vald, Harjumaa"
-                                               Style="{StaticResource MutedLabel}"
-                                               FontSize="12"
-                                               VerticalOptions="Center"/>
-                                    </Grid>
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <Grid ColumnDefinitions="16,Auto,Auto" ColumnSpacing="4">
-                                            <Label Text="⭐" FontSize="12"/>
-                                            <Label Grid.Column="1"
-                                                   Text="4.9"
-                                                   FontSize="13" FontAttributes="Bold"
-                                                   TextColor="{StaticResource TextPrimary}"
-                                                   VerticalOptions="Center"/>
-                                            <Label Grid.Column="2"
-                                                   Text="(48)"
-                                                   Style="{StaticResource MutedLabel}"
-                                                   FontSize="12"
-                                                   VerticalOptions="Center"/>
-                                        </Grid>
-                                        <VerticalStackLayout Grid.Column="1"
-                                                             HorizontalOptions="End">
-                                            <Label Text="{Binding DisplayPrice}"
-                                                   FontSize="18" FontAttributes="Bold"
-                                                   TextColor="{StaticResource Primary}"
-                                                   HorizontalOptions="End"/>
-                                            <Label Text="/24h"
-                                                   FontSize="11"
-                                                   TextColor="{StaticResource TextSecondary}"
-                                                   HorizontalOptions="End"/>
-                                        </VerticalStackLayout>
-                                    </Grid>
-                                </VerticalStackLayout>
-
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <!-- All Houses Section -->
-            <Label Text="Kõik majad"
-                   FontSize="20" FontAttributes="Bold"
-                   TextColor="{StaticResource TextPrimary}"
-                   Margin="20,24,20,12"/>
-
-            <CollectionView x:Name="AllHousesView"
-                            Margin="20,0,20,32"
-                            SelectionMode="Single"
-                            SelectionChanged="House_SelectionChanged">
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical"
-                                     Span="2"
-                                     HorizontalItemSpacing="12"
-                                     VerticalItemSpacing="12"/>
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Style="{StaticResource Card}" Padding="0">
-                            <Grid RowDefinitions="140,Auto">
-
-                                <Image Source="{Binding Image}"
-                                       Aspect="AspectFill"
-                                       HeightRequest="140"/>
-
-                                <VerticalStackLayout Grid.Row="1"
-                                                     Padding="10,8"
-                                                     Spacing="4">
-                                    <Label Text="{Binding DisplayTitle}"
-                                           FontSize="14" FontAttributes="Bold"
+                                           FontSize="15" FontAttributes="Bold"
                                            TextColor="{StaticResource TextPrimary}"
                                            LineBreakMode="TailTruncation"/>
-                                    <Grid ColumnDefinitions="12,*" ColumnSpacing="3">
-                                        <Label Text="⭐" FontSize="10"/>
-                                        <Label Grid.Column="1"
-                                               Text="4.9"
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="👥" FontSize="11"/>
+                                        <Label Text="{Binding GuestsText}"
+                                               Style="{StaticResource MutedLabel}"
+                                               FontSize="12" VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="⭐" FontSize="11"/>
+                                        <Label Text="4.9"
                                                FontSize="12" FontAttributes="Bold"
                                                TextColor="{StaticResource TextPrimary}"
                                                VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
+                                    <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                                        <Label Text="{Binding DisplayPrice}"
+                                               FontSize="16" FontAttributes="Bold"
+                                               TextColor="{StaticResource Primary}"
+                                               VerticalOptions="Center"/>
+                                        <Button Grid.Column="1" Text="Vaata"
+                                                Style="{StaticResource PrimaryButton}"
+                                                HeightRequest="34"
+                                                FontSize="12"
+                                                Padding="12,0"
+                                                CommandParameter="{Binding HouseId}"
+                                                Clicked="HouseDetails_Clicked"/>
                                     </Grid>
-                                    <Label Text="{Binding DisplayPrice}"
-                                           FontSize="14" FontAttributes="Bold"
-                                           TextColor="{StaticResource Primary}"/>
                                 </VerticalStackLayout>
-
                             </Grid>
                         </Frame>
                     </DataTemplate>
