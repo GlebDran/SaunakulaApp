@@ -153,6 +153,11 @@ public partial class ProfilePage : ContentPage
             "https://saunakula.ee",
             BrowserLaunchMode.SystemPreferred);
 
+    private async void Instagram_Tapped(object sender, TappedEventArgs e)
+        => await Browser.Default.OpenAsync(
+            "https://www.instagram.com/sauna.kula/",
+            BrowserLaunchMode.SystemPreferred);
+
     private async void Email_Tapped(object sender, TappedEventArgs e)
     {
         try
