@@ -125,8 +125,12 @@ public partial class HouseDetailsPage : ContentPage
 
     private void OpenMaps_Clicked(object sender, EventArgs e)
     {
-        Launcher.Default.OpenAsync(
-            new Uri("https://www.google.com/maps/place/Saunak%C3%BCla/@59.3635824,24.5131448,17z"));
+        // geo: URI открывает карту с маркером на месте
+        var geoUri = DeviceInfo.Platform == DevicePlatform.iOS
+            ? "maps://?ll=59.3635824,24.5131448&q=Saunaküla"
+            : "geo:59.3635824,24.5131448?q=59.3635824,24.5131448(Saunaküla)";
+
+        Launcher.Default.OpenAsync(new Uri(geoUri));
     }
 
     // ── Favourites ────────────────────────────────────────────

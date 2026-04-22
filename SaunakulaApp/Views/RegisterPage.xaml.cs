@@ -73,7 +73,7 @@ public partial class RegisterPage : ContentPage
         var created = await _db.GetUserByEmailAsync(email);
         _session.Login(created!);
 
-        await DisplayAlert("✅", "Konto loodud! Tere tulemast!", "OK");
+       // await DisplayAlert("✅", "Konto loodud! Tere tulemast!", "OK");
         await Shell.Current.GoToAsync("//HomePage");
     }
 
