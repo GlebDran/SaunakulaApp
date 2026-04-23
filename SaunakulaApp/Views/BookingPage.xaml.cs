@@ -165,6 +165,39 @@ public partial class BookingPage : ContentPage
 
         var start = CheckInPicker.Date;
         var end = CheckOutPicker.Date;
+
+        // ── Проверка занятости дома ───────────────────────────
+        var isBooked = await _db.IsHouseBookedAsync(_house.Id, start, end);
+        if (isBooked)
+        {
+            string title;
+            string message;
+
+            if (_session.Language == "ru")
+            {
+                title = "⚠️ Дом недоступен";
+                message = "Дом уже забронирован на выбранные даты.\nВыберите другие даты.";
+            }
+            else if (_session.Language == "en")
+            {
+                title = "⚠️ House unavailable";
+                message = "This house is already booked for the selected dates.\nPlease choose different dates.";
+            }
+            else if (_session.Language == "fi")
+            {
+                title = "⚠️ Talo ei ole saatavilla";
+                message = "Talo on jo varattu valituille päiville.\nValitse eri päivät.";
+            }
+            else
+            {
+                title = "⚠️ Maja on hõivatud";
+                message = "Valitud kuupäevadel on maja juba broneeritud.\nPalun valige teised kuupäevad.";
+            }
+
+            await DisplayAlert(title, message, _session.L("Common_OK"));
+            return;
+        }
+
         var days = (end - start).TotalDays;
         var hours = (end - start).TotalHours;
 
