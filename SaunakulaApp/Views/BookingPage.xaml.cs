@@ -10,33 +10,35 @@ public partial class BookingPage : ContentPage
     private readonly HouseService _houseService;
     private readonly DatabaseService _db;
     private readonly SessionService _session;
+    private readonly NotificationService _notifications;
 
     private House? _house;
     private int _guests = 2;
     private decimal _houseTotal = 0;
 
-    // Допы с количеством
     private readonly List<AddonDisplay> _addons = new()
     {
-        new AddonDisplay("viht_kase",   "Kaaseviht",   "Birch whisk",  "Koivuvihta",   "Берёзовый веник",  "🌿", 6),
-        new AddonDisplay("viht_tamm",   "Tammeviht",   "Oak whisk",    "Tammivihta",   "Дубовый веник",    "🍂", 7),
-        new AddonDisplay("lina",        "Saunalina",   "Sauna towel",  "Saunapyyhe",   "Полотенце",        "🛁", 5),
-        new AddonDisplay("aroom",       "Saunaaroom",  "Sauna aroma",  "Saunaaromi",   "Аромат для сауны", "🌸", 7),
-        new AddonDisplay("susi",        "Grillsüsi",   "Charcoal",     "Grillihiili",  "Уголь для гриля",  "🔥", 7),
-        new AddonDisplay("sytik",       "Süütevedelik","Lighter fluid","Sytytysaine",  "Жидкость для розжига", "💧", 6),
-        new AddonDisplay("tunn",        "Kümblustünn", "Hot tub",      "Kylpytynnyri", "Купель",           "🛁", 140),
+        new AddonDisplay("viht_kase",  "Kaaseviht",    "Birch whisk",   "Koivuvihta",  "Берёзовый веник",      "🌿", 6),
+        new AddonDisplay("viht_tamm",  "Tammeviht",    "Oak whisk",     "Tammivihta",  "Дубовый веник",        "🍂", 7),
+        new AddonDisplay("lina",       "Saunalina",    "Sauna towel",   "Saunapyyhe",  "Полотенце",            "🛁", 5),
+        new AddonDisplay("aroom",      "Saunaaroom",   "Sauna aroma",   "Saunaaromi",  "Аромат для сауны",     "🌸", 7),
+        new AddonDisplay("susi",       "Grillsüsi",    "Charcoal",      "Grillihiili", "Уголь для гриля",      "🔥", 7),
+        new AddonDisplay("sytik",      "Süütevedelik", "Lighter fluid", "Sytytysaine", "Жидкость для розжига", "💧", 6),
+        new AddonDisplay("tunn",       "Kümblustünn",  "Hot tub",       "Kylpytynnyri","Купель",               "🛁", 140),
     };
 
     public string HouseId { get; set; } = "";
 
     public BookingPage(HouseService houseService,
                        DatabaseService db,
-                       SessionService session)
+                       SessionService session,
+                       NotificationService notifications)
     {
         InitializeComponent();
         _houseService = houseService;
         _db = db;
         _session = session;
+        _notifications = notifications;
     }
 
     protected override async void OnAppearing()
@@ -55,7 +57,6 @@ public partial class BookingPage : ContentPage
         CheckInPicker.Date = DateTime.Today;
         CheckOutPicker.Date = DateTime.Today.AddDays(1);
 
-        // Обновляем язык допов
         foreach (var a in _addons) a.SetLang(lang);
         AddonsView.ItemsSource = null;
         AddonsView.ItemsSource = _addons;
@@ -96,10 +97,8 @@ public partial class BookingPage : ContentPage
         addon.Count++;
         addon.IsSelected = addon.Count > 0;
 
-        // Обновить UI
         AddonsView.ItemsSource = null;
         AddonsView.ItemsSource = _addons;
-
         UpdatePrice();
     }
 
@@ -114,7 +113,6 @@ public partial class BookingPage : ContentPage
 
         AddonsView.ItemsSource = null;
         AddonsView.ItemsSource = _addons;
-
         UpdatePrice();
     }
 
@@ -164,11 +162,9 @@ public partial class BookingPage : ContentPage
         var selectedAddons = _addons.Where(a => a.Count > 0).ToList();
         decimal addonsTotal = selectedAddons.Sum(a => a.Price * a.Count);
 
-        // Сохраняем допы как JSON
         var addonsJson = JsonSerializer.Serialize(
             selectedAddons.Select(a => new { a.Id, a.Count, a.Price }));
 
-        // Текст допов для отображения
         var addonsDisplay = selectedAddons.Any()
             ? string.Join(", ", selectedAddons.Select(a => $"{a.DisplayName} ×{a.Count}"))
             : "";
@@ -191,13 +187,25 @@ public partial class BookingPage : ContentPage
 
         await _db.InsertBookingAsync(booking);
 
-        var addonsSummary = addonsDisplay.Any()
+        var lang = _session.Language;
+        var houseTitle = _house.GetTitle(lang);
+
+        // Запрашиваем разрешение и отправляем уведомления
+        await _notifications.RequestPermissionAsync();
+
+        // Пункт 6 — уведомление о подтверждении
+        await _notifications.SendBookingConfirmedAsync(booking, houseTitle, lang);
+
+        // Пункт 5 — напоминание за 24 часа до заезда
+        await _notifications.ScheduleArrivalReminderAsync(booking, houseTitle, lang);
+
+        var addonsSummary = !string.IsNullOrEmpty(addonsDisplay)
             ? $"\nLisateenused: {addonsDisplay}"
             : "";
 
         await DisplayAlert(
             "✅ Broneering kinnitatud!",
-            $"{_house.GetTitle(_session.Language)}\n" +
+            $"{houseTitle}\n" +
             $"{start:dd.MM.yyyy} – {end:dd.MM.yyyy}\n" +
             $"Külalisi: {_guests}" +
             addonsSummary +
