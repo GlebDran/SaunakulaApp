@@ -10,15 +10,6 @@ public partial class HomePage : ContentPage
     private List<HomeHouseDisplay> _allHouses = new();
     private House? _featuredHouse;
 
-    // Категории — amenities ключевые слова для фильтрации
-    private static readonly Dictionary<string, string> CategoryKeywords = new()
-    {
-        { "saun", "saun" },
-        { "bassein", "bassein" },
-        { "karaoke", "karaoke" },
-        { "suur", "" } // фильтр по maxGuests >= 30
-    };
-
     public HomePage(HouseService houseService, SessionService session)
     {
         InitializeComponent();
@@ -29,8 +20,38 @@ public partial class HomePage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        ApplyLocalization();
         await LoadData();
         UpdateGreeting();
+    }
+
+    private void ApplyLocalization()
+    {
+        HomeSubtitleLabel.Text = _session.L("Home_Subtitle");
+        HomeTitleLabel.Text = _session.L("Home_Title");
+        ActivitiesLabel.Text = _session.L("Home_Activities");
+        FeaturedLabel.Text = _session.L("Home_Featured");
+        AllHousesLabel.Text = _session.L("Home_AllHouses");
+        FeaturedBadgeLabel.Text = _session.L("Home_FeaturedBadge");
+        FeaturedDetailsButton.Text = _session.L("Pricing_Details");
+        FeaturedBookButton.Text = _session.L("Details_Book");
+        SetCategoryLabel(CatAll, _session.L("Home_AllHouses"));
+        SetCategoryLabel(CatSaun, "Saun");
+        SetCategoryLabel(CatBassein, "Bassein");
+        SetCategoryLabel(CatKaraoke, "Karaoke");
+        SetCategoryLabel(CatSuur, "Suur grupp");
+    }
+
+    private static void SetCategoryLabel(Frame cat, string text)
+    {
+        if (cat.Content is HorizontalStackLayout hsl)
+        {
+            foreach (var child in hsl.Children)
+            {
+                if (child is Label lbl && lbl.FontSize <= 13)
+                    lbl.Text = text;
+            }
+        }
     }
 
     private async Task LoadData()
@@ -39,10 +60,9 @@ public partial class HomePage : ContentPage
         var lang = _session.Language;
 
         _allHouses = houses
-            .Select(h => new HomeHouseDisplay(h, lang))
+            .Select(h => new HomeHouseDisplay(h, lang, _session.L("Home_ViewMore")))
             .ToList();
 
-        // Featured — Soome maja как "Külaliste lemmik"
         _featuredHouse = houses.FirstOrDefault(h => h.Id == "soome")
                          ?? houses.FirstOrDefault();
 
@@ -51,10 +71,9 @@ public partial class HomePage : ContentPage
             FeaturedImage.Source = _featuredHouse.Image;
             FeaturedTitle.Text = _featuredHouse.GetTitle(lang);
             FeaturedPrice.Text = $"€{_featuredHouse.Price24h}";
-            FeaturedGuests.Text = $"kuni {_featuredHouse.MaxGuests}";
+            FeaturedGuests.Text = _session.L("Home_GuestsUpTo", _featuredHouse.MaxGuests);
         }
 
-        // Список — все кроме featured
         HousesView.ItemsSource = _allHouses
             .Where(h => h.HouseId != "soome")
             .ToList();
@@ -65,12 +84,13 @@ public partial class HomePage : ContentPage
         if (_session.IsLoggedIn)
         {
             var name = _session.CurrentUser!.FullName.Split(' ')[0];
-            GreetingLabel.Text = $"Tere, {name}! 👋";
+            var greeting = _session.L("Home_Greeting").Replace("👋", "").Trim();
+            GreetingLabel.Text = $"{greeting}, {name}! 👋";
             AvatarLabel.Text = name[..1].ToUpper();
         }
         else
         {
-            GreetingLabel.Text = "Tere tulemast! 👋";
+            GreetingLabel.Text = _session.L("Home_Greeting");
             AvatarLabel.Text = "👤";
         }
     }
@@ -144,7 +164,6 @@ public partial class HomePage : ContentPage
     private void CatSuur_Tapped(object sender, TappedEventArgs e)
     {
         SetActiveCategory(CatSuur);
-        // Большая группа — дома с maxGuests >= 30
         HousesView.ItemsSource = _allHouses
             .Where(h => h.MaxGuests >= 30 && h.HouseId != "soome")
             .ToList();
@@ -152,7 +171,6 @@ public partial class HomePage : ContentPage
 
     private void FilterHouses(string keyword)
     {
-        var lang = _session.Language;
         HousesView.ItemsSource = _allHouses
             .Where(h => h.HouseId != "soome" &&
                         h.AmenitiesText.ToLower().Contains(keyword))
@@ -183,7 +201,6 @@ public partial class HomePage : ContentPage
     }
 }
 
-// ── Display model ─────────────────────────────────────────────
 public class HomeHouseDisplay
 {
     public string HouseId { get; }
@@ -192,9 +209,10 @@ public class HomeHouseDisplay
     public string Image { get; }
     public string GuestsText { get; }
     public string AmenitiesText { get; }
+    public string ViewButtonText { get; }
     public int MaxGuests { get; }
 
-    public HomeHouseDisplay(House house, string lang)
+    public HomeHouseDisplay(House house, string lang, string viewText = "Vaata")
     {
         HouseId = house.Id;
         DisplayTitle = house.GetTitle(lang);
@@ -203,5 +221,6 @@ public class HomeHouseDisplay
         MaxGuests = house.MaxGuests;
         GuestsText = $"kuni {house.MaxGuests} külalist";
         AmenitiesText = string.Join(" ", house.GetAmenities(lang));
+        ViewButtonText = viewText;
     }
 }

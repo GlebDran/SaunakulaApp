@@ -23,6 +23,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<HouseService>();
         builder.Services.AddSingleton<SessionService>();
         builder.Services.AddSingleton<NotificationService>();
+        builder.Services.AddSingleton<LocalizationService>();
+
 
         // Views
         builder.Services.AddTransient<SplashPage>();

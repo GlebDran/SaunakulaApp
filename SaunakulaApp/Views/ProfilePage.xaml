@@ -10,8 +10,11 @@
 
             <!-- Header -->
             <VerticalStackLayout Padding="20,52,20,16">
-                <Label Text="Profiil" Style="{StaticResource TitleLabel}"/>
-                <Label Text="Halda oma kontot"
+                <Label x:Name="ProfileTitleLabel"
+                       Text="Profiil"
+                       Style="{StaticResource TitleLabel}"/>
+                <Label x:Name="ProfileSubtitleLabel"
+                       Text="Halda oma kontot"
                        Style="{StaticResource MutedLabel}"
                        Margin="0,4,0,0"/>
             </VerticalStackLayout>
@@ -23,17 +26,22 @@
                                  Spacing="16"
                                  HorizontalOptions="Center">
                 <Label Text="👤" FontSize="64" HorizontalOptions="Center"/>
-                <Label Text="Logi sisse, et näha profiili"
+                <Label x:Name="LoginPromptLabel"
+                       Text="Logi sisse, et näha profiili"
                        FontSize="16" FontAttributes="Bold"
                        TextColor="{StaticResource TextPrimary}"
                        HorizontalOptions="Center"
                        HorizontalTextAlignment="Center"/>
-                <Button Text="Logi sisse"
+                <Button x:Name="LoginButton"
+                        Text="Logi sisse"
                         Style="{StaticResource PrimaryButton}"
                         Clicked="Login_Clicked"/>
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
-                    <Label Text="Pole kontot?" Style="{StaticResource MutedLabel}"/>
-                    <Label Text="Registreeru"
+                    <Label x:Name="NoAccountLabel"
+                           Text="Pole kontot?"
+                           Style="{StaticResource MutedLabel}"/>
+                    <Label x:Name="RegisterLabel"
+                           Text="Registreeru"
                            FontSize="14" FontAttributes="Bold"
                            TextColor="{StaticResource Primary}">
                         <Label.GestureRecognizers>
@@ -89,7 +97,8 @@
                                 <Label x:Name="BookingsCountLabel"
                                        FontSize="24" FontAttributes="Bold"
                                        TextColor="White" HorizontalOptions="Center"/>
-                                <Label Text="Broneeringut" FontSize="11"
+                                <Label x:Name="BookingsLabel"
+                                       Text="Broneeringut" FontSize="11"
                                        TextColor="#CCFFFFFF" HorizontalOptions="Center"/>
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1"
@@ -97,7 +106,8 @@
                                 <Label x:Name="MemberSinceLabel"
                                        FontSize="13" FontAttributes="Bold"
                                        TextColor="White" HorizontalOptions="Center"/>
-                                <Label Text="Liige alates" FontSize="11"
+                                <Label x:Name="MemberSinceTextLabel"
+                                       Text="Liige alates" FontSize="11"
                                        TextColor="#CCFFFFFF" HorizontalOptions="Center"/>
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="2"
@@ -111,7 +121,8 @@
                 </Frame>
 
                 <!-- Language selector -->
-                <Label Text="Keel / Язык / Language / Kieli"
+                <Label x:Name="LanguageSectionLabel"
+                       Text="Keel / Язык / Language / Kieli"
                        FontSize="16" FontAttributes="Bold"
                        TextColor="{StaticResource TextPrimary}"
                        Margin="20,0,20,12"/>
@@ -171,7 +182,8 @@
                 </Grid>
 
                 <!-- Dark mode -->
-                <Label Text="Välimus"
+                <Label x:Name="AppearanceSectionLabel"
+                       Text="Välimus"
                        FontSize="16" FontAttributes="Bold"
                        TextColor="{StaticResource TextPrimary}"
                        Margin="20,0,20,12"/>
@@ -187,7 +199,9 @@
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center"/>
                         </Frame>
-                        <Label Grid.Column="1" Text="Tume režiim"
+                        <Label x:Name="DarkModeLabel"
+                               Grid.Column="1"
+                               Text="Tume režiim"
                                FontSize="15"
                                TextColor="{StaticResource TextPrimary}"
                                VerticalOptions="Center"/>
@@ -201,7 +215,8 @@
                 </Frame>
 
                 <!-- Konto menu -->
-                <Label Text="Konto"
+                <Label x:Name="KontoSectionLabel"
+                       Text="Konto"
                        FontSize="16" FontAttributes="Bold"
                        TextColor="{StaticResource TextPrimary}"
                        Margin="20,0,20,12"/>
@@ -220,7 +235,9 @@
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center"/>
                             </Frame>
-                            <Label Grid.Column="1" Text="Minu broneerimine"
+                            <Label x:Name="MyBookingsLabel"
+                                   Grid.Column="1"
+                                   Text="Minu broneerimine"
                                    FontSize="15"
                                    TextColor="{StaticResource TextPrimary}"
                                    VerticalOptions="Center"/>
@@ -356,7 +373,7 @@
                 </Frame>
 
                 <!-- Favourites -->
-                <Label x:Name="FavouritesTitle"
+                <Label x:Name="FavouritesSectionLabel"
                        Text="Lemmikud"
                        FontSize="16" FontAttributes="Bold"
                        TextColor="{StaticResource TextPrimary}"
@@ -405,7 +422,8 @@
                 </CollectionView>
 
                 <!-- Logout -->
-                <Button Text="Logi välja"
+                <Button x:Name="LogoutButton"
+                        Text="Logi välja"
                         Margin="20,0,20,40"
                         CornerRadius="16"
                         HeightRequest="52"

@@ -1,101 +1,107 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
-		Microsoft ResX Schema
+	<data name="Home_Title" xml:space="preserve"><value>Nauti saunalomasta</value></data>
+	<data name="Home_Subtitle" xml:space="preserve"><value>Saue · alle 10 km Tallinnasta</value></data>
+	<data name="Home_Greeting" xml:space="preserve"><value>Tervetuloa! 👋</value></data>
+	<data name="Home_Activities" xml:space="preserve"><value>Valitse aktiviteetti</value></data>
+	<data name="Home_Featured" xml:space="preserve"><value>Vieraiden suosikki</value></data>
+	<data name="Home_AllHouses" xml:space="preserve"><value>Kaikki talot</value></data>
+	<data name="Home_GuestsUpTo" xml:space="preserve"><value>enintään {0} vierasta</value></data>
+	<data name="Home_ViewMore" xml:space="preserve"><value>Katso</value></data>
+	<data name="Home_FeaturedBadge" xml:space="preserve"><value>⭐ Vieraiden suosikki</value></data>
 
-		Version 1.3
+	<data name="Details_Description" xml:space="preserve"><value>Kuvaus</value></data>
+	<data name="Details_Amenities" xml:space="preserve"><value>Mukavuudet</value></data>
+	<data name="Details_Pricing" xml:space="preserve"><value>Hinnat</value></data>
+	<data name="Details_HourlyPrice" xml:space="preserve"><value>Tuntihinta (4–7h)</value></data>
+	<data name="Details_DayPrice" xml:space="preserve"><value>24h hinta</value></data>
+	<data name="Details_MinHours" xml:space="preserve"><value>Vähimmäisvarausaika 4h</value></data>
+	<data name="Details_Location" xml:space="preserve"><value>Sijainti</value></data>
+	<data name="Details_OpenMaps" xml:space="preserve"><value>🗺  Avaa Google Maps</value></data>
+	<data name="Details_Contact" xml:space="preserve"><value>Yhteystiedot</value></data>
+	<data name="Details_Call" xml:space="preserve"><value>Soita</value></data>
+	<data name="Details_Email" xml:space="preserve"><value>Lähetä sähköposti</value></data>
+	<data name="Details_Book" xml:space="preserve"><value>Varaa nyt</value></data>
+	<data name="Details_Price24h" xml:space="preserve"><value>Hinta 24h</value></data>
+	<data name="Details_Guests" xml:space="preserve"><value>Enintään</value></data>
+	<data name="Details_Size" xml:space="preserve"><value>Koko</value></data>
+	<data name="Details_MinTime" xml:space="preserve"><value>Min. aika</value></data>
+	<data name="Details_Location_Address" xml:space="preserve"><value>Saue, Harjumaa</value></data>
 
-		The primary goals of this format is to allow a simple XML format 
-		that is mostly human readable. The generation and parsing of the 
-		various data types are done through the TypeConverter classes 
-		associated with the data types.
+	<data name="Booking_Title" xml:space="preserve"><value>Varaa</value></data>
+	<data name="Booking_Trip" xml:space="preserve"><value>Matkasi</value></data>
+	<data name="Booking_CheckIn" xml:space="preserve"><value>Saapuminen</value></data>
+	<data name="Booking_CheckOut" xml:space="preserve"><value>Lähtö</value></data>
+	<data name="Booking_Guests" xml:space="preserve"><value>Vieraiden määrä</value></data>
+	<data name="Booking_Notes" xml:space="preserve"><value>Lisätiedot (valinnainen)</value></data>
+	<data name="Booking_NotesPH" xml:space="preserve"><value>Ruokailu, erityistoiveet...</value></data>
+	<data name="Booking_Addons" xml:space="preserve"><value>Lisäpalvelut</value></data>
+	<data name="Booking_PriceDetails" xml:space="preserve"><value>Hintatiedot</value></data>
+	<data name="Booking_Total" xml:space="preserve"><value>Yhteensä</value></data>
+	<data name="Booking_Confirm" xml:space="preserve"><value>Vahvista varaus</value></data>
+	<data name="Booking_Cancel" xml:space="preserve"><value>Peruutuskäytäntö</value></data>
+	<data name="Booking_Addons_label" xml:space="preserve"><value>Lisäpalvelut</value></data>
 
-		Example:
+	<data name="Bookings_Title" xml:space="preserve"><value>Varaukseni</value></data>
+	<data name="Bookings_Subtitle" xml:space="preserve"><value>Hallitse varauksiasi</value></data>
+	<data name="Bookings_Upcoming" xml:space="preserve"><value>Tulevat</value></data>
+	<data name="Bookings_Past" xml:space="preserve"><value>Menneet</value></data>
+	<data name="Bookings_Empty" xml:space="preserve"><value>Ei varauksia</value></data>
+	<data name="Bookings_EmptySub" xml:space="preserve"><value>Aloita seuraavan loman suunnittelu!</value></data>
+	<data name="Bookings_Browse" xml:space="preserve"><value>Selaa taloja</value></data>
+	<data name="Bookings_Cancel" xml:space="preserve"><value>Peruuta</value></data>
+	<data name="Bookings_Login" xml:space="preserve"><value>Kirjaudu nähdäksesi varaukset</value></data>
+	<data name="Bookings_Confirmed" xml:space="preserve"><value>Vahvistettu</value></data>
+	<data name="Bookings_Cancelled" xml:space="preserve"><value>Peruutettu</value></data>
+	<data name="Bookings_Finished" xml:space="preserve"><value>Päättynyt</value></data>
 
-		... ado.net/XML headers & schema ...
-		<resheader name="resmimetype">text/microsoft-resx</resheader>
-		<resheader name="version">1.3</resheader>
-		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-		<data name="Name1">this is my long string</data>
-		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-			[base64 mime encoded serialized .NET Framework object]
-		</data>
-		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-			[base64 mime encoded string representing a byte array form of the .NET Framework object]
-		</data>
+	<data name="Profile_Title" xml:space="preserve"><value>Profiili</value></data>
+	<data name="Profile_Subtitle" xml:space="preserve"><value>Hallitse tiliäsi</value></data>
+	<data name="Profile_Bookings" xml:space="preserve"><value>Varausta</value></data>
+	<data name="Profile_Since" xml:space="preserve"><value>Jäsen alkaen</value></data>
+	<data name="Profile_Language" xml:space="preserve"><value>Keel / Язык / Language / Kieli</value></data>
+	<data name="Profile_Appearance" xml:space="preserve"><value>Ulkoasu</value></data>
+	<data name="Profile_DarkMode" xml:space="preserve"><value>Tumma tila</value></data>
+	<data name="Profile_Account" xml:space="preserve"><value>Tili</value></data>
+	<data name="Profile_MyBookings" xml:space="preserve"><value>Varaukseni</value></data>
+	<data name="Profile_Contact" xml:space="preserve"><value>Yhteystiedot</value></data>
+	<data name="Profile_Website" xml:space="preserve"><value>Verkkosivusto</value></data>
+	<data name="Profile_Favourites" xml:space="preserve"><value>Suosikit</value></data>
+	<data name="Profile_NoFavourites" xml:space="preserve"><value>Ei vielä suosikkeja</value></data>
+	<data name="Profile_Logout" xml:space="preserve"><value>Kirjaudu ulos</value></data>
+	<data name="Profile_Login" xml:space="preserve"><value>Kirjaudu sisään</value></data>
+	<data name="Profile_NoAccount" xml:space="preserve"><value>Ei tiliä?</value></data>
+	<data name="Profile_Register" xml:space="preserve"><value>Rekisteröidy</value></data>
+	<data name="Profile_LoginPrompt" xml:space="preserve"><value>Kirjaudu nähdäksesi profiilin</value></data>
 
-		There are any number of "resheader" rows that contain simple 
-		name/value pairs.
+	<data name="Login_Title" xml:space="preserve"><value>Tervetuloa takaisin!</value></data>
+	<data name="Login_Email" xml:space="preserve"><value>Sähköposti</value></data>
+	<data name="Login_Password" xml:space="preserve"><value>Salasana</value></data>
+	<data name="Login_Button" xml:space="preserve"><value>Kirjaudu sisään</value></data>
+	<data name="Login_NoAccount" xml:space="preserve"><value>Ei tiliä?</value></data>
+	<data name="Login_Register" xml:space="preserve"><value>Rekisteröidy</value></data>
 
-		Each data row contains a name, and value. The row also contains a 
-		type or mimetype. Type corresponds to a .NET class that support 
-		text/value conversion through the TypeConverter architecture. 
-		Classes that don't support this are serialized and stored with the 
-		mimetype set.
+	<data name="Register_Title" xml:space="preserve"><value>Luo tili</value></data>
+	<data name="Register_Name" xml:space="preserve"><value>Koko nimi</value></data>
+	<data name="Register_Email" xml:space="preserve"><value>Sähköposti</value></data>
+	<data name="Register_Phone" xml:space="preserve"><value>Puhelinnumero</value></data>
+	<data name="Register_Password" xml:space="preserve"><value>Salasana</value></data>
+	<data name="Register_Confirm" xml:space="preserve"><value>Vahvista salasana</value></data>
+	<data name="Register_Button" xml:space="preserve"><value>Rekisteröidy</value></data>
+	<data name="Register_HasAccount" xml:space="preserve"><value>Onko sinulla jo tili?</value></data>
+	<data name="Register_Login" xml:space="preserve"><value>Kirjaudu sisään</value></data>
 
-		The mimetype is used for serialized objects, and tells the 
-		ResXResourceReader how to depersist the object. This is currently not 
-		extensible. For a given mimetype the value must be set accordingly:
+	<data name="Pricing_Title" xml:space="preserve"><value>Hinnat</value></data>
+	<data name="Pricing_Subtitle" xml:space="preserve"><value>Tutustu hintoihin ja varaa talo</value></data>
+	<data name="Pricing_Extras" xml:space="preserve"><value>Lisäpalvelut</value></data>
+	<data name="Pricing_Details" xml:space="preserve"><value>Lisätietoja</value></data>
+	<data name="Pricing_Book" xml:space="preserve"><value>Varaa nyt</value></data>
 
-		Note - application/x-microsoft.net.object.binary.base64 is the format 
-		that the ResXResourceWriter will generate, however the reader can 
-		read any of the formats listed below.
-
-		mimetype: application/x-microsoft.net.object.binary.base64
-		value   : The object must be serialized with 
-			: System.Serialization.Formatters.Binary.BinaryFormatter
-			: and then encoded with base64 encoding.
-
-		mimetype: application/x-microsoft.net.object.soap.base64
-		value   : The object must be serialized with 
-			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-			: and then encoded with base64 encoding.
-
-		mimetype: application/x-microsoft.net.object.bytearray.base64
-		value   : The object must be serialized into a byte array 
-			: using a System.ComponentModel.TypeConverter
-			: and then encoded with base64 encoding.
-	-->
-	
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>1.3</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
+	<data name="Common_Back" xml:space="preserve"><value>Takaisin</value></data>
+	<data name="Common_OK" xml:space="preserve"><value>OK</value></data>
+	<data name="Common_Cancel" xml:space="preserve"><value>Peruuta</value></data>
+	<data name="Common_Yes" xml:space="preserve"><value>Kyllä</value></data>
+	<data name="Common_No" xml:space="preserve"><value>Ei</value></data>
+	<data name="Common_Error" xml:space="preserve"><value>Virhe</value></data>
+	<data name="Common_Loading" xml:space="preserve"><value>Ladataan...</value></data>
 </root>

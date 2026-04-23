@@ -1,101 +1,107 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
-		Microsoft ResX Schema
+	<data name="Home_Title" xml:space="preserve"><value>Приятный отдых в сауне</value></data>
+	<data name="Home_Subtitle" xml:space="preserve"><value>Saue vald · менее 10 км от Таллинна</value></data>
+	<data name="Home_Greeting" xml:space="preserve"><value>Добро пожаловать! 👋</value></data>
+	<data name="Home_Activities" xml:space="preserve"><value>Выбери активность</value></data>
+	<data name="Home_Featured" xml:space="preserve"><value>Любимец гостей</value></data>
+	<data name="Home_AllHouses" xml:space="preserve"><value>Все дома</value></data>
+	<data name="Home_GuestsUpTo" xml:space="preserve"><value>до {0} гостей</value></data>
+	<data name="Home_ViewMore" xml:space="preserve"><value>Смотреть</value></data>
+	<data name="Home_FeaturedBadge" xml:space="preserve"><value>⭐ Любимец гостей</value></data>
 
-		Version 1.3
+	<data name="Details_Description" xml:space="preserve"><value>Описание</value></data>
+	<data name="Details_Amenities" xml:space="preserve"><value>Удобства</value></data>
+	<data name="Details_Pricing" xml:space="preserve"><value>Цены</value></data>
+	<data name="Details_HourlyPrice" xml:space="preserve"><value>Цена за час (4–7ч)</value></data>
+	<data name="Details_DayPrice" xml:space="preserve"><value>Цена за 24ч</value></data>
+	<data name="Details_MinHours" xml:space="preserve"><value>Минимальное время бронирования 4ч</value></data>
+	<data name="Details_Location" xml:space="preserve"><value>Местоположение</value></data>
+	<data name="Details_OpenMaps" xml:space="preserve"><value>🗺  Открыть Google Maps</value></data>
+	<data name="Details_Contact" xml:space="preserve"><value>Контакты</value></data>
+	<data name="Details_Call" xml:space="preserve"><value>Позвонить</value></data>
+	<data name="Details_Email" xml:space="preserve"><value>Написать письмо</value></data>
+	<data name="Details_Book" xml:space="preserve"><value>Забронировать</value></data>
+	<data name="Details_Price24h" xml:space="preserve"><value>Цена 24ч</value></data>
+	<data name="Details_Guests" xml:space="preserve"><value>До</value></data>
+	<data name="Details_Size" xml:space="preserve"><value>Площадь</value></data>
+	<data name="Details_MinTime" xml:space="preserve"><value>Мин. время</value></data>
+	<data name="Details_Location_Address" xml:space="preserve"><value>Saue vald, Харьюмаа</value></data>
 
-		The primary goals of this format is to allow a simple XML format 
-		that is mostly human readable. The generation and parsing of the 
-		various data types are done through the TypeConverter classes 
-		associated with the data types.
+	<data name="Booking_Title" xml:space="preserve"><value>Бронирование</value></data>
+	<data name="Booking_Trip" xml:space="preserve"><value>Ваша поездка</value></data>
+	<data name="Booking_CheckIn" xml:space="preserve"><value>Заезд</value></data>
+	<data name="Booking_CheckOut" xml:space="preserve"><value>Выезд</value></data>
+	<data name="Booking_Guests" xml:space="preserve"><value>Количество гостей</value></data>
+	<data name="Booking_Notes" xml:space="preserve"><value>Доп. информация (необязательно)</value></data>
+	<data name="Booking_NotesPH" xml:space="preserve"><value>Питание, особые пожелания...</value></data>
+	<data name="Booking_Addons" xml:space="preserve"><value>Доп. услуги</value></data>
+	<data name="Booking_PriceDetails" xml:space="preserve"><value>Детали стоимости</value></data>
+	<data name="Booking_Total" xml:space="preserve"><value>Итого</value></data>
+	<data name="Booking_Confirm" xml:space="preserve"><value>Подтвердить бронирование</value></data>
+	<data name="Booking_Cancel" xml:space="preserve"><value>Политика отмены</value></data>
+	<data name="Booking_Addons_label" xml:space="preserve"><value>Доп. услуги</value></data>
 
-		Example:
+	<data name="Bookings_Title" xml:space="preserve"><value>Мои бронирования</value></data>
+	<data name="Bookings_Subtitle" xml:space="preserve"><value>Управляй своими бронированиями</value></data>
+	<data name="Bookings_Upcoming" xml:space="preserve"><value>Предстоящие</value></data>
+	<data name="Bookings_Past" xml:space="preserve"><value>Прошлые</value></data>
+	<data name="Bookings_Empty" xml:space="preserve"><value>Бронирований нет</value></data>
+	<data name="Bookings_EmptySub" xml:space="preserve"><value>Начни планировать следующий отдых!</value></data>
+	<data name="Bookings_Browse" xml:space="preserve"><value>Смотреть дома</value></data>
+	<data name="Bookings_Cancel" xml:space="preserve"><value>Отменить</value></data>
+	<data name="Bookings_Login" xml:space="preserve"><value>Войдите, чтобы видеть бронирования</value></data>
+	<data name="Bookings_Confirmed" xml:space="preserve"><value>Подтверждено</value></data>
+	<data name="Bookings_Cancelled" xml:space="preserve"><value>Отменено</value></data>
+	<data name="Bookings_Finished" xml:space="preserve"><value>Завершено</value></data>
 
-		... ado.net/XML headers & schema ...
-		<resheader name="resmimetype">text/microsoft-resx</resheader>
-		<resheader name="version">1.3</resheader>
-		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-		<data name="Name1">this is my long string</data>
-		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-			[base64 mime encoded serialized .NET Framework object]
-		</data>
-		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-			[base64 mime encoded string representing a byte array form of the .NET Framework object]
-		</data>
+	<data name="Profile_Title" xml:space="preserve"><value>Профиль</value></data>
+	<data name="Profile_Subtitle" xml:space="preserve"><value>Управляй своим аккаунтом</value></data>
+	<data name="Profile_Bookings" xml:space="preserve"><value>Бронирований</value></data>
+	<data name="Profile_Since" xml:space="preserve"><value>Участник с</value></data>
+	<data name="Profile_Language" xml:space="preserve"><value>Keel / Язык / Language / Kieli</value></data>
+	<data name="Profile_Appearance" xml:space="preserve"><value>Внешний вид</value></data>
+	<data name="Profile_DarkMode" xml:space="preserve"><value>Тёмная тема</value></data>
+	<data name="Profile_Account" xml:space="preserve"><value>Аккаунт</value></data>
+	<data name="Profile_MyBookings" xml:space="preserve"><value>Мои бронирования</value></data>
+	<data name="Profile_Contact" xml:space="preserve"><value>Контакт</value></data>
+	<data name="Profile_Website" xml:space="preserve"><value>Сайт</value></data>
+	<data name="Profile_Favourites" xml:space="preserve"><value>Избранное</value></data>
+	<data name="Profile_NoFavourites" xml:space="preserve"><value>Избранных нет</value></data>
+	<data name="Profile_Logout" xml:space="preserve"><value>Выйти</value></data>
+	<data name="Profile_Login" xml:space="preserve"><value>Войти</value></data>
+	<data name="Profile_NoAccount" xml:space="preserve"><value>Нет аккаунта?</value></data>
+	<data name="Profile_Register" xml:space="preserve"><value>Зарегистрироваться</value></data>
+	<data name="Profile_LoginPrompt" xml:space="preserve"><value>Войдите, чтобы видеть профиль</value></data>
 
-		There are any number of "resheader" rows that contain simple 
-		name/value pairs.
+	<data name="Login_Title" xml:space="preserve"><value>С возвращением!</value></data>
+	<data name="Login_Email" xml:space="preserve"><value>E-mail</value></data>
+	<data name="Login_Password" xml:space="preserve"><value>Пароль</value></data>
+	<data name="Login_Button" xml:space="preserve"><value>Войти</value></data>
+	<data name="Login_NoAccount" xml:space="preserve"><value>Нет аккаунта?</value></data>
+	<data name="Login_Register" xml:space="preserve"><value>Зарегистрироваться</value></data>
 
-		Each data row contains a name, and value. The row also contains a 
-		type or mimetype. Type corresponds to a .NET class that support 
-		text/value conversion through the TypeConverter architecture. 
-		Classes that don't support this are serialized and stored with the 
-		mimetype set.
+	<data name="Register_Title" xml:space="preserve"><value>Создать аккаунт</value></data>
+	<data name="Register_Name" xml:space="preserve"><value>Полное имя</value></data>
+	<data name="Register_Email" xml:space="preserve"><value>E-mail</value></data>
+	<data name="Register_Phone" xml:space="preserve"><value>Номер телефона</value></data>
+	<data name="Register_Password" xml:space="preserve"><value>Пароль</value></data>
+	<data name="Register_Confirm" xml:space="preserve"><value>Повторите пароль</value></data>
+	<data name="Register_Button" xml:space="preserve"><value>Зарегистрироваться</value></data>
+	<data name="Register_HasAccount" xml:space="preserve"><value>Уже есть аккаунт?</value></data>
+	<data name="Register_Login" xml:space="preserve"><value>Войти</value></data>
 
-		The mimetype is used for serialized objects, and tells the 
-		ResXResourceReader how to depersist the object. This is currently not 
-		extensible. For a given mimetype the value must be set accordingly:
+	<data name="Pricing_Title" xml:space="preserve"><value>Цены</value></data>
+	<data name="Pricing_Subtitle" xml:space="preserve"><value>Ознакомься с ценами и забронируй</value></data>
+	<data name="Pricing_Extras" xml:space="preserve"><value>Доп. услуги</value></data>
+	<data name="Pricing_Details" xml:space="preserve"><value>Подробнее</value></data>
+	<data name="Pricing_Book" xml:space="preserve"><value>Забронировать</value></data>
 
-		Note - application/x-microsoft.net.object.binary.base64 is the format 
-		that the ResXResourceWriter will generate, however the reader can 
-		read any of the formats listed below.
-
-		mimetype: application/x-microsoft.net.object.binary.base64
-		value   : The object must be serialized with 
-			: System.Serialization.Formatters.Binary.BinaryFormatter
-			: and then encoded with base64 encoding.
-
-		mimetype: application/x-microsoft.net.object.soap.base64
-		value   : The object must be serialized with 
-			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-			: and then encoded with base64 encoding.
-
-		mimetype: application/x-microsoft.net.object.bytearray.base64
-		value   : The object must be serialized into a byte array 
-			: using a System.ComponentModel.TypeConverter
-			: and then encoded with base64 encoding.
-	-->
-	
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>1.3</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
+	<data name="Common_Back" xml:space="preserve"><value>Назад</value></data>
+	<data name="Common_OK" xml:space="preserve"><value>OK</value></data>
+	<data name="Common_Cancel" xml:space="preserve"><value>Отмена</value></data>
+	<data name="Common_Yes" xml:space="preserve"><value>Да</value></data>
+	<data name="Common_No" xml:space="preserve"><value>Нет</value></data>
+	<data name="Common_Error" xml:space="preserve"><value>Ошибка</value></data>
+	<data name="Common_Loading" xml:space="preserve"><value>Загрузка...</value></data>
 </root>

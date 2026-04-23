@@ -22,6 +22,8 @@ public partial class ProfilePage : ContentPage
     {
         base.OnAppearing();
 
+        ApplyLocalization();
+
         if (!_session.IsLoggedIn)
         {
             LoggedInView.IsVisible = false;
@@ -52,6 +54,25 @@ public partial class ProfilePage : ContentPage
         DarkModeSwitch.IsToggled = _session.IsDarkMode;
 
         await LoadFavourites();
+    }
+
+    private void ApplyLocalization()
+    {
+        ProfileTitleLabel.Text = _session.L("Profile_Title");
+        ProfileSubtitleLabel.Text = _session.L("Profile_Subtitle");
+        LoginPromptLabel.Text = _session.L("Profile_LoginPrompt");
+        LoginButton.Text = _session.L("Profile_Login");
+        NoAccountLabel.Text = _session.L("Profile_NoAccount");
+        RegisterLabel.Text = _session.L("Profile_Register");
+        BookingsLabel.Text = _session.L("Profile_Bookings");
+        MemberSinceTextLabel.Text = _session.L("Profile_Since");
+        LanguageSectionLabel.Text = _session.L("Profile_Language");
+        AppearanceSectionLabel.Text = _session.L("Profile_Appearance");
+        DarkModeLabel.Text = _session.L("Profile_DarkMode");
+        KontoSectionLabel.Text = _session.L("Profile_Account");
+        MyBookingsLabel.Text = _session.L("Profile_MyBookings");
+        FavouritesSectionLabel.Text = _session.L("Profile_Favourites");
+        LogoutButton.Text = _session.L("Profile_Logout");
     }
 
     // ── Favourites ────────────────────────────────────────────
@@ -132,6 +153,7 @@ public partial class ProfilePage : ContentPage
     {
         _session.SetLanguage(lang);
         UpdateLanguageUI(lang);
+        ApplyLocalization();
         DisplayAlert("✅", "Keel muudetud / Язык изменён", "OK");
     }
 
@@ -189,21 +211,31 @@ public partial class ProfilePage : ContentPage
 
     private async void Logout_Clicked(object sender, EventArgs e)
     {
+        string logoutQuestion;
+        if (_session.Language == "ru")
+            logoutQuestion = "Вы уверены, что хотите выйти?";
+        else if (_session.Language == "en")
+            logoutQuestion = "Are you sure you want to log out?";
+        else if (_session.Language == "fi")
+            logoutQuestion = "Haluatko varmasti kirjautua ulos?";
+        else
+            logoutQuestion = "Kas oled kindel, et soovid välja logida?";
+
         bool confirm = await DisplayAlert(
-            "Logi välja",
-            "Kas oled kindel, et soovid välja logida?",
-            "Jah",
-            "Ei");
+            _session.L("Profile_Logout"),
+            logoutQuestion,
+            _session.L("Common_Yes"),
+            _session.L("Common_No"));
 
         if (!confirm) return;
 
         _session.Logout();
         LoggedInView.IsVisible = false;
         NotLoggedInView.IsVisible = true;
+        ApplyLocalization();
     }
 }
 
-// ── Display model для избранных ───────────────────────────────
 public class FavDisplay
 {
     public string HouseId { get; }

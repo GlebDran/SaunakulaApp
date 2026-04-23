@@ -50,6 +50,8 @@ public partial class BookingPage : ContentPage
         if (_house is null) return;
 
         var lang = _session.Language;
+        ApplyLocalization();
+
         HouseTitleLabel.Text = _house.GetTitle(lang);
         HouseImage.Source = _house.Image;
         HousePriceLabel.Text = $"€{_house.PricePerHour}/h  |  €{_house.Price24h}/24h";
@@ -62,6 +64,22 @@ public partial class BookingPage : ContentPage
         AddonsView.ItemsSource = _addons;
 
         UpdatePrice();
+    }
+
+    private void ApplyLocalization()
+    {
+        BookingTitleLabel.Text = _session.L("Booking_Title");
+        TripLabel.Text = _session.L("Booking_Trip");
+        CheckInLabel.Text = _session.L("Booking_CheckIn");
+        CheckOutLabel.Text = _session.L("Booking_CheckOut");
+        GuestsHeaderLabel.Text = _session.L("Booking_Guests");
+        NotesLabel.Text = _session.L("Booking_Notes");
+        NotesEditor.Placeholder = _session.L("Booking_NotesPH");
+        AddonsHeaderLabel.Text = _session.L("Booking_Addons");
+        PriceDetailsLabel.Text = _session.L("Booking_PriceDetails");
+        TotalHeaderLabel.Text = _session.L("Booking_Total");
+        ConfirmButton.Text = _session.L("Booking_Confirm");
+        CancellationLabel.Text = _session.L("Booking_Cancel");
     }
 
     // ── Dates & Guests ────────────────────────────────────────
@@ -77,13 +95,13 @@ public partial class BookingPage : ContentPage
     {
         if (_house is null) return;
         if (_guests < _house.MaxGuests) _guests++;
-        GuestsLabel.Text = $"{_guests} külalist";
+        GuestsLabel.Text = $"{_guests} {_session.L("Booking_Guests").ToLower()}";
     }
 
     private void DecreaseGuests_Tapped(object sender, TappedEventArgs e)
     {
         if (_guests > 1) _guests--;
-        GuestsLabel.Text = $"{_guests} külalist";
+        GuestsLabel.Text = $"{_guests} {_session.L("Booking_Guests").ToLower()}";
     }
 
     // ── Addons ────────────────────────────────────────────────
@@ -93,10 +111,8 @@ public partial class BookingPage : ContentPage
         if (e.Parameter is not string id) return;
         var addon = _addons.FirstOrDefault(a => a.Id == id);
         if (addon is null) return;
-
         addon.Count++;
         addon.IsSelected = addon.Count > 0;
-
         AddonsView.ItemsSource = null;
         AddonsView.ItemsSource = _addons;
         UpdatePrice();
@@ -107,10 +123,8 @@ public partial class BookingPage : ContentPage
         if (e.Parameter is not string id) return;
         var addon = _addons.FirstOrDefault(a => a.Id == id);
         if (addon is null) return;
-
         if (addon.Count > 0) addon.Count--;
         addon.IsSelected = addon.Count > 0;
-
         AddonsView.ItemsSource = null;
         AddonsView.ItemsSource = _addons;
         UpdatePrice();
@@ -140,7 +154,6 @@ public partial class BookingPage : ContentPage
         SubtotalLabel.Text = $"€{_houseTotal:F0}";
         AddonsLabel.Text = addonsTotal > 0 ? $"€{addonsTotal:F0}" : "€0";
         TotalLabel.Text = $"€{(_houseTotal + addonsTotal):F0}";
-
         ConfirmButton.IsEnabled = _houseTotal > 0;
     }
 
@@ -190,27 +203,21 @@ public partial class BookingPage : ContentPage
         var lang = _session.Language;
         var houseTitle = _house.GetTitle(lang);
 
-        // Запрашиваем разрешение и отправляем уведомления
         await _notifications.RequestPermissionAsync();
-
-        // Пункт 6 — уведомление о подтверждении
         await _notifications.SendBookingConfirmedAsync(booking, houseTitle, lang);
-
-        // Пункт 5 — напоминание за 24 часа до заезда
         await _notifications.ScheduleArrivalReminderAsync(booking, houseTitle, lang);
 
         var addonsSummary = !string.IsNullOrEmpty(addonsDisplay)
-            ? $"\nLisateenused: {addonsDisplay}"
+            ? $"\n{_session.L("Booking_Addons_label")}: {addonsDisplay}"
             : "";
 
         await DisplayAlert(
-            "✅ Broneering kinnitatud!",
-            $"{houseTitle}\n" +
-            $"{start:dd.MM.yyyy} – {end:dd.MM.yyyy}\n" +
-            $"Külalisi: {_guests}" +
+            $"✅ {_session.L("Booking_Confirm")}",
+            $"{houseTitle}\n{start:dd.MM.yyyy} – {end:dd.MM.yyyy}\n" +
+            $"{_session.L("Booking_Guests")}: {_guests}" +
             addonsSummary +
-            $"\nKokku: €{houseTotal + addonsTotal:F0}",
-            "OK");
+            $"\n{_session.L("Booking_Total")}: €{houseTotal + addonsTotal:F0}",
+            _session.L("Common_OK"));
 
         await Shell.Current.GoToAsync("//HomePage");
     }
@@ -219,7 +226,6 @@ public partial class BookingPage : ContentPage
         => Shell.Current.GoToAsync("..");
 }
 
-// ── Addon display model ───────────────────────────────────────
 public class AddonDisplay
 {
     public string Id { get; }
