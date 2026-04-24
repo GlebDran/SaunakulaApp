@@ -34,9 +34,11 @@ public partial class HouseDetailsPage : ContentPage
 
         var lang = _session.Language;
 
+        ApplyLocalization();
+
         TitleLabel.Text = _house.GetTitle(lang);
         DescLabel.Text = _house.GetDescription(lang);
-        GuestsLabel.Text = $"{_house.MaxGuests} külast.";
+        GuestsLabel.Text = $"{_house.MaxGuests} {_session.L("Details_Guests").ToLower()}.";
         SizeLabel.Text = $"{_house.SizeM2} m²";
         MinHoursLabel.Text = $"{_house.MinHours}h";
         HourlyPriceLabel.Text = $"€{_house.PricePerHour}/h";
@@ -61,6 +63,27 @@ public partial class HouseDetailsPage : ContentPage
             PhotoGallery.Scrolled += OnGalleryScrolled;
             _scrollHandlerAttached = true;
         }
+    }
+
+    private void ApplyLocalization()
+    {
+        GuestsUntilLabel.Text = _session.L("Details_Guests");
+        SizeHeaderLabel.Text = _session.L("Details_Size");
+        MinTimeLabel.Text = _session.L("Details_MinTime");
+        DescriptionHeaderLabel.Text = _session.L("Details_Description");
+        AmenitiesHeaderLabel.Text = _session.L("Details_Amenities");
+        PricingHeaderLabel.Text = _session.L("Details_Pricing");
+        HourlyPriceHeaderLabel.Text = _session.L("Details_HourlyPrice");
+        DayPriceHeaderLabel.Text = _session.L("Details_DayPrice");
+        MinHoursNoteLabel.Text = _session.L("Details_MinHours");
+        LocationHeaderLabel.Text = _session.L("Details_Location");
+        OpenMapsButton.Text = _session.L("Details_OpenMaps");
+        ContactHeaderLabel.Text = _session.L("Details_Contact");
+        CallLabel.Text = _session.L("Details_Call");
+        EmailLabel.Text = _session.L("Details_Email");
+        BottomPriceHeaderLabel.Text = _session.L("Details_Price24h");
+        BookButton.Text = _session.L("Details_Book");
+        LocationAddressLabel.Text = _session.L("Details_Location_Address");
     }
 
     // ── Gallery ───────────────────────────────────────────────
