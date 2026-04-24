@@ -27,6 +27,50 @@ public class DatabaseService
     public Task<User?> GetUserByIdAsync(int id)
         => _db.Table<User>().Where(u => u.Id == id).FirstOrDefaultAsync();
 
+    public Task<int> UpdateUserAsync(User u) => _db.UpdateAsync(u);
+
+    // ─── VIP ──────────────────────────────────────────────────
+
+    /// <summary>
+    /// Считает подтверждённые бронирования за последние 12 месяцев.
+    /// Если >= 10 — присваивает VIP. Если год прошёл — сбрасывает.
+    /// Возвращает (count за год, isVipActive).
+    /// </summary>
+    public async Task<(int Count, bool IsVip)> CheckAndUpdateVipAsync(int userId)
+    {
+        var oneYearAgo = DateTime.Now.AddYears(-1);
+
+        var bookings = await _db.Table<Booking>()
+            .Where(b => b.UserId == userId &&
+                        b.Status == "Confirmed" &&
+                        b.CreatedAt >= oneYearAgo)
+            .ToListAsync();
+
+        var count = bookings.Count;
+        var user = await GetUserByIdAsync(userId);
+        if (user is null) return (count, false);
+
+        // Сбрасываем если год прошёл
+        if (user.IsVip && user.VipGrantedAt.HasValue &&
+            user.VipGrantedAt.Value.AddYears(1) <= DateTime.Now)
+        {
+            user.IsVip = false;
+            user.VipGrantedAt = null;
+            await UpdateUserAsync(user);
+        }
+
+        // Даём VIP если достиг 10
+        if (count >= 10 && !user.IsVip)
+        {
+            user.IsVip = true;
+            user.VipGrantedAt = DateTime.Now;
+            await UpdateUserAsync(user);
+        }
+
+        user = await GetUserByIdAsync(userId);
+        return (count, user?.IsVipActive ?? false);
+    }
+
     // ─── BOOKINGS ─────────────────────────────────────────────
 
     public Task<int> InsertBookingAsync(Booking b) => _db.InsertAsync(b);
@@ -37,10 +81,6 @@ public class DatabaseService
     public Task<int> CancelBookingAsync(int id)
         => _db.ExecuteAsync("UPDATE Booking SET Status='Cancelled' WHERE Id=?", id);
 
-    /// <summary>
-    /// Проверяет пересечение дат для конкретного дома.
-    /// Возвращает true если дом занят в указанный период.
-    /// </summary>
     public async Task<bool> IsHouseBookedAsync(string houseId,
                                                DateTime start,
                                                DateTime end,
@@ -52,30 +92,19 @@ public class DatabaseService
 
         foreach (var b in bookings)
         {
-            // Пропускаем текущее бронирование (для редактирования)
             if (excludeBookingId.HasValue && b.Id == excludeBookingId.Value)
                 continue;
-
-            // Пересечение: новый start < существующий end И новый end > существующий start
-            bool overlaps = start < b.EndDateTime && end > b.StartDateTime;
-            if (overlaps) return true;
+            if (start < b.EndDateTime && end > b.StartDateTime) return true;
         }
-
         return false;
     }
 
-    /// <summary>
-    /// Возвращает список занятых периодов для дома (для отображения).
-    /// </summary>
     public async Task<List<(DateTime Start, DateTime End)>> GetBookedPeriodsAsync(string houseId)
     {
         var bookings = await _db.Table<Booking>()
             .Where(b => b.HouseId == houseId && b.Status == "Confirmed")
             .ToListAsync();
-
-        return bookings
-            .Select(b => (b.StartDateTime, b.EndDateTime))
-            .ToList();
+        return bookings.Select(b => (b.StartDateTime, b.EndDateTime)).ToList();
     }
 
     // ─── FAVOURITES ───────────────────────────────────────────
@@ -96,7 +125,6 @@ public class DatabaseService
         var existing = await _db.Table<Favourite>()
             .Where(f => f.UserId == userId && f.HouseId == houseId)
             .FirstOrDefaultAsync();
-
         if (existing != null)
             await _db.DeleteAsync(existing);
         else

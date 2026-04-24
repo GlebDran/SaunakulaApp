@@ -18,11 +18,9 @@
 
             <!-- Not logged in -->
             <VerticalStackLayout x:Name="NotLoggedInView" IsVisible="False"
-                                 Padding="28,40" Spacing="16"
-                                 HorizontalOptions="Center">
+                                 Padding="28,40" Spacing="16" HorizontalOptions="Center">
                 <Label Text="🏡" FontSize="64" HorizontalOptions="Center"/>
-                <Label x:Name="LoginPromptLabel"
-                       Text="Logi sisse, et näha profiili"
+                <Label x:Name="LoginPromptLabel" Text="Logi sisse, et näha profiili"
                        FontSize="16" FontAttributes="Bold"
                        TextColor="{StaticResource TextPrimary}"
                        HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
@@ -45,7 +43,7 @@
             <VerticalStackLayout x:Name="LoggedInView" IsVisible="False" Spacing="0">
 
                 <!-- Profile Card -->
-                <Frame Margin="20,0,20,24" CornerRadius="20" Padding="20"
+                <Frame Margin="20,0,20,16" CornerRadius="20" Padding="20"
                        BorderColor="Transparent" HasShadow="False">
                     <Frame.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -55,42 +53,32 @@
                     </Frame.Background>
                     <VerticalStackLayout Spacing="16">
 
-                        <!-- Avatar + Info — фикс: убрали Grid, используем HorizontalStackLayout -->
+                        <!-- Avatar + Info -->
                         <HorizontalStackLayout Spacing="16">
-                            <Frame WidthRequest="60" HeightRequest="60"
-                                   CornerRadius="30"
-                                   BackgroundColor="#33FFFFFF"
-                                   BorderColor="Transparent"
-                                   Padding="0"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Start">
+                            <Frame WidthRequest="60" HeightRequest="60" CornerRadius="30"
+                                   BackgroundColor="#33FFFFFF" BorderColor="Transparent"
+                                   Padding="0" VerticalOptions="Center">
                                 <Label x:Name="AvatarLabel"
-                                       FontSize="22" FontAttributes="Bold"
-                                       TextColor="White"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"/>
+                                       FontSize="22" FontAttributes="Bold" TextColor="White"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
-                            <VerticalStackLayout VerticalOptions="Center"
-                                                 Spacing="3"
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="3"
                                                  HorizontalOptions="FillAndExpand">
                                 <Label x:Name="NameLabel"
-                                       FontSize="18" FontAttributes="Bold"
-                                       TextColor="White"
-                                       LineBreakMode="TailTruncation"
-                                       MaxLines="1"/>
+                                       FontSize="18" FontAttributes="Bold" TextColor="White"
+                                       LineBreakMode="TailTruncation" MaxLines="1"/>
                                 <Label x:Name="EmailLabel"
                                        FontSize="12" TextColor="#CCFFFFFF"
-                                       LineBreakMode="TailTruncation"
-                                       MaxLines="1"/>
+                                       LineBreakMode="TailTruncation" MaxLines="1"/>
                                 <Label x:Name="PhoneLabel"
                                        FontSize="12" TextColor="#CCFFFFFF"
-                                       LineBreakMode="TailTruncation"
-                                       MaxLines="1"/>
+                                       LineBreakMode="TailTruncation" MaxLines="1"/>
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
 
                         <BoxView HeightRequest="1" BackgroundColor="#33FFFFFF"/>
 
+                        <!-- Stats -->
                         <Grid ColumnDefinitions="*,*,*">
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
                                 <Label x:Name="BookingsCountLabel"
@@ -111,11 +99,47 @@
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="2"
                                                  HorizontalOptions="Center" Spacing="2">
-                                <Label Text="⭐" FontSize="20" HorizontalOptions="Center"/>
-                                <Label Text="VIP" FontSize="11"
-                                       TextColor="#CCFFFFFF" HorizontalOptions="Center"/>
+                                <Label x:Name="VipBadgeLabel" Text="⭐"
+                                       FontSize="20" HorizontalOptions="Center"/>
+                                <Label x:Name="VipStatusLabel" Text="VIP"
+                                       FontSize="11" TextColor="#CCFFFFFF"
+                                       HorizontalOptions="Center"/>
                             </VerticalStackLayout>
                         </Grid>
+
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- VIP Progress Card -->
+                <Frame x:Name="VipProgressCard"
+                       Margin="20,0,20,20" CornerRadius="16" Padding="16"
+                       BorderColor="Transparent" HasShadow="False"
+                       BackgroundColor="#2D3B2F">
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label x:Name="VipProgressTitleLabel"
+                                   Text="VIP staatus"
+                                   FontSize="14" FontAttributes="Bold"
+                                   TextColor="White"/>
+                            <Label x:Name="VipProgressCountLabel"
+                                   Grid.Column="1"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#FFD700"/>
+                        </Grid>
+
+                        <!-- Progress bar -->
+                        <Grid HeightRequest="8">
+                            <BoxView BackgroundColor="#33FFFFFF"
+                                     CornerRadius="4" HeightRequest="8"/>
+                            <BoxView x:Name="VipProgressBar"
+                                     BackgroundColor="#FFD700"
+                                     CornerRadius="4" HeightRequest="8"
+                                     HorizontalOptions="Start"
+                                     WidthRequest="0"/>
+                        </Grid>
+
+                        <Label x:Name="VipProgressSubLabel"
+                               FontSize="12" TextColor="#CCFFFFFF"/>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -185,7 +209,6 @@
                 <Frame Style="{StaticResource Card}" Margin="20,0,20,24" Padding="0">
                     <VerticalStackLayout Spacing="0">
 
-                        <!-- My Bookings -->
                         <Grid ColumnDefinitions="44,*,24" Padding="16,14" ColumnSpacing="8">
                             <Frame WidthRequest="36" HeightRequest="36" CornerRadius="18"
                                    BackgroundColor="{StaticResource PrimaryExtraLight}"
@@ -195,11 +218,9 @@
                             </Frame>
                             <Label x:Name="MyBookingsLabel" Grid.Column="1"
                                    Text="Minu broneerimine" FontSize="15"
-                                   TextColor="{StaticResource TextPrimary}"
-                                   VerticalOptions="Center"/>
+                                   TextColor="{StaticResource TextPrimary}" VerticalOptions="Center"/>
                             <Label Grid.Column="2" Text="›" FontSize="20"
-                                   TextColor="{StaticResource TextSecondary}"
-                                   VerticalOptions="Center"/>
+                                   TextColor="{StaticResource TextSecondary}" VerticalOptions="Center"/>
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="MyBookings_Tapped"/>
                             </Grid.GestureRecognizers>
@@ -207,7 +228,6 @@
 
                         <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
 
-                        <!-- Call -->
                         <Grid ColumnDefinitions="44,*,24" Padding="16,14" ColumnSpacing="8">
                             <Frame WidthRequest="36" HeightRequest="36" CornerRadius="18"
                                    BackgroundColor="{StaticResource PrimaryExtraLight}"
@@ -230,7 +250,6 @@
 
                         <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
 
-                        <!-- Email -->
                         <Grid ColumnDefinitions="44,*,24" Padding="16,14" ColumnSpacing="8">
                             <Frame WidthRequest="36" HeightRequest="36" CornerRadius="18"
                                    BackgroundColor="{StaticResource PrimaryExtraLight}"
@@ -253,7 +272,6 @@
 
                         <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
 
-                        <!-- Website -->
                         <Grid ColumnDefinitions="44,*,24" Padding="16,14" ColumnSpacing="8">
                             <Frame WidthRequest="36" HeightRequest="36" CornerRadius="18"
                                    BackgroundColor="{StaticResource PrimaryExtraLight}"
@@ -276,7 +294,6 @@
 
                         <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
 
-                        <!-- Instagram -->
                         <Grid ColumnDefinitions="44,*,24" Padding="16,14" ColumnSpacing="8">
                             <Frame WidthRequest="36" HeightRequest="36" CornerRadius="18"
                                    BackgroundColor="{StaticResource PrimaryExtraLight}"

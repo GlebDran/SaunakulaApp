@@ -15,6 +15,7 @@ public partial class BookingPage : ContentPage
     private House? _house;
     private int _guests = 2;
     private decimal _houseTotal = 0;
+    private bool _isVip = false;
 
     private readonly List<AddonDisplay> _addons = new()
     {
@@ -26,6 +27,9 @@ public partial class BookingPage : ContentPage
         new AddonDisplay("sytik",      "Süütevedelik", "Lighter fluid", "Sytytysaine", "Жидкость для розжига", "💧", 6),
         new AddonDisplay("tunn",       "Kümblustünn",  "Hot tub",       "Kylpytynnyri","Купель",               "🛁", 140),
     };
+
+    // ID веников которые бесплатны для VIP
+    private static readonly HashSet<string> WhiskIds = new() { "viht_kase", "viht_tamm" };
 
     public string HouseId { get; set; } = "";
 
@@ -49,6 +53,20 @@ public partial class BookingPage : ContentPage
         _house = await _houseService.GetByIdAsync(HouseId);
         if (_house is null) return;
 
+        // Проверяем VIP статус
+        if (_session.IsLoggedIn)
+        {
+            var (_, isVip) = await _db.CheckAndUpdateVipAsync(_session.CurrentUser!.Id);
+            _isVip = isVip;
+        }
+
+        // Применяем VIP скидку к венику
+        foreach (var addon in _addons)
+        {
+            if (WhiskIds.Contains(addon.Id))
+                addon.SetVip(_isVip);
+        }
+
         var lang = _session.Language;
         ApplyLocalization();
 
@@ -62,6 +80,23 @@ public partial class BookingPage : ContentPage
         foreach (var a in _addons) a.SetLang(lang);
         AddonsView.ItemsSource = null;
         AddonsView.ItemsSource = _addons;
+
+        // VIP баннер
+        if (_isVip)
+        {
+            VipBannerView.IsVisible = true;
+            VipBannerLabel.Text = lang switch
+            {
+                "ru" => "👑 VIP: Веники бесплатно!",
+                "en" => "👑 VIP: Free whisks included!",
+                "fi" => "👑 VIP: Vihdat ilmaiseksi!",
+                _ => "👑 VIP: Viht tasuta!"
+            };
+        }
+        else
+        {
+            VipBannerView.IsVisible = false;
+        }
 
         UpdatePrice();
     }
@@ -145,7 +180,7 @@ public partial class BookingPage : ContentPage
             ? (decimal)Math.Ceiling(days) * _house.Price24h
             : (decimal)Math.Ceiling(hours) * _house.PricePerHour;
 
-        var addonsTotal = _addons.Sum(a => a.Price * a.Count);
+        var addonsTotal = _addons.Sum(a => a.EffectivePrice * a.Count);
 
         NightsLabel.Text = days >= 1
             ? $"€{_house.Price24h} × {(int)Math.Ceiling(days)} ööd"
@@ -166,34 +201,15 @@ public partial class BookingPage : ContentPage
         var start = CheckInPicker.Date;
         var end = CheckOutPicker.Date;
 
-        // ── Проверка занятости дома ───────────────────────────
         var isBooked = await _db.IsHouseBookedAsync(_house.Id, start, end);
         if (isBooked)
         {
             string title;
             string message;
-
-            if (_session.Language == "ru")
-            {
-                title = "⚠️ Дом недоступен";
-                message = "Дом уже забронирован на выбранные даты.\nВыберите другие даты.";
-            }
-            else if (_session.Language == "en")
-            {
-                title = "⚠️ House unavailable";
-                message = "This house is already booked for the selected dates.\nPlease choose different dates.";
-            }
-            else if (_session.Language == "fi")
-            {
-                title = "⚠️ Talo ei ole saatavilla";
-                message = "Talo on jo varattu valituille päiville.\nValitse eri päivät.";
-            }
-            else
-            {
-                title = "⚠️ Maja on hõivatud";
-                message = "Valitud kuupäevadel on maja juba broneeritud.\nPalun valige teised kuupäevad.";
-            }
-
+            if (_session.Language == "ru") { title = "⚠️ Дом недоступен"; message = "Дом уже забронирован на выбранные даты.\nВыберите другие даты."; }
+            else if (_session.Language == "en") { title = "⚠️ House unavailable"; message = "This house is already booked for the selected dates.\nPlease choose different dates."; }
+            else if (_session.Language == "fi") { title = "⚠️ Talo ei ole saatavilla"; message = "Talo on jo varattu valituille päiville.\nValitse eri päivät."; }
+            else { title = "⚠️ Maja on hõivatud"; message = "Valitud kuupäevadel on maja juba broneeritud.\nPalun valige teised kuupäevad."; }
             await DisplayAlert(title, message, _session.L("Common_OK"));
             return;
         }
@@ -206,13 +222,17 @@ public partial class BookingPage : ContentPage
             : (decimal)Math.Ceiling(hours) * _house.PricePerHour;
 
         var selectedAddons = _addons.Where(a => a.Count > 0).ToList();
-        decimal addonsTotal = selectedAddons.Sum(a => a.Price * a.Count);
+        // Используем эффективную цену (0 для VIP веников)
+        decimal addonsTotal = selectedAddons.Sum(a => a.EffectivePrice * a.Count);
 
         var addonsJson = JsonSerializer.Serialize(
-            selectedAddons.Select(a => new { a.Id, a.Count, a.Price }));
+            selectedAddons.Select(a => new { a.Id, a.Count, Price = a.EffectivePrice }));
 
         var addonsDisplay = selectedAddons.Any()
-            ? string.Join(", ", selectedAddons.Select(a => $"{a.DisplayName} ×{a.Count}"))
+            ? string.Join(", ", selectedAddons.Select(a =>
+                a.IsVipFree
+                    ? $"{a.DisplayName} ×{a.Count} (VIP 🆓)"
+                    : $"{a.DisplayName} ×{a.Count}"))
             : "";
 
         var booking = new Booking
@@ -244,11 +264,23 @@ public partial class BookingPage : ContentPage
             ? $"\n{_session.L("Booking_Addons_label")}: {addonsDisplay}"
             : "";
 
+        // Показываем VIP бонус в алерте
+        var vipNote = _isVip && selectedAddons.Any(a => a.IsVipFree)
+            ? lang switch
+            {
+                "ru" => "\n👑 VIP: Веники включены бесплатно!",
+                "en" => "\n👑 VIP: Whisks included for free!",
+                "fi" => "\n👑 VIP: Vihdat ilmaiseksi!",
+                _ => "\n👑 VIP: Viht tasuta lisatud!"
+            }
+            : "";
+
         await DisplayAlert(
             $"✅ {_session.L("Booking_Confirm")}",
             $"{houseTitle}\n{start:dd.MM.yyyy} – {end:dd.MM.yyyy}\n" +
             $"{_session.L("Booking_Guests")}: {_guests}" +
             addonsSummary +
+            vipNote +
             $"\n{_session.L("Booking_Total")}: €{houseTotal + addonsTotal:F0}",
             _session.L("Common_OK"));
 
@@ -259,6 +291,7 @@ public partial class BookingPage : ContentPage
         => Shell.Current.GoToAsync("..");
 }
 
+// ── Addon display model ───────────────────────────────────────
 public class AddonDisplay
 {
     public string Id { get; }
@@ -266,6 +299,10 @@ public class AddonDisplay
     public string Icon { get; }
     public int Count { get; set; } = 0;
     public bool IsSelected { get; set; } = false;
+    public bool IsVipFree { get; private set; } = false;
+
+    /// <summary>Цена с учётом VIP — 0 если VIP и веник</summary>
+    public decimal EffectivePrice => IsVipFree ? 0 : Price;
 
     private readonly string _nameEt, _nameEn, _nameRu, _nameFi;
     private string _currentLang = "et";
@@ -278,9 +315,19 @@ public class AddonDisplay
         _ => _nameEt
     };
 
-    public string DisplayPrice => Count > 1
-        ? $"€{Price} × {Count} = €{Price * Count}"
-        : $"€{Price}";
+    public string DisplayPrice
+    {
+        get
+        {
+            if (IsVipFree)
+                return Count > 1
+                    ? $"~~€{Price}~~ €0 × {Count} (VIP 🆓)"
+                    : $"~~€{Price}~~ €0 (VIP 🆓)";
+            return Count > 1
+                ? $"€{Price} × {Count} = €{Price * Count}"
+                : $"€{Price}";
+        }
+    }
 
     public string CountText => Count > 0 ? Count.ToString() : "0";
 
@@ -294,4 +341,5 @@ public class AddonDisplay
     }
 
     public void SetLang(string lang) => _currentLang = lang;
+    public void SetVip(bool isVip) => IsVipFree = isVip;
 }

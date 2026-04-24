@@ -8,6 +8,8 @@ public partial class ProfilePage : ContentPage
     private readonly DatabaseService _db;
     private readonly HouseService _houseService;
 
+    private const int VipThreshold = 10;
+
     public ProfilePage(SessionService session, DatabaseService db, HouseService houseService)
     {
         InitializeComponent();
@@ -46,8 +48,98 @@ public partial class ProfilePage : ContentPage
         var bookings = await _db.GetBookingsByUserAsync(user.Id);
         BookingsCountLabel.Text = bookings.Count.ToString();
 
+        // VIP проверка
+        var (vipCount, isVip) = await _db.CheckAndUpdateVipAsync(user.Id);
+        UpdateVipUI(vipCount, isVip);
+
         UpdateLanguageUI(_session.Language);
         await LoadFavourites();
+    }
+
+    private void UpdateVipUI(int countThisYear, bool isVip)
+    {
+        var lang = _session.Language;
+
+        if (isVip)
+        {
+            // VIP активен
+            VipBadgeLabel.Text = "👑";
+            VipStatusLabel.Text = "VIP";
+            VipProgressCard.IsVisible = true;
+            VipProgressCard.BackgroundColor = Color.FromArgb("#3D5C41");
+
+            VipProgressTitleLabel.Text = lang switch
+            {
+                "ru" => "👑 VIP статус активен!",
+                "en" => "👑 VIP status active!",
+                "fi" => "👑 VIP-tila aktiivinen!",
+                _ => "👑 VIP staatus aktiivne!"
+            };
+            VipProgressCountLabel.Text = lang switch
+            {
+                "ru" => $"{countThisYear} бронирований",
+                "en" => $"{countThisYear} bookings",
+                "fi" => $"{countThisYear} varausta",
+                _ => $"{countThisYear} broneeringut"
+            };
+            VipProgressSubLabel.Text = lang switch
+            {
+                "ru" => "🌿 Веники бесплатно при бронировании!",
+                "en" => "🌿 Free whisks with every booking!",
+                "fi" => "🌿 Ilmaiset vihdat jokaisessa varauksessa!",
+                _ => "🌿 Viht tasuta iga broneeringu juures!"
+            };
+
+            // Полная золотая полоска
+            VipProgressBar.WidthRequest = -1;
+            VipProgressBar.HorizontalOptions = LayoutOptions.Fill;
+        }
+        else
+        {
+            // Обычный статус — показываем прогресс
+            VipBadgeLabel.Text = "⭐";
+            VipStatusLabel.Text = lang switch
+            {
+                "ru" => "Обычный",
+                "en" => "Regular",
+                "fi" => "Tavallinen",
+                _ => "Tavaline"
+            };
+            VipProgressCard.IsVisible = true;
+
+            var clamped = Math.Min(countThisYear, VipThreshold);
+            var remaining = VipThreshold - clamped;
+
+            VipProgressTitleLabel.Text = lang switch
+            {
+                "ru" => "До VIP статуса",
+                "en" => "Progress to VIP",
+                "fi" => "Edistyminen VIP-tilaan",
+                _ => "Progress VIP staatuseni"
+            };
+            VipProgressCountLabel.Text = $"{clamped}/{VipThreshold}";
+            VipProgressSubLabel.Text = remaining > 0
+                ? lang switch
+                {
+                    "ru" => $"Ещё {remaining} бронирований за 12 месяцев для VIP",
+                    "en" => $"{remaining} more bookings in 12 months for VIP",
+                    "fi" => $"Vielä {remaining} varausta 12 kuukaudessa VIP-tilaan",
+                    _ => $"Veel {remaining} broneeringut 12 kuu jooksul VIP staatuse saamiseks"
+                }
+                : "";
+
+            // Анимируем прогресс-бар
+            double progress = (double)clamped / VipThreshold;
+            VipProgressBar.HorizontalOptions = LayoutOptions.Start;
+
+            // Обновляем ширину после рендера
+            Dispatcher.Dispatch(() =>
+            {
+                var totalWidth = VipProgressCard.Width - 32;
+                if (totalWidth > 0)
+                    VipProgressBar.WidthRequest = totalWidth * progress;
+            });
+        }
     }
 
     private void ApplyLocalization()

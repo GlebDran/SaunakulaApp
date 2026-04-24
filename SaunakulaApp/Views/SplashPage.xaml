@@ -10,17 +10,17 @@
         <VerticalStackLayout
             HorizontalOptions="Center"
             VerticalOptions="Center"
-            Spacing="24">
+            Spacing="24"
+            Padding="40,0">
 
-            <!-- Logo / Icon -->
+            <!-- Logo -->
             <Frame WidthRequest="100" HeightRequest="100"
                    CornerRadius="50"
                    BackgroundColor="#33FFFFFF"
                    BorderColor="Transparent"
                    HorizontalOptions="Center"
                    Padding="0">
-                <Label Text="🏡"
-                       FontSize="64"
+                <Label Text="🏡" FontSize="64"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"/>
             </Frame>
@@ -31,28 +31,114 @@
                        FontSize="36" FontAttributes="Bold"
                        TextColor="White"
                        HorizontalOptions="Center"/>
-                <Label Text="Saunapuhkus Tallinna lähedal"
+                <Label x:Name="SubtitleLabel"
+                       Text="Saunapuhkus Tallinna lähedal"
                        FontSize="14"
                        TextColor="#CCFFFFFF"
                        HorizontalOptions="Center"/>
             </VerticalStackLayout>
 
-            <!-- Loading indicator -->
+            <!-- Loading indicator — показывается пока грузится -->
             <ActivityIndicator x:Name="Loader"
                                IsRunning="True"
+                               IsVisible="True"
                                Color="White"
                                HorizontalOptions="Center"
-                               Margin="0,16,0,0"/>
+                               Margin="0,8,0,0"/>
+
+            <!-- Language selector — появляется после загрузки -->
+            <VerticalStackLayout x:Name="LangView"
+                                 IsVisible="False"
+                                 Spacing="16"
+                                 HorizontalOptions="Center">
+
+                <Label x:Name="ChooseLangLabel"
+                       Text="Vali keel / Choose language"
+                       FontSize="14"
+                       TextColor="#CCFFFFFF"
+                       HorizontalOptions="Center"/>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowSpacing="12"
+                      RowDefinitions="Auto,Auto">
+
+                    <!-- ET -->
+                    <Frame Grid.Row="0" Grid.Column="0"
+                           x:Name="BtnEt"
+                           CornerRadius="16" Padding="12,10"
+                           BackgroundColor="#33FFFFFF"
+                           BorderColor="Transparent"
+                           HasShadow="False">
+                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="🇪🇪" FontSize="28" HorizontalOptions="Center"/>
+                            <Label Text="Eesti" FontSize="13" FontAttributes="Bold"
+                                   TextColor="White" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LangEt_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- RU -->
+                    <Frame Grid.Row="0" Grid.Column="1"
+                           x:Name="BtnRu"
+                           CornerRadius="16" Padding="12,10"
+                           BackgroundColor="#33FFFFFF"
+                           BorderColor="Transparent"
+                           HasShadow="False">
+                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="🇷🇺" FontSize="28" HorizontalOptions="Center"/>
+                            <Label Text="Русский" FontSize="13" FontAttributes="Bold"
+                                   TextColor="White" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LangRu_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- EN -->
+                    <Frame Grid.Row="1" Grid.Column="0"
+                           x:Name="BtnEn"
+                           CornerRadius="16" Padding="12,10"
+                           BackgroundColor="#33FFFFFF"
+                           BorderColor="Transparent"
+                           HasShadow="False">
+                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="🇬🇧" FontSize="28" HorizontalOptions="Center"/>
+                            <Label Text="English" FontSize="13" FontAttributes="Bold"
+                                   TextColor="White" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LangEn_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- FI -->
+                    <Frame Grid.Row="1" Grid.Column="1"
+                           x:Name="BtnFi"
+                           CornerRadius="16" Padding="12,10"
+                           BackgroundColor="#33FFFFFF"
+                           BorderColor="Transparent"
+                           HasShadow="False">
+                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="🇫🇮" FontSize="28" HorizontalOptions="Center"/>
+                            <Label Text="Suomi" FontSize="13" FontAttributes="Bold"
+                                   TextColor="White" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LangFi_Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                </Grid>
+            </VerticalStackLayout>
 
         </VerticalStackLayout>
 
-        <!-- Version at bottom -->
-        <Label Text="v1.0"
-               FontSize="12"
+        <!-- Version -->
+        <Label Text="v1.0" FontSize="12"
                TextColor="#66FFFFFF"
                HorizontalOptions="Center"
                VerticalOptions="End"
                Margin="0,0,0,40"/>
     </Grid>
-
 </ContentPage>
