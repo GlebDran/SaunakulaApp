@@ -27,6 +27,8 @@ public partial class HomePage : ContentPage
 
     private void ApplyLocalization()
     {
+        var lang = _session.Language;
+
         HomeSubtitleLabel.Text = _session.L("Home_Subtitle");
         HomeTitleLabel.Text = _session.L("Home_Title");
         ActivitiesLabel.Text = _session.L("Home_Activities");
@@ -35,23 +37,37 @@ public partial class HomePage : ContentPage
         FeaturedBadgeLabel.Text = _session.L("Home_FeaturedBadge");
         FeaturedDetailsButton.Text = _session.L("Pricing_Details");
         FeaturedBookButton.Text = _session.L("Details_Book");
+
+        // Категории
         SetCategoryLabel(CatAll, _session.L("Home_AllHouses"));
         SetCategoryLabel(CatSaun, "Saun");
         SetCategoryLabel(CatBassein, "Bassein");
         SetCategoryLabel(CatKaraoke, "Karaoke");
-        SetCategoryLabel(CatSuur, "Suur grupp");
+        SetCategoryLabel(CatSuur, lang switch
+        {
+            "ru" => "Большая группа",
+            "en" => "Large group",
+            "fi" => "Suuri ryhmä",
+            _ => "Suur grupp"
+        });
+
+        // Баннер PäevaSPA
+        BannerTitleLabel.Text = "PäevaSPA -40%";
+        BannerSubLabel.Text = lang switch
+        {
+            "ru" => "Пн–Чт 10:00–17:00 · Дом охотника & Русский дом",
+            "en" => "Mon–Thu 10:00–17:00 · Hunter's Lodge & Russian House",
+            "fi" => "Ma–To 10:00–17:00 · Metsästäjän talo & Venäläinen talo",
+            _ => "E–N kl 10:00–17:00 · Jahimehe & Vene maja"
+        };
     }
 
     private static void SetCategoryLabel(Frame cat, string text)
     {
         if (cat.Content is HorizontalStackLayout hsl)
-        {
             foreach (var child in hsl.Children)
-            {
                 if (child is Label lbl && lbl.FontSize <= 13)
                     lbl.Text = text;
-            }
-        }
     }
 
     private async Task LoadData()
@@ -60,7 +76,7 @@ public partial class HomePage : ContentPage
         var lang = _session.Language;
 
         _allHouses = houses
-            .Select(h => new HomeHouseDisplay(h, lang, _session.L("Home_ViewMore")))
+            .Select(h => new HomeHouseDisplay(h, lang, _session))
             .ToList();
 
         _featuredHouse = houses.FirstOrDefault(h => h.Id == "soome")
@@ -139,8 +155,7 @@ public partial class HomePage : ContentPage
     private void CatAll_Tapped(object sender, TappedEventArgs e)
     {
         SetActiveCategory(CatAll);
-        HousesView.ItemsSource = _allHouses
-            .Where(h => h.HouseId != "soome").ToList();
+        HousesView.ItemsSource = _allHouses.Where(h => h.HouseId != "soome").ToList();
     }
 
     private void CatSaun_Tapped(object sender, TappedEventArgs e)
@@ -165,8 +180,7 @@ public partial class HomePage : ContentPage
     {
         SetActiveCategory(CatSuur);
         HousesView.ItemsSource = _allHouses
-            .Where(h => h.MaxGuests >= 30 && h.HouseId != "soome")
-            .ToList();
+            .Where(h => h.MaxGuests >= 30 && h.HouseId != "soome").ToList();
     }
 
     private void FilterHouses(string keyword)
@@ -188,15 +202,9 @@ public partial class HomePage : ContentPage
                 : Color.FromArgb("#E8EDE7");
 
             if (cat.Content is HorizontalStackLayout hsl)
-            {
                 foreach (var child in hsl.Children)
-                {
                     if (child is Label lbl && lbl.FontSize <= 14)
-                        lbl.TextColor = isActive
-                            ? Colors.White
-                            : Color.FromArgb("#2D3B2F");
-                }
-            }
+                        lbl.TextColor = isActive ? Colors.White : Color.FromArgb("#2D3B2F");
         }
     }
 }
@@ -212,15 +220,22 @@ public class HomeHouseDisplay
     public string ViewButtonText { get; }
     public int MaxGuests { get; }
 
-    public HomeHouseDisplay(House house, string lang, string viewText = "Vaata")
+    public HomeHouseDisplay(House house, string lang, SessionService session)
     {
         HouseId = house.Id;
         DisplayTitle = house.GetTitle(lang);
         DisplayPrice = $"€{house.Price24h}";
         Image = house.Image;
         MaxGuests = house.MaxGuests;
-        GuestsText = $"kuni {house.MaxGuests} külalist";
         AmenitiesText = string.Join(" ", house.GetAmenities(lang));
-        ViewButtonText = viewText;
+        ViewButtonText = session.L("Home_ViewMore");
+
+        GuestsText = lang switch
+        {
+            "ru" => $"до {house.MaxGuests} гостей",
+            "en" => $"up to {house.MaxGuests} guests",
+            "fi" => $"enintään {house.MaxGuests} vierasta",
+            _ => $"kuni {house.MaxGuests} külalist"
+        };
     }
 }

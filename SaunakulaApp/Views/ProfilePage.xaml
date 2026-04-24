@@ -54,26 +54,43 @@
                         </LinearGradientBrush>
                     </Frame.Background>
                     <VerticalStackLayout Spacing="16">
-                        <Grid ColumnDefinitions="64,*" ColumnSpacing="16">
-                            <Frame WidthRequest="64" HeightRequest="64" CornerRadius="32"
-                                   BackgroundColor="#33FFFFFF" BorderColor="Transparent" Padding="0">
+
+                        <!-- Avatar + Info — фикс: убрали Grid, используем HorizontalStackLayout -->
+                        <HorizontalStackLayout Spacing="16">
+                            <Frame WidthRequest="60" HeightRequest="60"
+                                   CornerRadius="30"
+                                   BackgroundColor="#33FFFFFF"
+                                   BorderColor="Transparent"
+                                   Padding="0"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Start">
                                 <Label x:Name="AvatarLabel"
-                                       FontSize="26" FontAttributes="Bold" TextColor="White"
-                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                                       FontSize="22" FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
                             </Frame>
-                            <VerticalStackLayout VerticalOptions="Center" Spacing="4">
+                            <VerticalStackLayout VerticalOptions="Center"
+                                                 Spacing="3"
+                                                 HorizontalOptions="FillAndExpand">
                                 <Label x:Name="NameLabel"
-                                       FontSize="20" FontAttributes="Bold" TextColor="White"
-                                       LineBreakMode="TailTruncation"/>
+                                       FontSize="18" FontAttributes="Bold"
+                                       TextColor="White"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1"/>
                                 <Label x:Name="EmailLabel"
-                                       FontSize="13" TextColor="#CCFFFFFF"
-                                       LineBreakMode="TailTruncation"/>
+                                       FontSize="12" TextColor="#CCFFFFFF"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1"/>
                                 <Label x:Name="PhoneLabel"
-                                       FontSize="13" TextColor="#CCFFFFFF"
-                                       LineBreakMode="TailTruncation"/>
+                                       FontSize="12" TextColor="#CCFFFFFF"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1"/>
                             </VerticalStackLayout>
-                        </Grid>
+                        </HorizontalStackLayout>
+
                         <BoxView HeightRequest="1" BackgroundColor="#33FFFFFF"/>
+
                         <Grid ColumnDefinitions="*,*,*">
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
                                 <Label x:Name="BookingsCountLabel"
@@ -188,8 +205,7 @@
                             </Grid.GestureRecognizers>
                         </Grid>
 
-                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}"
-                                 Margin="16,0"/>
+                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
 
                         <!-- Call -->
                         <Grid ColumnDefinitions="44,*,24" Padding="16,14" ColumnSpacing="8">
@@ -206,15 +222,13 @@
                                        TextColor="{StaticResource TextSecondary}"/>
                             </VerticalStackLayout>
                             <Label Grid.Column="2" Text="›" FontSize="20"
-                                   TextColor="{StaticResource TextSecondary}"
-                                   VerticalOptions="Center"/>
+                                   TextColor="{StaticResource TextSecondary}" VerticalOptions="Center"/>
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="Call_Tapped"/>
                             </Grid.GestureRecognizers>
                         </Grid>
 
-                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}"
-                                 Margin="16,0"/>
+                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
 
                         <!-- Email -->
                         <Grid ColumnDefinitions="44,*,24" Padding="16,14" ColumnSpacing="8">
@@ -231,15 +245,13 @@
                                        TextColor="{StaticResource TextSecondary}"/>
                             </VerticalStackLayout>
                             <Label Grid.Column="2" Text="›" FontSize="20"
-                                   TextColor="{StaticResource TextSecondary}"
-                                   VerticalOptions="Center"/>
+                                   TextColor="{StaticResource TextSecondary}" VerticalOptions="Center"/>
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="Email_Tapped"/>
                             </Grid.GestureRecognizers>
                         </Grid>
 
-                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}"
-                                 Margin="16,0"/>
+                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
 
                         <!-- Website -->
                         <Grid ColumnDefinitions="44,*,24" Padding="16,14" ColumnSpacing="8">
@@ -256,15 +268,13 @@
                                        TextColor="{StaticResource TextSecondary}"/>
                             </VerticalStackLayout>
                             <Label Grid.Column="2" Text="›" FontSize="20"
-                                   TextColor="{StaticResource TextSecondary}"
-                                   VerticalOptions="Center"/>
+                                   TextColor="{StaticResource TextSecondary}" VerticalOptions="Center"/>
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="Website_Tapped"/>
                             </Grid.GestureRecognizers>
                         </Grid>
 
-                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}"
-                                 Margin="16,0"/>
+                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Border}" Margin="16,0"/>
 
                         <!-- Instagram -->
                         <Grid ColumnDefinitions="44,*,24" Padding="16,14" ColumnSpacing="8">
@@ -281,8 +291,7 @@
                                        TextColor="{StaticResource TextSecondary}"/>
                             </VerticalStackLayout>
                             <Label Grid.Column="2" Text="›" FontSize="20"
-                                   TextColor="{StaticResource TextSecondary}"
-                                   VerticalOptions="Center"/>
+                                   TextColor="{StaticResource TextSecondary}" VerticalOptions="Center"/>
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="Instagram_Tapped"/>
                             </Grid.GestureRecognizers>
@@ -305,8 +314,7 @@
                         <DataTemplate>
                             <Frame Style="{StaticResource Card}" WidthRequest="140" Padding="0">
                                 <Grid RowDefinitions="100,Auto">
-                                    <Image Source="{Binding Image}" Aspect="AspectFill"
-                                           HeightRequest="100"/>
+                                    <Image Source="{Binding Image}" Aspect="AspectFill" HeightRequest="100"/>
                                     <VerticalStackLayout Grid.Row="1" Padding="8,6" Spacing="2">
                                         <Label Text="{Binding DisplayTitle}"
                                                FontSize="12" FontAttributes="Bold"

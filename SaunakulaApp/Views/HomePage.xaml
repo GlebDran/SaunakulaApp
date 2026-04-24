@@ -29,14 +29,11 @@
                        CornerRadius="22"
                        BackgroundColor="{StaticResource PrimaryExtraLight}"
                        BorderColor="Transparent"
-                       Padding="0"
-                       VerticalOptions="Center"
+                       Padding="0" VerticalOptions="Center"
                        HasShadow="False">
                     <Label x:Name="AvatarLabel"
-                           Text="👤"
-                           FontSize="20"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center">
+                           Text="👤" FontSize="20"
+                           HorizontalOptions="Center" VerticalOptions="Center">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="Avatar_Tapped"/>
                         </Label.GestureRecognizers>
@@ -58,11 +55,13 @@
                     <VerticalStackLayout Spacing="3">
                         <HorizontalStackLayout Spacing="8">
                             <Label Text="🌿" FontSize="14"/>
-                            <Label Text="PäevaSPA -40%"
+                            <Label x:Name="BannerTitleLabel"
+                                   Text="PäevaSPA -40%"
                                    FontSize="15" FontAttributes="Bold"
                                    TextColor="White"/>
                         </HorizontalStackLayout>
-                        <Label Text="E–N kl 10:00–17:00 · Jahimehe &amp; Vene maja"
+                        <Label x:Name="BannerSubLabel"
+                               Text="E–N kl 10:00–17:00 · Jahimehe &amp; Vene maja"
                                FontSize="11" TextColor="#CCFFFFFF"/>
                     </VerticalStackLayout>
                     <Label Grid.Column="1" Text="57€/h"
@@ -184,16 +183,13 @@
                     <Frame HorizontalOptions="Start" VerticalOptions="Start"
                            Margin="12,12,0,0" CornerRadius="12"
                            BackgroundColor="#5A7C5E"
-                           BorderColor="Transparent"
-                           Padding="8,4" HasShadow="False">
+                           BorderColor="Transparent" Padding="8,4" HasShadow="False">
                         <Label x:Name="FeaturedBadgeLabel"
                                Text="⭐ Külaliste lemmik"
-                               FontSize="11" FontAttributes="Bold"
-                               TextColor="White"/>
+                               FontSize="11" FontAttributes="Bold" TextColor="White"/>
                     </Frame>
 
-                    <VerticalStackLayout VerticalOptions="End"
-                                         HorizontalOptions="End"
+                    <VerticalStackLayout VerticalOptions="End" HorizontalOptions="End"
                                          Margin="0,0,12,12" Spacing="0">
                         <Label x:Name="FeaturedPrice"
                                FontSize="22" FontAttributes="Bold"
@@ -231,8 +227,7 @@
                                     HeightRequest="44"
                                     Clicked="FeaturedDetails_Clicked"/>
                             <Button x:Name="FeaturedBookButton"
-                                    Grid.Column="1"
-                                    Text="Broneeri"
+                                    Grid.Column="1" Text="Broneeri"
                                     Style="{StaticResource PrimaryButton}"
                                     HeightRequest="44"
                                     Clicked="FeaturedBook_Clicked"/>
@@ -259,11 +254,9 @@
                             <Grid ColumnDefinitions="120,*">
                                 <Image Source="{Binding Image}"
                                        Aspect="AspectFill"
-                                       WidthRequest="120"
-                                       HeightRequest="120"/>
+                                       WidthRequest="120" HeightRequest="120"/>
                                 <VerticalStackLayout Grid.Column="1"
-                                                     Padding="12,10"
-                                                     Spacing="5"
+                                                     Padding="12,10" Spacing="5"
                                                      VerticalOptions="Center">
                                     <Label Text="{Binding DisplayTitle}"
                                            FontSize="15" FontAttributes="Bold"
@@ -290,8 +283,7 @@
                                         <Button Grid.Column="1"
                                                 Text="{Binding ViewButtonText}"
                                                 Style="{StaticResource PrimaryButton}"
-                                                HeightRequest="34"
-                                                FontSize="12"
+                                                HeightRequest="34" FontSize="12"
                                                 Padding="12,0"
                                                 CommandParameter="{Binding HouseId}"
                                                 Clicked="HouseDetails_Clicked"/>
