@@ -31,7 +31,7 @@
                     </Frame>
                     <Label x:Name="BookingTitleLabel"
                            Text="Broneeri"
-                           FontSize="20" FontAttributes="Bold"
+                           FontSize="15" FontAttributes="Bold"
                            TextColor="{StaticResource TextPrimary}"
                            VerticalOptions="Center"/>
                 </Grid>
