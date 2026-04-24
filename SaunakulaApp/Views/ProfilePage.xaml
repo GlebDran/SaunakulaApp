@@ -20,7 +20,7 @@
             <VerticalStackLayout x:Name="NotLoggedInView" IsVisible="False"
                                  Padding="28,40" Spacing="16"
                                  HorizontalOptions="Center">
-                <Label Text="👤" FontSize="64" HorizontalOptions="Center"/>
+                <Label Text="🏡" FontSize="64" HorizontalOptions="Center"/>
                 <Label x:Name="LoginPromptLabel"
                        Text="Logi sisse, et näha profiili"
                        FontSize="16" FontAttributes="Bold"

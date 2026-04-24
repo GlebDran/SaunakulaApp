@@ -19,8 +19,8 @@
                    BorderColor="Transparent"
                    HorizontalOptions="Center"
                    Padding="0">
-                <Label Text="🌲"
-                       FontSize="52"
+                <Label Text="🏡"
+                       FontSize="64"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"/>
             </Frame>
