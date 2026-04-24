@@ -5,32 +5,42 @@ namespace SaunakulaApp.Services;
 
 public class LocalizationService
 {
-    private readonly Dictionary<string, ResourceManager> _managers = new();
-    private string _currentLang = "et";
-
-    public LocalizationService()
-    {
-        // Инициализируем менеджеры для каждого языка
-        foreach (var lang in new[] { "et", "ru", "en", "fi" })
-        {
-            _managers[lang] = new ResourceManager(
-                $"SaunakulaApp.Resources.Languages.AppResources.{lang}",
-                typeof(LocalizationService).Assembly);
-        }
-    }
+    private ResourceManager? _rm;
+    private string _lang = "et";
 
     public void SetLanguage(string lang)
     {
-        _currentLang = lang;
+        _lang = lang;
+        _rm = null; // сбросим кеш
+    }
+
+    private ResourceManager GetManager()
+    {
+        if (_rm != null) return _rm;
+
+        // Базовый файл AppResources.resx — эстонский
+        // Остальные языки: AppResources.ru.resx, .en.resx, .fi.resx
+        _rm = new ResourceManager(
+            "SaunakulaApp.Resources.Languages.AppResources",
+            typeof(LocalizationService).Assembly);
+
+        return _rm;
     }
 
     public string Get(string key)
     {
         try
         {
-            return _managers[_currentLang].GetString(key)
-                   ?? _managers["et"].GetString(key)
-                   ?? key;
+            var culture = _lang switch
+            {
+                "ru" => new CultureInfo("ru"),
+                "en" => new CultureInfo("en"),
+                "fi" => new CultureInfo("fi"),
+                _ => CultureInfo.InvariantCulture
+            };
+
+            var value = GetManager().GetString(key, culture);
+            return string.IsNullOrEmpty(value) ? key : value;
         }
         catch
         {

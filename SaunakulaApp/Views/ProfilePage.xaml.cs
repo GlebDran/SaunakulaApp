@@ -51,7 +51,6 @@ public partial class ProfilePage : ContentPage
         BookingsCountLabel.Text = bookings.Count.ToString();
 
         UpdateLanguageUI(_session.Language);
-        DarkModeSwitch.IsToggled = _session.IsDarkMode;
 
         await LoadFavourites();
     }
@@ -67,8 +66,6 @@ public partial class ProfilePage : ContentPage
         BookingsLabel.Text = _session.L("Profile_Bookings");
         MemberSinceTextLabel.Text = _session.L("Profile_Since");
         LanguageSectionLabel.Text = _session.L("Profile_Language");
-        AppearanceSectionLabel.Text = _session.L("Profile_Appearance");
-        DarkModeLabel.Text = _session.L("Profile_DarkMode");
         KontoSectionLabel.Text = _session.L("Profile_Account");
         MyBookingsLabel.Text = _session.L("Profile_MyBookings");
         FavouritesSectionLabel.Text = _session.L("Profile_Favourites");
@@ -103,13 +100,6 @@ public partial class ProfilePage : ContentPage
         FavouritesView.SelectedItem = null;
         await Shell.Current.GoToAsync(
             $"{nameof(HouseDetailsPage)}?houseId={fav.HouseId}");
-    }
-
-    // ── Dark mode ─────────────────────────────────────────────
-
-    private void DarkMode_Toggled(object sender, ToggledEventArgs e)
-    {
-        _session.SetDarkMode(e.Value);
     }
 
     // ── Language ──────────────────────────────────────────────

@@ -3,29 +3,24 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- Primary palette — не меняется в тёмной теме -->
+    <!-- Primary palette -->
     <Color x:Key="Primary">#5A7C5E</Color>
     <Color x:Key="PrimaryLight">#8BA888</Color>
     <Color x:Key="PrimaryExtraLight">#E8EDE7</Color>
     <Color x:Key="Destructive">#C94D4D</Color>
     <Color x:Key="StarColor">#F59E0B</Color>
 
-    <!-- Light theme (default) -->
+    <!-- Backgrounds -->
     <Color x:Key="Background">#FAFAF8</Color>
     <Color x:Key="CardBackground">#FFFFFF</Color>
     <Color x:Key="SecondaryBackground">#E8EDE7</Color>
     <Color x:Key="MutedBackground">#F5F5F3</Color>
+
+    <!-- Text -->
     <Color x:Key="TextPrimary">#2D3B2F</Color>
     <Color x:Key="TextSecondary">#7A8A7D</Color>
-    <Color x:Key="Border">#E8EDE7</Color>
 
-    <!-- Dark theme colors (используются в ThemeService) -->
-    <Color x:Key="DarkBackground">#1A2420</Color>
-    <Color x:Key="DarkCard">#2D3B2F</Color>
-    <Color x:Key="DarkSecondaryBackground">#243028</Color>
-    <Color x:Key="DarkMutedBackground">#1F2B28</Color>
-    <Color x:Key="DarkTextPrimary">#E8EDE7</Color>
-    <Color x:Key="DarkTextSecondary">#A0B09D</Color>
-    <Color x:Key="DarkBorder">#3A4E3D</Color>
+    <!-- Border -->
+    <Color x:Key="Border">#E8EDE7</Color>
 
 </ResourceDictionary>
