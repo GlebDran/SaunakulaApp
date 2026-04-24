@@ -38,6 +38,15 @@ public partial class HomePage : ContentPage
         FeaturedDetailsButton.Text = _session.L("Pricing_Details");
         FeaturedBookButton.Text = _session.L("Details_Book");
 
+        // Кнопка квиза
+        FindHouseButton.Text = lang switch
+        {
+            "ru" => "🔍 Подобрать дом",
+            "en" => "🔍 Find my house",
+            "fi" => "🔍 Löydä sopiva talo",
+            _ => "🔍 Leia sobiv maja"
+        };
+
         // Категории
         SetCategoryLabel(CatAll, _session.L("Home_AllHouses"));
         SetCategoryLabel(CatSaun, "Saun");
@@ -51,7 +60,7 @@ public partial class HomePage : ContentPage
             _ => "Suur grupp"
         });
 
-        // Баннер PäevaSPA
+        // Баннер
         BannerTitleLabel.Text = "PäevaSPA -40%";
         BannerSubLabel.Text = lang switch
         {
@@ -115,6 +124,11 @@ public partial class HomePage : ContentPage
 
     private async void Avatar_Tapped(object sender, TappedEventArgs e)
         => await Shell.Current.GoToAsync("//ProfilePage");
+
+    // ── Find house quiz ───────────────────────────────────────
+
+    private async void FindHouse_Clicked(object sender, EventArgs e)
+        => await Shell.Current.GoToAsync(nameof(HouseFinderPage));
 
     // ── Featured ──────────────────────────────────────────────
 

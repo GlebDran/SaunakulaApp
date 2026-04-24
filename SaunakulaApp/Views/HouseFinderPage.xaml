@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SaunakulaApp.Views.HouseFinderPage"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Grid ColumnDefinitions="Auto,*"
+              ColumnSpacing="12"
+              Padding="20,52,20,16"
+              BackgroundColor="{StaticResource CardBackground}">
+            <Frame WidthRequest="40" HeightRequest="40"
+                   CornerRadius="20"
+                   BackgroundColor="{StaticResource SecondaryBackground}"
+                   BorderColor="Transparent"
+                   Padding="0" HasShadow="False">
+                <Label Text="‹" FontSize="26" FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}"
+                       HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Back_Tapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Frame>
+            <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                <Label x:Name="PageTitleLabel"
+                       Text="🏡 Leia sobiv maja"
+                       FontSize="18" FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}"/>
+                <Label x:Name="PageSubtitleLabel"
+                       Text="Vasta 3 küsimusele"
+                       FontSize="12"
+                       TextColor="{StaticResource TextSecondary}"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Quiz content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,24" Spacing="0">
+
+                <!-- Progress bar -->
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6" Margin="0,0,0,32">
+                    <BoxView x:Name="Step1Bar" HeightRequest="4" CornerRadius="2"
+                             BackgroundColor="{StaticResource Primary}"/>
+                    <BoxView x:Name="Step2Bar" Grid.Column="1" HeightRequest="4" CornerRadius="2"
+                             BackgroundColor="{StaticResource SecondaryBackground}"/>
+                    <BoxView x:Name="Step3Bar" Grid.Column="2" HeightRequest="4" CornerRadius="2"
+                             BackgroundColor="{StaticResource SecondaryBackground}"/>
+                </Grid>
+
+                <!-- Step 1: Guests -->
+                <VerticalStackLayout x:Name="Step1View" Spacing="16">
+                    <Label x:Name="Q1Label"
+                           Text="Kui palju külalisi tuleb?"
+                           FontSize="22" FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"/>
+                    <Label x:Name="Q1SubLabel"
+                           Text="Vali sobiv vahemik"
+                           Style="{StaticResource MutedLabel}"/>
+
+                    <VerticalStackLayout Spacing="12" Margin="0,8,0,0">
+                        <Frame x:Name="Opt1_1" Style="{StaticResource Card}" Padding="16,14"
+                               BorderColor="Transparent">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="👤" FontSize="24" VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                                    <Label x:Name="Opt1_1_Title" Text="Väike grupp"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label x:Name="Opt1_1_Sub" Text="kuni 20 inimest"
+                                           FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Label x:Name="Check1_1" Grid.Column="2" Text=""
+                                       FontSize="20" VerticalOptions="Center"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Q1_Small_Tapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+
+                        <Frame x:Name="Opt1_2" Style="{StaticResource Card}" Padding="16,14"
+                               BorderColor="Transparent">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="👥" FontSize="24" VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                                    <Label x:Name="Opt1_2_Title" Text="Keskmine grupp"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label x:Name="Opt1_2_Sub" Text="20–30 inimest"
+                                           FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Label x:Name="Check1_2" Grid.Column="2" Text=""
+                                       FontSize="20" VerticalOptions="Center"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Q1_Medium_Tapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+
+                        <Frame x:Name="Opt1_3" Style="{StaticResource Card}" Padding="16,14"
+                               BorderColor="Transparent">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="🎉" FontSize="24" VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                                    <Label x:Name="Opt1_3_Title" Text="Suur grupp"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label x:Name="Opt1_3_Sub" Text="30+ inimest"
+                                           FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Label x:Name="Check1_3" Grid.Column="2" Text=""
+                                       FontSize="20" VerticalOptions="Center"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Q1_Large_Tapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Step 2: Priority -->
+                <VerticalStackLayout x:Name="Step2View" IsVisible="False" Spacing="16">
+                    <Label x:Name="Q2Label"
+                           Text="Mis on kõige tähtsam?"
+                           FontSize="22" FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"/>
+                    <Label x:Name="Q2SubLabel"
+                           Text="Vali oma prioriteet"
+                           Style="{StaticResource MutedLabel}"/>
+
+                    <VerticalStackLayout Spacing="12" Margin="0,8,0,0">
+                        <Frame x:Name="Opt2_1" Style="{StaticResource Card}" Padding="16,14"
+                               BorderColor="Transparent">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="🔥" FontSize="24" VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                                    <Label x:Name="Opt2_1_Title" Text="Ehtne saun"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label x:Name="Opt2_1_Sub" Text="Puidust saun, autentne kogemus"
+                                           FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Label x:Name="Check2_1" Grid.Column="2" Text=""
+                                       FontSize="20" VerticalOptions="Center"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Q2_Saun_Tapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+
+                        <Frame x:Name="Opt2_2" Style="{StaticResource Card}" Padding="16,14"
+                               BorderColor="Transparent">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="💧" FontSize="24" VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                                    <Label x:Name="Opt2_2_Title" Text="Bassein ja tünn"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label x:Name="Opt2_2_Sub" Text="Külm bassein, kuum kümblustünn"
+                                           FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Label x:Name="Check2_2" Grid.Column="2" Text=""
+                                       FontSize="20" VerticalOptions="Center"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Q2_Pool_Tapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+
+                        <Frame x:Name="Opt2_3" Style="{StaticResource Card}" Padding="16,14"
+                               BorderColor="Transparent">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="✨" FontSize="24" VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                                    <Label x:Name="Opt2_3_Title" Text="Täielik SPA"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label x:Name="Opt2_3_Sub" Text="3 erinevat sauna, maksimaalne lõõgastus"
+                                           FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Label x:Name="Check2_3" Grid.Column="2" Text=""
+                                       FontSize="20" VerticalOptions="Center"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Q2_Spa_Tapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Step 3: Budget -->
+                <VerticalStackLayout x:Name="Step3View" IsVisible="False" Spacing="16">
+                    <Label x:Name="Q3Label"
+                           Text="Milline on eelarve?"
+                           FontSize="22" FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"/>
+                    <Label x:Name="Q3SubLabel"
+                           Text="24h hind"
+                           Style="{StaticResource MutedLabel}"/>
+
+                    <VerticalStackLayout Spacing="12" Margin="0,8,0,0">
+                        <Frame x:Name="Opt3_1" Style="{StaticResource Card}" Padding="16,14"
+                               BorderColor="Transparent">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="💶" FontSize="24" VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                                    <Label x:Name="Opt3_1_Title" Text="Säästlik"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label x:Name="Opt3_1_Sub" Text="kuni 500€"
+                                           FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Label x:Name="Check3_1" Grid.Column="2" Text=""
+                                       FontSize="20" VerticalOptions="Center"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Q3_Budget_Tapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+
+                        <Frame x:Name="Opt3_2" Style="{StaticResource Card}" Padding="16,14"
+                               BorderColor="Transparent">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="💰" FontSize="24" VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                                    <Label x:Name="Opt3_2_Title" Text="Keskmine"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label x:Name="Opt3_2_Sub" Text="500–600€"
+                                           FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Label x:Name="Check3_2" Grid.Column="2" Text=""
+                                       FontSize="20" VerticalOptions="Center"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Q3_Mid_Tapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+
+                        <Frame x:Name="Opt3_3" Style="{StaticResource Card}" Padding="16,14"
+                               BorderColor="Transparent">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="👑" FontSize="24" VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                                    <Label x:Name="Opt3_3_Title" Text="Parim kogemus"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label x:Name="Opt3_3_Sub" Text="600€+"
+                                           FontSize="12" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Label x:Name="Check3_3" Grid.Column="2" Text=""
+                                       FontSize="20" VerticalOptions="Center"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Q3_Premium_Tapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Result -->
+                <VerticalStackLayout x:Name="ResultView" IsVisible="False" Spacing="20">
+                    <Label x:Name="ResultTitleLabel"
+                           Text="🎉 Meie soovitus!"
+                           FontSize="22" FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"
+                           HorizontalOptions="Center"/>
+
+                    <Frame Style="{StaticResource Card}" Padding="0">
+                        <Grid RowDefinitions="200,Auto">
+                            <Image x:Name="ResultImage" Aspect="AspectFill" HeightRequest="200"/>
+                            <BoxView VerticalOptions="End" HeightRequest="60">
+                                <BoxView.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="Transparent" Offset="0"/>
+                                        <GradientStop Color="#CC000000" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </BoxView.Background>
+                            </BoxView>
+                            <Label x:Name="ResultHouseLabel"
+                                   VerticalOptions="End" HorizontalOptions="Start"
+                                   Margin="14,0,14,12"
+                                   FontSize="20" FontAttributes="Bold"
+                                   TextColor="White"/>
+
+                            <VerticalStackLayout Grid.Row="1" Padding="16" Spacing="10">
+                                <Label x:Name="ResultReasonLabel"
+                                       FontSize="14"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       LineBreakMode="WordWrap"/>
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,8,0,0">
+                                    <Button x:Name="ResultDetailsButton"
+                                            Text="Vaata lähemalt"
+                                            Style="{StaticResource SecondaryButton}"
+                                            HeightRequest="46"
+                                            Clicked="ResultDetails_Clicked"/>
+                                    <Button x:Name="ResultBookButton"
+                                            Grid.Column="1"
+                                            Text="Broneeri"
+                                            Style="{StaticResource PrimaryButton}"
+                                            HeightRequest="46"
+                                            Clicked="ResultBook_Clicked"/>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Frame>
+
+                    <Button x:Name="RetryButton"
+                            Text="↩ Alusta uuesti"
+                            Style="{StaticResource SecondaryButton}"
+                            HeightRequest="46"
+                            Clicked="Retry_Clicked"/>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Bottom Next button -->
+        <Grid Grid.Row="2" Padding="20,12"
+              BackgroundColor="{StaticResource CardBackground}"
+              x:Name="BottomBar">
+            <BoxView HeightRequest="1"
+                     BackgroundColor="{StaticResource Border}"
+                     VerticalOptions="Start"/>
+            <Button x:Name="NextButton"
+                    Text="Järgmine →"
+                    Style="{StaticResource PrimaryButton}"
+                    IsEnabled="False"
+                    Margin="0,4,0,0"
+                    Clicked="Next_Clicked"/>
+        </Grid>
+
+    </Grid>
+</ContentPage>

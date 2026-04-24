@@ -42,7 +42,7 @@
             </Grid>
 
             <!-- PäevaSPA promo banner -->
-            <Frame Margin="20,0,20,20"
+            <Frame Margin="20,0,20,16"
                    CornerRadius="16" Padding="14,12"
                    BorderColor="Transparent" HasShadow="False">
                 <Frame.Background>
@@ -72,6 +72,15 @@
                     <TapGestureRecognizer Tapped="PromoBanner_Tapped"/>
                 </Frame.GestureRecognizers>
             </Frame>
+
+            <!-- Find house button -->
+            <Button x:Name="FindHouseButton"
+                    Text="🔍 Leia sobiv maja"
+                    Style="{StaticResource SecondaryButton}"
+                    Margin="20,0,20,20"
+                    HeightRequest="48"
+                    FontSize="15"
+                    Clicked="FindHouse_Clicked"/>
 
             <!-- Categories -->
             <Label x:Name="ActivitiesLabel"
