@@ -28,6 +28,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<SupabaseService>();
 
         // ViewModels
+        builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<BookingViewModel>();
 
         // Views
