@@ -1,5 +1,6 @@
-﻿using Plugin.LocalNotification;
+using Plugin.LocalNotification;
 using SaunakulaApp.Services;
+using SaunakulaApp.ViewModels;
 using SaunakulaApp.Views;
 
 namespace SaunakulaApp;
@@ -24,7 +25,10 @@ public static class MauiProgram
         builder.Services.AddSingleton<SessionService>();
         builder.Services.AddSingleton<NotificationService>();
         builder.Services.AddSingleton<LocalizationService>();
+        builder.Services.AddSingleton<SupabaseService>();
 
+        // ViewModels
+        builder.Services.AddTransient<BookingViewModel>();
 
         // Views
         builder.Services.AddTransient<SplashPage>();
