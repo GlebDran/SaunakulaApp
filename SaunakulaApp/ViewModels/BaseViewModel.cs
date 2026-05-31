@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace SaunakulaApp.ViewModels
+namespace SaunakulaApp.ViewModels;
+
+public class BaseViewModel : ObservableObject
 {
-    internal class BaseViewModel
+    private bool _isBusy;
+    private string _title = string.Empty;
+
+    public bool IsBusy
     {
+        get => _isBusy;
+        set => SetProperty(ref _isBusy, value);
+    }
+
+    public string Title
+    {
+        get => _title;
+        set => SetProperty(ref _title, value);
     }
 }
