@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="SaunakulaApp.Views.HomePage"
+    x:Name="PageRoot"
     Shell.NavBarIsVisible="False">
 
     <ScrollView BackgroundColor="{StaticResource Background}">
@@ -11,16 +12,13 @@
             <!-- Header -->
             <Grid Padding="20,52,20,16" ColumnDefinitions="*,Auto">
                 <VerticalStackLayout Spacing="2">
-                    <Label x:Name="GreetingLabel"
-                           Text="Tere tulemast! 👋"
+                    <Label Text="{Binding GreetingText}"
                            FontSize="14"
                            TextColor="{StaticResource TextSecondary}"/>
-                    <Label x:Name="HomeTitleLabel"
-                           Text="Mõnus saunapuhkus"
+                    <Label Text="{Binding HomeTitleText}"
                            FontSize="26" FontAttributes="Bold"
                            TextColor="{StaticResource TextPrimary}"/>
-                    <Label x:Name="HomeSubtitleLabel"
-                           Text="Saue vald · vähem kui 10 km Tallinnast"
+                    <Label Text="{Binding HomeSubtitleText}"
                            FontSize="12"
                            TextColor="{StaticResource TextSecondary}"/>
                 </VerticalStackLayout>
@@ -31,11 +29,10 @@
                        BorderColor="Transparent"
                        Padding="0" VerticalOptions="Center"
                        HasShadow="False">
-                    <Label x:Name="AvatarLabel"
-                           Text="👤" FontSize="20"
+                    <Label Text="{Binding AvatarText}" FontSize="20"
                            HorizontalOptions="Center" VerticalOptions="Center">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="Avatar_Tapped"/>
+                            <TapGestureRecognizer Command="{Binding GoToProfileCommand}"/>
                         </Label.GestureRecognizers>
                     </Label>
                 </Frame>
@@ -55,13 +52,11 @@
                     <VerticalStackLayout Spacing="3">
                         <HorizontalStackLayout Spacing="8">
                             <Label Text="🌿" FontSize="14"/>
-                            <Label x:Name="BannerTitleLabel"
-                                   Text="PäevaSPA -40%"
+                            <Label Text="{Binding BannerTitleText}"
                                    FontSize="15" FontAttributes="Bold"
                                    TextColor="White"/>
                         </HorizontalStackLayout>
-                        <Label x:Name="BannerSubLabel"
-                               Text="E–N kl 10:00–17:00 · Jahimehe &amp; Vene maja"
+                        <Label Text="{Binding BannerSubtitleText}"
                                FontSize="11" TextColor="#CCFFFFFF"/>
                     </VerticalStackLayout>
                     <Label Grid.Column="1" Text="57€/h"
@@ -69,22 +64,21 @@
                            TextColor="White" VerticalOptions="Center"/>
                 </Grid>
                 <Frame.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="PromoBanner_Tapped"/>
+                    <TapGestureRecognizer Command="{Binding GoToPromoCommand}"/>
                 </Frame.GestureRecognizers>
             </Frame>
 
             <!-- Find house button -->
             <Button x:Name="FindHouseButton"
-                    Text="🔍 Leia sobiv maja"
+                    Text="{Binding FindHouseText}"
                     Style="{StaticResource SecondaryButton}"
                     Margin="20,0,20,20"
                     HeightRequest="48"
                     FontSize="15"
-                    Clicked="FindHouse_Clicked"/>
+                    Command="{Binding GoToHouseFinderCommand}"/>
 
             <!-- Categories -->
-            <Label x:Name="ActivitiesLabel"
-                   Text="Vali tegevus"
+            <Label Text="{Binding ActivitiesText}"
                    FontSize="16" FontAttributes="Bold"
                    TextColor="{StaticResource TextPrimary}"
                    Margin="20,0,20,12"/>
@@ -94,72 +88,77 @@
                         Margin="20,0,0,20">
                 <HorizontalStackLayout Spacing="10">
 
-                    <Frame x:Name="CatAll" CornerRadius="20" Padding="14,8"
-                           BackgroundColor="{StaticResource Primary}"
+                    <Frame CornerRadius="20" Padding="14,8"
+                           BackgroundColor="{Binding CatAllBackground}"
                            BorderColor="Transparent" HasShadow="False">
                         <HorizontalStackLayout Spacing="6">
                             <Label Text="🏠" FontSize="14"/>
-                            <Label Text="Kõik" FontSize="13" FontAttributes="Bold"
-                                   TextColor="White" VerticalOptions="Center"/>
+                            <Label Text="{Binding CatAllText}" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{Binding CatAllTextColor}" VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="CatAll_Tapped"/>
+                            <TapGestureRecognizer Command="{Binding SelectCategoryCommand}"
+                                                  CommandParameter="all"/>
                         </Frame.GestureRecognizers>
                     </Frame>
 
-                    <Frame x:Name="CatSaun" CornerRadius="20" Padding="14,8"
-                           BackgroundColor="{StaticResource SecondaryBackground}"
+                    <Frame CornerRadius="20" Padding="14,8"
+                           BackgroundColor="{Binding CatSaunBackground}"
                            BorderColor="Transparent" HasShadow="False">
                         <HorizontalStackLayout Spacing="6">
                             <Label Text="🔥" FontSize="14"/>
                             <Label Text="Saun" FontSize="13" FontAttributes="Bold"
-                                   TextColor="{StaticResource TextPrimary}"
+                                   TextColor="{Binding CatSaunTextColor}"
                                    VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="CatSaun_Tapped"/>
+                            <TapGestureRecognizer Command="{Binding SelectCategoryCommand}"
+                                                  CommandParameter="saun"/>
                         </Frame.GestureRecognizers>
                     </Frame>
 
-                    <Frame x:Name="CatBassein" CornerRadius="20" Padding="14,8"
-                           BackgroundColor="{StaticResource SecondaryBackground}"
+                    <Frame CornerRadius="20" Padding="14,8"
+                           BackgroundColor="{Binding CatBasseinBackground}"
                            BorderColor="Transparent" HasShadow="False">
                         <HorizontalStackLayout Spacing="6">
                             <Label Text="💧" FontSize="14"/>
                             <Label Text="Bassein" FontSize="13" FontAttributes="Bold"
-                                   TextColor="{StaticResource TextPrimary}"
+                                   TextColor="{Binding CatBasseinTextColor}"
                                    VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="CatBassein_Tapped"/>
+                            <TapGestureRecognizer Command="{Binding SelectCategoryCommand}"
+                                                  CommandParameter="bassein"/>
                         </Frame.GestureRecognizers>
                     </Frame>
 
-                    <Frame x:Name="CatKaraoke" CornerRadius="20" Padding="14,8"
-                           BackgroundColor="{StaticResource SecondaryBackground}"
+                    <Frame CornerRadius="20" Padding="14,8"
+                           BackgroundColor="{Binding CatKaraokeBackground}"
                            BorderColor="Transparent" HasShadow="False">
                         <HorizontalStackLayout Spacing="6">
                             <Label Text="🎤" FontSize="14"/>
                             <Label Text="Karaoke" FontSize="13" FontAttributes="Bold"
-                                   TextColor="{StaticResource TextPrimary}"
+                                   TextColor="{Binding CatKaraokeTextColor}"
                                    VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="CatKaraoke_Tapped"/>
+                            <TapGestureRecognizer Command="{Binding SelectCategoryCommand}"
+                                                  CommandParameter="karaoke"/>
                         </Frame.GestureRecognizers>
                     </Frame>
 
-                    <Frame x:Name="CatSuur" CornerRadius="20" Padding="14,8"
-                           BackgroundColor="{StaticResource SecondaryBackground}"
+                    <Frame CornerRadius="20" Padding="14,8"
+                           BackgroundColor="{Binding CatLargeBackground}"
                            BorderColor="Transparent" HasShadow="False">
                         <HorizontalStackLayout Spacing="6">
                             <Label Text="👥" FontSize="14"/>
-                            <Label Text="Suur grupp" FontSize="13" FontAttributes="Bold"
-                                   TextColor="{StaticResource TextPrimary}"
+                            <Label Text="{Binding CatLargeText}" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{Binding CatLargeTextColor}"
                                    VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                         <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="CatSuur_Tapped"/>
+                            <TapGestureRecognizer Command="{Binding SelectCategoryCommand}"
+                                                  CommandParameter="large"/>
                         </Frame.GestureRecognizers>
                     </Frame>
 
@@ -167,8 +166,7 @@
             </ScrollView>
 
             <!-- Featured house -->
-            <Label x:Name="FeaturedLabel"
-                   Text="Külaliste lemmik"
+            <Label Text="{Binding FeaturedText}"
                    FontSize="16" FontAttributes="Bold"
                    TextColor="{StaticResource TextPrimary}"
                    Margin="20,0,20,12"/>
@@ -177,7 +175,7 @@
                    Margin="20,0,20,24" Padding="0">
                 <Grid RowDefinitions="220,Auto">
 
-                    <Image x:Name="FeaturedImage"
+                    <Image Source="{Binding FeaturedImage}"
                            Aspect="AspectFill" HeightRequest="220"/>
 
                     <BoxView VerticalOptions="End" HeightRequest="80">
@@ -193,14 +191,13 @@
                            Margin="12,12,0,0" CornerRadius="12"
                            BackgroundColor="#5A7C5E"
                            BorderColor="Transparent" Padding="8,4" HasShadow="False">
-                        <Label x:Name="FeaturedBadgeLabel"
-                               Text="⭐ Külaliste lemmik"
+                        <Label Text="{Binding FeaturedBadgeText}"
                                FontSize="11" FontAttributes="Bold" TextColor="White"/>
                     </Frame>
 
                     <VerticalStackLayout VerticalOptions="End" HorizontalOptions="End"
                                          Margin="0,0,12,12" Spacing="0">
-                        <Label x:Name="FeaturedPrice"
+                        <Label Text="{Binding FeaturedPrice}"
                                FontSize="22" FontAttributes="Bold"
                                TextColor="White" HorizontalOptions="End"/>
                         <Label Text="/24h" FontSize="11"
@@ -210,7 +207,7 @@
                     <VerticalStackLayout Grid.Row="1" Padding="14,12" Spacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <VerticalStackLayout Spacing="3">
-                                <Label x:Name="FeaturedTitle"
+                                <Label Text="{Binding FeaturedTitle}"
                                        FontSize="18" FontAttributes="Bold"
                                        TextColor="{StaticResource TextPrimary}"/>
                                 <HorizontalStackLayout Spacing="6">
@@ -223,7 +220,7 @@
                             <HorizontalStackLayout Grid.Column="1" Spacing="4"
                                                    VerticalOptions="Center">
                                 <Label Text="👥" FontSize="12"/>
-                                <Label x:Name="FeaturedGuests"
+                                <Label Text="{Binding FeaturedGuests}"
                                        FontSize="13" FontAttributes="Bold"
                                        TextColor="{StaticResource TextPrimary}"
                                        VerticalOptions="Center"/>
@@ -231,15 +228,15 @@
                         </Grid>
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                             <Button x:Name="FeaturedDetailsButton"
-                                    Text="Vaata lähemalt"
+                                    Text="{Binding FeaturedDetailsText}"
                                     Style="{StaticResource SecondaryButton}"
                                     HeightRequest="44"
-                                    Clicked="FeaturedDetails_Clicked"/>
+                                    Command="{Binding GoToFeaturedDetailsCommand}"/>
                             <Button x:Name="FeaturedBookButton"
-                                    Grid.Column="1" Text="Broneeri"
+                                    Grid.Column="1" Text="{Binding FeaturedBookText}"
                                     Style="{StaticResource PrimaryButton}"
                                     HeightRequest="44"
-                                    Clicked="FeaturedBook_Clicked"/>
+                                    Command="{Binding GoToFeaturedBookingCommand}"/>
                         </Grid>
                     </VerticalStackLayout>
 
@@ -247,13 +244,12 @@
             </Frame>
 
             <!-- All houses list -->
-            <Label x:Name="AllHousesLabel"
-                   Text="Kõik majad"
+            <Label Text="{Binding AllHousesText}"
                    FontSize="16" FontAttributes="Bold"
                    TextColor="{StaticResource TextPrimary}"
                    Margin="20,0,20,12"/>
 
-            <CollectionView x:Name="HousesView"
+            <CollectionView ItemsSource="{Binding Houses}"
                             Margin="20,0,20,32"
                             SelectionMode="None">
                 <CollectionView.ItemTemplate>
@@ -294,8 +290,9 @@
                                                 Style="{StaticResource PrimaryButton}"
                                                 HeightRequest="34" FontSize="12"
                                                 Padding="12,0"
+                                                Command="{Binding BindingContext.OpenHouseDetailsCommand, Source={x:Reference PageRoot}}"
                                                 CommandParameter="{Binding HouseId}"
-                                                Clicked="HouseDetails_Clicked"/>
+                                                />
                                     </Grid>
                                 </VerticalStackLayout>
                             </Grid>
