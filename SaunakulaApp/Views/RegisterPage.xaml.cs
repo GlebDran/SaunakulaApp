@@ -63,7 +63,7 @@ public partial class RegisterPage : ContentPage
             FullName = name,
             Email = email,
             Phone = phone,
-            PasswordHash = LoginPage.HashPassword(password),
+            PasswordHash = PasswordService.HashPassword(password),
             CreatedAt = DateTime.Now
         };
 
