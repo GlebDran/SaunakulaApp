@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="SaunakulaApp.Views.BookingsPage"
+    x:Name="PageRoot"
     Shell.NavBarIsVisible="False">
 
     <VerticalStackLayout Spacing="0">
@@ -10,11 +11,9 @@
         <!-- Header -->
         <VerticalStackLayout Padding="20,52,20,16"
                              BackgroundColor="{StaticResource Background}">
-            <Label x:Name="PageTitleLabel"
-                   Text="Minu broneerimine"
+            <Label Text="{Binding PageTitleText}"
                    Style="{StaticResource TitleLabel}"/>
-            <Label x:Name="PageSubtitleLabel"
-                   Text="Halda oma broneeringuid"
+            <Label Text="{Binding PageSubtitleText}"
                    Style="{StaticResource MutedLabel}"
                    Margin="0,4,0,0"/>
         </VerticalStackLayout>
@@ -24,80 +23,75 @@
               Margin="20,0,20,16"
               BackgroundColor="{StaticResource SecondaryBackground}"
               HeightRequest="44">
-            <Frame Grid.Column="0" x:Name="UpcomingTab"
-                   BackgroundColor="{StaticResource CardBackground}"
+            <Frame Grid.Column="0"
+                   BackgroundColor="{Binding UpcomingTabBackground}"
                    CornerRadius="10" Margin="4" Padding="0"
-                   BorderColor="Transparent" HasShadow="True">
-                <Label x:Name="UpcomingTabLabel"
-                       Text="Tulevased"
+                   BorderColor="Transparent"
+                   HasShadow="{Binding UpcomingTabHasShadow}">
+                <Label Text="{Binding UpcomingTabText}"
                        FontSize="14" FontAttributes="Bold"
-                       TextColor="{StaticResource Primary}"
+                       TextColor="{Binding UpcomingTabTextColor}"
                        HorizontalOptions="Center" VerticalOptions="Center">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="UpcomingTab_Tapped"/>
+                        <TapGestureRecognizer Command="{Binding ShowUpcomingCommand}"/>
                     </Label.GestureRecognizers>
                 </Label>
             </Frame>
-            <Frame Grid.Column="1" x:Name="PastTab"
-                   BackgroundColor="Transparent"
+            <Frame Grid.Column="1"
+                   BackgroundColor="{Binding PastTabBackground}"
                    CornerRadius="10" Margin="4" Padding="0"
-                   BorderColor="Transparent" HasShadow="False">
-                <Label x:Name="PastTabLabel"
-                       Text="Varasemad"
+                   BorderColor="Transparent"
+                   HasShadow="{Binding PastTabHasShadow}">
+                <Label Text="{Binding PastTabText}"
                        FontSize="14"
-                       TextColor="{StaticResource TextSecondary}"
+                       TextColor="{Binding PastTabTextColor}"
                        HorizontalOptions="Center" VerticalOptions="Center">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="PastTab_Tapped"/>
+                        <TapGestureRecognizer Command="{Binding ShowPastCommand}"/>
                     </Label.GestureRecognizers>
                 </Label>
             </Frame>
         </Grid>
 
         <!-- Not logged in -->
-        <VerticalStackLayout x:Name="NotLoggedInView"
-                             IsVisible="False"
+        <VerticalStackLayout IsVisible="{Binding IsNotLoggedInVisible}"
                              VerticalOptions="CenterAndExpand"
                              HorizontalOptions="Center"
                              Spacing="16" Padding="40">
-            <Label Text="🔒" FontSize="52" HorizontalOptions="Center"/>
-            <Label x:Name="NotLoggedInLabel"
-                   Text="Logi sisse, et näha broneeringuid"
+            <Label Text="&#128274;" FontSize="52" HorizontalOptions="Center"/>
+            <Label Text="{Binding NotLoggedInText}"
                    FontSize="16" FontAttributes="Bold"
                    TextColor="{StaticResource TextPrimary}"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"/>
-            <Button x:Name="LoginButton"
-                    Text="Logi sisse"
+            <Button Text="{Binding LoginText}"
                     Style="{StaticResource PrimaryButton}"
-                    Clicked="Login_Clicked"/>
+                    Command="{Binding LoginCommand}"/>
         </VerticalStackLayout>
 
         <!-- Empty state -->
-        <VerticalStackLayout x:Name="EmptyView"
-                             IsVisible="False"
+        <VerticalStackLayout IsVisible="{Binding IsEmptyVisible}"
                              VerticalOptions="CenterAndExpand"
                              HorizontalOptions="Center"
                              Spacing="12" Padding="40">
-            <Label Text="📅" FontSize="52" HorizontalOptions="Center"/>
-            <Label x:Name="EmptyTitleLabel"
-                   Text="Broneeringuid pole"
+            <Label Text="&#128197;" FontSize="52" HorizontalOptions="Center"/>
+            <Label Text="{Binding EmptyTitleText}"
                    FontSize="18" FontAttributes="Bold"
                    TextColor="{StaticResource TextPrimary}"
                    HorizontalOptions="Center"/>
-            <Label x:Name="EmptySubLabel"
-                   Text="Alusta oma järgmise puhkuse planeerimist!"
+            <Label Text="{Binding EmptySubtitleText}"
                    Style="{StaticResource MutedLabel}"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"/>
-            <Button x:Name="BrowseButton"
-                    Text="Vaata maju"
+            <Button Text="{Binding BrowseText}"
                     Style="{StaticResource PrimaryButton}"
-                    Clicked="Browse_Clicked"/>
+                    Command="{Binding BrowseCommand}"/>
         </VerticalStackLayout>
 
         <!-- Bookings list -->
-        <CollectionView x:Name="BookingsView" Margin="20,0,20,0">
+        <CollectionView ItemsSource="{Binding Bookings}"
+                        IsVisible="{Binding IsBookingsVisible}"
+                        Margin="20,0,20,0">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,0,0,16">
@@ -116,19 +110,19 @@
                                                TextColor="{StaticResource TextPrimary}"
                                                LineBreakMode="TailTruncation"/>
                                         <HorizontalStackLayout Spacing="4">
-                                            <Label Text="📍" FontSize="11"/>
+                                            <Label Text="&#128205;" FontSize="11"/>
                                             <Label Text="Saue vald, Harjumaa"
                                                    Style="{StaticResource MutedLabel}"
                                                    FontSize="12"/>
                                         </HorizontalStackLayout>
                                         <HorizontalStackLayout Spacing="4">
-                                            <Label Text="📅" FontSize="11"/>
+                                            <Label Text="&#128197;" FontSize="11"/>
                                             <Label Text="{Binding DateRange}"
                                                    Style="{StaticResource MutedLabel}"
                                                    FontSize="12"/>
                                         </HorizontalStackLayout>
                                         <HorizontalStackLayout Spacing="4">
-                                            <Label Text="👥" FontSize="11"/>
+                                            <Label Text="&#128101;" FontSize="11"/>
                                             <Label Text="{Binding GuestText}"
                                                    Style="{StaticResource MutedLabel}"
                                                    FontSize="12"/>
@@ -155,7 +149,7 @@
                                            VerticalOptions="Center">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer
-                                                Tapped="Cancel_Tapped"
+                                                Command="{Binding BindingContext.CancelBookingCommand, Source={x:Reference PageRoot}}"
                                                 CommandParameter="{Binding Id}"/>
                                         </Label.GestureRecognizers>
                                     </Label>
