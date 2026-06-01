@@ -80,6 +80,129 @@
                                FontSize="18" FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}" />
 
+                        <Frame CornerRadius="16"
+                               BackgroundColor="{StaticResource CardBackground}"
+                               BorderColor="{StaticResource Border}"
+                               Padding="14"
+                               HasShadow="False">
+                            <VerticalStackLayout Spacing="12">
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <Button Text="‹"
+                                            WidthRequest="34"
+                                            HeightRequest="34"
+                                            CornerRadius="17"
+                                            Padding="0"
+                                            BackgroundColor="{StaticResource SecondaryBackground}"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            Command="{Binding PreviousMonthCommand}" />
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         HorizontalOptions="Center"
+                                                         Spacing="2">
+                                        <Label Text="{Binding AvailabilityCalendarText}"
+                                               FontSize="13"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               HorizontalTextAlignment="Center" />
+                                        <Label Text="{Binding CalendarMonthTitle}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               HorizontalTextAlignment="Center" />
+                                    </VerticalStackLayout>
+                                    <Button Grid.Column="2"
+                                            Text="›"
+                                            WidthRequest="34"
+                                            HeightRequest="34"
+                                            CornerRadius="17"
+                                            Padding="0"
+                                            BackgroundColor="{StaticResource SecondaryBackground}"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            Command="{Binding NextMonthCommand}" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,*,*,*,*,*,*" ColumnSpacing="4">
+                                    <Label Text="E" FontSize="11" TextColor="{StaticResource TextSecondary}" HorizontalTextAlignment="Center" />
+                                    <Label Grid.Column="1" Text="T" FontSize="11" TextColor="{StaticResource TextSecondary}" HorizontalTextAlignment="Center" />
+                                    <Label Grid.Column="2" Text="K" FontSize="11" TextColor="{StaticResource TextSecondary}" HorizontalTextAlignment="Center" />
+                                    <Label Grid.Column="3" Text="N" FontSize="11" TextColor="{StaticResource TextSecondary}" HorizontalTextAlignment="Center" />
+                                    <Label Grid.Column="4" Text="R" FontSize="11" TextColor="{StaticResource TextSecondary}" HorizontalTextAlignment="Center" />
+                                    <Label Grid.Column="5" Text="L" FontSize="11" TextColor="{StaticResource TextSecondary}" HorizontalTextAlignment="Center" />
+                                    <Label Grid.Column="6" Text="P" FontSize="11" TextColor="{StaticResource TextSecondary}" HorizontalTextAlignment="Center" />
+                                </Grid>
+
+                                <CollectionView ItemsSource="{Binding CalendarDays}"
+                                                SelectionMode="None"
+                                                HeightRequest="294">
+                                    <CollectionView.ItemsLayout>
+                                        <GridItemsLayout Orientation="Vertical"
+                                                         Span="7"
+                                                         HorizontalItemSpacing="4"
+                                                         VerticalItemSpacing="4" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame HeightRequest="44"
+                                                   CornerRadius="10"
+                                                   Padding="0"
+                                                   HasShadow="False"
+                                                   Opacity="{Binding Opacity}"
+                                                   BackgroundColor="{Binding BackgroundColor}"
+                                                   BorderColor="{Binding BorderColor}">
+                                                <Label Text="{Binding Text}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{Binding TextColor}"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center" />
+                                                <Frame.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding BindingContext.SelectCalendarDayCommand, Source={x:Reference PageRoot}}"
+                                                                          CommandParameter="{Binding .}" />
+                                                </Frame.GestureRecognizers>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                    <HorizontalStackLayout Spacing="6">
+                                        <BoxView WidthRequest="12"
+                                                 HeightRequest="12"
+                                                 CornerRadius="6"
+                                                 Color="White" />
+                                        <Label Text="{Binding AvailableLegendText}"
+                                               FontSize="11"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="6">
+                                        <BoxView WidthRequest="12"
+                                                 HeightRequest="12"
+                                                 CornerRadius="6"
+                                                 Color="#E5E7EB" />
+                                        <Label Text="{Binding BookedLegendText}"
+                                               FontSize="11"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Grid.Column="2" Spacing="6">
+                                        <BoxView WidthRequest="12"
+                                                 HeightRequest="12"
+                                                 CornerRadius="6"
+                                                 Color="#5A7C5E" />
+                                        <Label Text="{Binding SelectedLegendText}"
+                                               FontSize="11"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+
+                                <Label Text="{Binding SelectedDatesText}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource Primary}"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Frame>
+
                         <VerticalStackLayout Spacing="6">
                             <Label Text="{Binding CheckInText}"
                                    FontSize="14" FontAttributes="Bold"
