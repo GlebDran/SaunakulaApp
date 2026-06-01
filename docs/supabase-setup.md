@@ -36,8 +36,9 @@ Every device loads the same house data and checks the same `reservations` table 
 The branch now has real ViewModels instead of empty placeholders:
 
 - `HomeViewModel` loads the home screen data, featured house, category filters and navigation commands.
+- `HouseDetailsViewModel` loads one house, photo gallery state, amenities, localized labels, contact actions, favourite toggle and booking navigation.
 - `BookingViewModel` owns booking state, guest count, addons, price calculation, Supabase booking creation and the availability calendar.
-- `BookingPage.xaml.cs` and `HomePage.xaml.cs` are reduced to page initialization and `BindingContext` wiring.
+- `HomePage.xaml.cs`, `HouseDetailsPage.xaml.cs` and `BookingPage.xaml.cs` are reduced to page initialization, route wiring and small UI-only event handling.
 
 ## Setup steps
 
@@ -46,8 +47,9 @@ The branch now has real ViewModels instead of empty placeholders:
 3. Run [`database/supabase-app-tables.sql`](../database/supabase-app-tables.sql).
 4. Start the MAUI app from this branch.
 5. Test that houses load from the central database.
-6. Open a house booking page and check that confirmed Supabase reservations appear as grey unavailable dates.
-7. Test booking the same house for overlapping dates from two devices or two runs; the second booking should be rejected.
+6. Open a house details page and check that photos, amenities, prices, favourite and booking navigation still work.
+7. Open a house booking page and check that confirmed Supabase reservations appear as grey unavailable dates.
+8. Test booking the same house for overlapping dates from two devices or two runs; the second booking should be rejected.
 
 ## Tables
 
@@ -70,4 +72,4 @@ The current `SupabaseService` points to the Supabase URL/key from the teacher pr
 
 ## Next integration step
 
-The database and the main booking MVVM flow are ready enough for local testing. The next cleanup step is to migrate the remaining pages (`HouseDetailsPage`, `LoginPage`, `ProfilePage`, `BookingsPage`) from code-behind to ViewModels in the same style.
+The database, home screen, house details screen and booking flow are ready enough for local testing. The next cleanup step is to migrate the remaining account pages (`LoginPage`, `ProfilePage`, `BookingsPage`) from code-behind to ViewModels in the same style.
