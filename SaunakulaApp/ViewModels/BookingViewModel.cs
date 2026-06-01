@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Graphics;
 using SaunakulaApp.Models;
 using SaunakulaApp.Services;
 
@@ -14,14 +15,20 @@ public class BookingViewModel : BaseViewModel
     private readonly DatabaseService _databaseService;
     private readonly SessionService _sessionService;
     private readonly NotificationService _notificationService;
+    private readonly HashSet<DateTime> _bookedDates = new();
 
     private House? _house;
     private DateTime _startDate = DateTime.Today;
     private DateTime _endDate = DateTime.Today.AddDays(1);
+    private DateTime _visibleMonth = new(DateTime.Today.Year, DateTime.Today.Month, 1);
     private int _guestCount = 2;
     private bool _isVip;
+    private bool _hasDateConflict;
+    private bool _isSelectingCheckout;
     private string _notes = string.Empty;
     private string _statusMessage = string.Empty;
+    private string _calendarMonthTitle = string.Empty;
+    private string _selectedDatesText = string.Empty;
     private decimal _houseTotal;
     private decimal _addonsTotal;
     private string _nightsText = string.Empty;
@@ -31,12 +38,16 @@ public class BookingViewModel : BaseViewModel
 
     public ObservableCollection<BookingAddonItem> Addons { get; } = new();
     public ObservableCollection<SupabaseReservation> MyReservations { get; } = new();
+    public ObservableCollection<BookingCalendarDay> CalendarDays { get; } = new();
 
     public IAsyncRelayCommand ConfirmBookingCommand { get; }
     public IRelayCommand IncreaseGuestsCommand { get; }
     public IRelayCommand DecreaseGuestsCommand { get; }
     public IRelayCommand<BookingAddonItem> AddAddonCommand { get; }
     public IRelayCommand<BookingAddonItem> RemoveAddonCommand { get; }
+    public IRelayCommand PreviousMonthCommand { get; }
+    public IRelayCommand NextMonthCommand { get; }
+    public IRelayCommand<BookingCalendarDay> SelectCalendarDayCommand { get; }
     public IAsyncRelayCommand BackCommand { get; }
 
     public BookingViewModel(
@@ -57,9 +68,13 @@ public class BookingViewModel : BaseViewModel
         DecreaseGuestsCommand = new RelayCommand(DecreaseGuests);
         AddAddonCommand = new RelayCommand<BookingAddonItem>(AddAddon);
         RemoveAddonCommand = new RelayCommand<BookingAddonItem>(RemoveAddon);
+        PreviousMonthCommand = new RelayCommand(ShowPreviousMonth);
+        NextMonthCommand = new RelayCommand(ShowNextMonth);
+        SelectCalendarDayCommand = new RelayCommand<BookingCalendarDay>(SelectCalendarDay);
         BackCommand = new AsyncRelayCommand(GoBackAsync);
 
         LoadDefaultAddons();
+        RebuildCalendar();
     }
 
     public string BookingTitleText => _sessionService.L("Booking_Title");
@@ -74,11 +89,52 @@ public class BookingViewModel : BaseViewModel
     public string TotalHeaderText => _sessionService.L("Booking_Total");
     public string ConfirmButtonText => _sessionService.L("Booking_Confirm");
     public string CancellationText => _sessionService.L("Booking_Cancel");
+    public string AvailabilityCalendarText => _sessionService.Language switch
+    {
+        "ru" => "Календарь доступности",
+        "en" => "Availability calendar",
+        "fi" => "Varauskalenteri",
+        _ => "Saadavuse kalender"
+    };
+    public string AvailableLegendText => _sessionService.Language switch
+    {
+        "ru" => "Свободно",
+        "en" => "Available",
+        "fi" => "Vapaa",
+        _ => "Vaba"
+    };
+    public string BookedLegendText => _sessionService.Language switch
+    {
+        "ru" => "Занято",
+        "en" => "Booked",
+        "fi" => "Varattu",
+        _ => "Hõivatud"
+    };
+    public string SelectedLegendText => _sessionService.Language switch
+    {
+        "ru" => "Выбрано",
+        "en" => "Selected",
+        "fi" => "Valittu",
+        _ => "Valitud"
+    };
 
     public string HouseTitle => _house?.GetTitle(_sessionService.Language) ?? string.Empty;
     public string HouseImage => _house?.Image ?? string.Empty;
     public string HousePriceText => _house is null ? string.Empty : $"€{_house.PricePerHour}/h  |  €{_house.Price24h}/24h";
     public string GuestsText => $"{GuestCount} {GuestsHeaderText.ToLower()}";
+
+    public string CalendarMonthTitle
+    {
+        get => _calendarMonthTitle;
+        private set => SetProperty(ref _calendarMonthTitle, value);
+    }
+
+    public string SelectedDatesText
+    {
+        get => _selectedDatesText;
+        private set => SetProperty(ref _selectedDatesText, value);
+    }
+
     public string VipBannerText => _sessionService.Language switch
     {
         "ru" => "VIP: Веники бесплатно!",
@@ -98,7 +154,9 @@ public class BookingViewModel : BaseViewModel
             if (_endDate <= _startDate)
                 EndDate = _startDate.AddDays(1);
 
+            ValidateSelectedDates();
             UpdatePrice();
+            RebuildCalendar();
         }
     }
 
@@ -108,8 +166,12 @@ public class BookingViewModel : BaseViewModel
         set
         {
             var nextValue = value.Date <= _startDate ? _startDate.AddDays(1) : value.Date;
-            if (SetProperty(ref _endDate, nextValue))
-                UpdatePrice();
+            if (!SetProperty(ref _endDate, nextValue))
+                return;
+
+            ValidateSelectedDates();
+            UpdatePrice();
+            RebuildCalendar();
         }
     }
 
@@ -151,6 +213,16 @@ public class BookingViewModel : BaseViewModel
 
     public bool HasStatusMessage => !string.IsNullOrWhiteSpace(StatusMessage);
 
+    public bool HasDateConflict
+    {
+        get => _hasDateConflict;
+        private set
+        {
+            if (SetProperty(ref _hasDateConflict, value))
+                OnPropertyChanged(nameof(CanConfirm));
+        }
+    }
+
     public string NightsText
     {
         get => _nightsText;
@@ -175,7 +247,7 @@ public class BookingViewModel : BaseViewModel
         private set => SetProperty(ref _totalText, value);
     }
 
-    public bool CanConfirm => _house is not null && _houseTotal > 0 && !IsBusy;
+    public bool CanConfirm => _house is not null && _houseTotal > 0 && !HasDateConflict && !IsBusy;
 
     public async Task InitializeAsync(string houseId)
     {
@@ -196,6 +268,8 @@ public class BookingViewModel : BaseViewModel
                 return;
             }
 
+            await LoadReservationsAsync();
+
             if (_sessionService.IsLoggedIn)
             {
                 var (_, isVip) = await _databaseService.CheckAndUpdateVipAsync(_sessionService.CurrentUser!.Id);
@@ -212,7 +286,9 @@ public class BookingViewModel : BaseViewModel
             OnPropertyChanged(nameof(HouseImage));
             OnPropertyChanged(nameof(HousePriceText));
             OnPropertyChanged(nameof(GuestsText));
+            ValidateSelectedDates();
             UpdatePrice();
+            RebuildCalendar();
         }
         catch (Exception ex)
         {
@@ -266,6 +342,13 @@ public class BookingViewModel : BaseViewModel
             return;
         }
 
+        ValidateSelectedDates();
+        if (HasDateConflict)
+        {
+            StatusMessage = GetBookedRangeMessage();
+            return;
+        }
+
         if (!_sessionService.IsLoggedIn)
         {
             StatusMessage = "Please log in before booking.";
@@ -293,6 +376,8 @@ public class BookingViewModel : BaseViewModel
             if (!createdInCentralDatabase)
             {
                 StatusMessage = "This house is already booked for the selected dates.";
+                await LoadReservationsAsync();
+                RebuildCalendar();
                 return;
             }
 
@@ -305,6 +390,8 @@ public class BookingViewModel : BaseViewModel
             await _notificationService.ScheduleArrivalReminderAsync(booking, houseTitle, _sessionService.Language);
 
             StatusMessage = "Booking confirmed in central database.";
+            await LoadReservationsAsync();
+            RebuildCalendar();
             await Shell.Current.GoToAsync("//HomePage");
         }
         catch (Exception ex)
@@ -350,6 +437,123 @@ public class BookingViewModel : BaseViewModel
     private Task GoBackAsync()
         => Shell.Current.GoToAsync("..");
 
+    private async Task LoadReservationsAsync()
+    {
+        if (_house is null)
+            return;
+
+        var reservations = await _supabaseService.GetReservationsForHouseAsync(_house.Id);
+        _bookedDates.Clear();
+        MyReservations.Clear();
+
+        foreach (var reservation in reservations.Where(item => item.Status == "confirmed"))
+        {
+            MyReservations.Add(reservation);
+
+            for (var date = reservation.StartDate.Date; date < reservation.EndDate.Date; date = date.AddDays(1))
+                _bookedDates.Add(date);
+        }
+    }
+
+    private void ShowPreviousMonth()
+    {
+        var currentMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+        if (_visibleMonth <= currentMonth)
+            return;
+
+        _visibleMonth = _visibleMonth.AddMonths(-1);
+        RebuildCalendar();
+    }
+
+    private void ShowNextMonth()
+    {
+        _visibleMonth = _visibleMonth.AddMonths(1);
+        RebuildCalendar();
+    }
+
+    private void SelectCalendarDay(BookingCalendarDay? day)
+    {
+        if (day is null || !day.IsSelectable)
+        {
+            StatusMessage = day?.IsBooked == true ? GetBookedDateMessage() : StatusMessage;
+            return;
+        }
+
+        if (!_isSelectingCheckout || day.Date <= StartDate)
+        {
+            _isSelectingCheckout = true;
+            StartDate = day.Date;
+            EndDate = FindNextCheckoutDate(day.Date);
+            StatusMessage = GetSelectCheckoutMessage();
+            return;
+        }
+
+        if (RangeHasBookedDates(StartDate, day.Date))
+        {
+            StatusMessage = GetBookedRangeMessage();
+            return;
+        }
+
+        EndDate = day.Date;
+        _isSelectingCheckout = false;
+        StatusMessage = string.Empty;
+    }
+
+    private DateTime FindNextCheckoutDate(DateTime startDate)
+        => startDate.AddDays(1);
+
+    private bool RangeHasBookedDates(DateTime start, DateTime end)
+    {
+        for (var date = start.Date; date < end.Date; date = date.AddDays(1))
+        {
+            if (_bookedDates.Contains(date))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void ValidateSelectedDates()
+    {
+        HasDateConflict = RangeHasBookedDates(StartDate, EndDate);
+        SelectedDatesText = $"{StartDate:dd.MM.yyyy} - {EndDate:dd.MM.yyyy}";
+
+        if (HasDateConflict)
+            StatusMessage = GetBookedRangeMessage();
+        else if (StatusMessage == GetBookedRangeMessage() || StatusMessage == GetBookedDateMessage())
+            StatusMessage = string.Empty;
+    }
+
+    private void RebuildCalendar()
+    {
+        CalendarMonthTitle = _visibleMonth.ToString("MMMM yyyy");
+        CalendarDays.Clear();
+
+        var firstDay = _visibleMonth;
+        var startOffset = ((int)firstDay.DayOfWeek + 6) % 7;
+        var firstVisibleDay = firstDay.AddDays(-startOffset);
+
+        for (var index = 0; index < 42; index++)
+        {
+            var date = firstVisibleDay.AddDays(index);
+            var isInCurrentMonth = date.Month == _visibleMonth.Month && date.Year == _visibleMonth.Year;
+            var isPast = date.Date < DateTime.Today;
+            var isBooked = _bookedDates.Contains(date.Date);
+            var isSelectedStart = date.Date == StartDate.Date;
+            var isSelectedEnd = date.Date == EndDate.Date;
+            var isSelectedRange = date.Date > StartDate.Date && date.Date < EndDate.Date;
+
+            CalendarDays.Add(new BookingCalendarDay(
+                date,
+                isInCurrentMonth,
+                isPast,
+                isBooked,
+                isSelectedStart,
+                isSelectedEnd,
+                isSelectedRange));
+        }
+    }
+
     private void UpdatePrice()
     {
         if (_house is null)
@@ -360,6 +564,7 @@ public class BookingViewModel : BaseViewModel
             SubtotalText = "€0";
             AddonsTotalText = "€0";
             TotalText = "€0";
+            SelectedDatesText = $"{StartDate:dd.MM.yyyy} - {EndDate:dd.MM.yyyy}";
             OnPropertyChanged(nameof(CanConfirm));
             return;
         }
@@ -380,8 +585,33 @@ public class BookingViewModel : BaseViewModel
         SubtotalText = $"€{_houseTotal:F0}";
         AddonsTotalText = _addonsTotal > 0 ? $"€{_addonsTotal:F0}" : "€0";
         TotalText = $"€{(_houseTotal + _addonsTotal):F0}";
+        SelectedDatesText = $"{StartDate:dd.MM.yyyy} - {EndDate:dd.MM.yyyy}";
         OnPropertyChanged(nameof(CanConfirm));
     }
+
+    private string GetBookedDateMessage() => _sessionService.Language switch
+    {
+        "ru" => "Эта дата уже занята. Выбери другой день.",
+        "en" => "This date is already booked. Choose another day.",
+        "fi" => "Tämä päivä on jo varattu. Valitse toinen päivä.",
+        _ => "See kuupäev on juba hõivatud. Vali teine päev."
+    };
+
+    private string GetBookedRangeMessage() => _sessionService.Language switch
+    {
+        "ru" => "Выбранный период пересекается с занятой датой.",
+        "en" => "The selected period overlaps with a booked date.",
+        "fi" => "Valittu jakso osuu varattuun päivään.",
+        _ => "Valitud periood kattub hõivatud kuupäevaga."
+    };
+
+    private string GetSelectCheckoutMessage() => _sessionService.Language switch
+    {
+        "ru" => "Теперь выбери дату выезда.",
+        "en" => "Now choose the checkout date.",
+        "fi" => "Valitse seuraavaksi lähtöpäivä.",
+        _ => "Vali nüüd lahkumiskuupäev."
+    };
 
     private void LoadDefaultAddons()
     {
@@ -394,6 +624,75 @@ public class BookingViewModel : BaseViewModel
         Addons.Add(new BookingAddonItem("sytik", "Süütevedelik", "Lighter fluid", "Sytytysaine", "Жидкость для розжига", "💧", 6, false));
         Addons.Add(new BookingAddonItem("tunn", "Kümblustünn", "Hot tub", "Kylpytynnyri", "Купель", "🛁", 140, false));
     }
+}
+
+public class BookingCalendarDay
+{
+    public BookingCalendarDay(
+        DateTime date,
+        bool isInCurrentMonth,
+        bool isPast,
+        bool isBooked,
+        bool isSelectedStart,
+        bool isSelectedEnd,
+        bool isSelectedRange)
+    {
+        Date = date.Date;
+        Text = isInCurrentMonth ? date.Day.ToString() : string.Empty;
+        IsInCurrentMonth = isInCurrentMonth;
+        IsPast = isPast;
+        IsBooked = isBooked;
+        IsSelectedStart = isSelectedStart;
+        IsSelectedEnd = isSelectedEnd;
+        IsSelectedRange = isSelectedRange;
+    }
+
+    public DateTime Date { get; }
+    public string Text { get; }
+    public bool IsInCurrentMonth { get; }
+    public bool IsPast { get; }
+    public bool IsBooked { get; }
+    public bool IsSelectedStart { get; }
+    public bool IsSelectedEnd { get; }
+    public bool IsSelectedRange { get; }
+    public bool IsSelectable => IsInCurrentMonth && !IsPast && !IsBooked;
+
+    public Color BackgroundColor
+    {
+        get
+        {
+            if (!IsInCurrentMonth)
+                return Colors.Transparent;
+            if (IsBooked || IsPast)
+                return Color.FromArgb("#E5E7EB");
+            if (IsSelectedStart || IsSelectedEnd)
+                return Color.FromArgb("#5A7C5E");
+            if (IsSelectedRange)
+                return Color.FromArgb("#DDEBDD");
+
+            return Colors.White;
+        }
+    }
+
+    public Color TextColor
+    {
+        get
+        {
+            if (!IsInCurrentMonth)
+                return Colors.Transparent;
+            if (IsBooked || IsPast)
+                return Color.FromArgb("#8A8F8B");
+            if (IsSelectedStart || IsSelectedEnd)
+                return Colors.White;
+
+            return Color.FromArgb("#2D3B2F");
+        }
+    }
+
+    public Color BorderColor
+        => IsSelectedStart || IsSelectedEnd ? Color.FromArgb("#5A7C5E") : Color.FromArgb("#E8EDE7");
+
+    public double Opacity => IsInCurrentMonth ? 1 : 0;
 }
 
 public class BookingAddonItem : ObservableObject
