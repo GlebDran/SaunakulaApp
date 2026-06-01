@@ -26,8 +26,18 @@ Every device loads the same house data and checks the same `reservations` table 
 - `HouseService` no longer stores a hardcoded list of houses.
 - `HouseService` now loads house business data through `SupabaseService`.
 - `SupabaseService` loads normalized tables: `houses`, `house_translations`, `house_amenities`, `house_photos`.
+- `BookingViewModel` loads confirmed reservations from Supabase and builds an online availability calendar.
+- Booked dates are shown as grey calendar cells, and the confirm button is disabled if the selected period overlaps a confirmed reservation.
 - `reservations` has a PostgreSQL exclusion constraint that blocks overlapping confirmed bookings for the same house.
 - The teacher prototype had only three simple houses; this branch adds all four app house IDs: `soome`, `vene`, `jahimees`, `spa`.
+
+## MVVM coverage
+
+The branch now has real ViewModels instead of empty placeholders:
+
+- `HomeViewModel` loads the home screen data, featured house, category filters and navigation commands.
+- `BookingViewModel` owns booking state, guest count, addons, price calculation, Supabase booking creation and the availability calendar.
+- `BookingPage.xaml.cs` and `HomePage.xaml.cs` are reduced to page initialization and `BindingContext` wiring.
 
 ## Setup steps
 
@@ -36,7 +46,8 @@ Every device loads the same house data and checks the same `reservations` table 
 3. Run [`database/supabase-app-tables.sql`](../database/supabase-app-tables.sql).
 4. Start the MAUI app from this branch.
 5. Test that houses load from the central database.
-6. Test booking the same house for overlapping dates from two devices or two runs; the second booking should be rejected.
+6. Open a house booking page and check that confirmed Supabase reservations appear as grey unavailable dates.
+7. Test booking the same house for overlapping dates from two devices or two runs; the second booking should be rejected.
 
 ## Tables
 
@@ -59,4 +70,4 @@ The current `SupabaseService` points to the Supabase URL/key from the teacher pr
 
 ## Next integration step
 
-The database layer is now ready enough for the next task: connect the existing booking UI fully to `BookingViewModel` and move the remaining booking logic out of `Views/BookingPage.xaml.cs`.
+The database and the main booking MVVM flow are ready enough for local testing. The next cleanup step is to migrate the remaining pages (`HouseDetailsPage`, `LoginPage`, `ProfilePage`, `BookingsPage`) from code-behind to ViewModels in the same style.
