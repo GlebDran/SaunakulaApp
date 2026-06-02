@@ -7,6 +7,7 @@ namespace SaunakulaApp.ViewModels;
 public class RegisterViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
+    private readonly SupabaseService _supabaseService;
     private readonly SessionService _sessionService;
 
     private string _fullName = string.Empty;
@@ -21,9 +22,10 @@ public class RegisterViewModel : BaseViewModel
     public IAsyncRelayCommand RegisterCommand { get; }
     public IAsyncRelayCommand GoToLoginCommand { get; }
 
-    public RegisterViewModel(DatabaseService databaseService, SessionService sessionService)
+    public RegisterViewModel(DatabaseService databaseService, SupabaseService supabaseService, SessionService sessionService)
     {
         _databaseService = databaseService;
+        _supabaseService = supabaseService;
         _sessionService = sessionService;
 
         InitializeCommand = new AsyncRelayCommand(InitializeAsync);
@@ -88,19 +90,19 @@ public class RegisterViewModel : BaseViewModel
             string.IsNullOrEmpty(email) ||
             string.IsNullOrEmpty(password))
         {
-            ShowError("Palun t\u00e4ida k\u00f5ik kohustuslikud v\u00e4ljad.");
+            ShowError("Palun täida kõik kohustuslikud väljad.");
             return;
         }
 
         if (password != confirm)
         {
-            ShowError("Paroolid ei \u00fchti.");
+            ShowError("Paroolid ei ühti.");
             return;
         }
 
         if (password.Length < 6)
         {
-            ShowError("Parool peab olema v\u00e4hemalt 6 t\u00e4hem\u00e4rki.");
+            ShowError("Parool peab olema vähemalt 6 tähemärki.");
             return;
         }
 
@@ -108,8 +110,8 @@ public class RegisterViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            var existing = await _databaseService.GetUserByEmailAsync(email);
-            if (existing is not null)
+            var existingRemote = await _supabaseService.GetAppUserByEmailAsync(email);
+            if (existingRemote is not null)
             {
                 ShowError("See e-posti aadress on juba kasutusel.");
                 return;
@@ -124,14 +126,28 @@ public class RegisterViewModel : BaseViewModel
                 CreatedAt = DateTime.Now
             };
 
-            await _databaseService.InsertUserAsync(user);
+            var createdRemote = await _supabaseService.RegisterAppUserAsync(user);
 
-            var created = await _databaseService.GetUserByEmailAsync(email);
-            if (created is not null)
-                _sessionService.Login(created);
+            var created = new User
+            {
+                Id = checked((int)createdRemote.Id),
+                FullName = createdRemote.FullName,
+                Email = createdRemote.Email,
+                Phone = createdRemote.Phone,
+                PasswordHash = createdRemote.PasswordHash,
+                IsVip = createdRemote.IsVip,
+                VipGrantedAt = createdRemote.VipGrantedAt,
+                CreatedAt = createdRemote.CreatedAt == default ? DateTime.Now : createdRemote.CreatedAt
+            };
+
+            _sessionService.Login(created);
 
             ClearSensitiveFields();
             await Shell.Current.GoToAsync("//HomePage");
+        }
+        catch (Exception ex)
+        {
+            ShowError($"Registration failed: {ex.Message}");
         }
         finally
         {
