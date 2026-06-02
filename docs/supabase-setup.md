@@ -1,6 +1,6 @@
 # Supabase setup for SaunakulaApp
 
-This branch uses the useful idea from `MarinaOleinik/Saun_App`, but adapts it to the real SaunakulaApp structure: houses, translations, amenities, photos, addons, users, favourites and reservations are stored in one central Supabase/PostgreSQL database.
+This branch adapts SaunakulaApp to a central Supabase/PostgreSQL database. Houses, translations, amenities, photos, addons, users, favourites and reservations are stored in shared tables so every device works with the same booking data.
 
 ## Why this fixes the main database issue
 
@@ -29,7 +29,7 @@ Every device loads the same house data and checks the same `reservations` table 
 - `BookingViewModel` loads confirmed reservations from Supabase and builds an online availability calendar.
 - Booked dates are shown as grey calendar cells, and the confirm button is disabled if the selected period overlaps a confirmed reservation.
 - `reservations` has a PostgreSQL exclusion constraint that blocks overlapping confirmed bookings for the same house.
-- The teacher prototype had only three simple houses; this branch adds all four app house IDs: `soome`, `vene`, `jahimees`, `spa`.
+- The seed data includes all four app house IDs: `soome`, `vene`, `jahimees`, and `spa`.
 
 ## MVVM coverage
 
@@ -74,8 +74,8 @@ favourites
 
 ## Important note
 
-The current `SupabaseService` points to the Supabase URL/key from the teacher prototype. If you create your own Supabase project, replace `SupabaseUrl` and `SupabaseKey` in `SaunakulaApp/Services/SupabaseService.cs`.
+The current `SupabaseService` contains one Supabase URL/key pair. If you create your own Supabase project, replace `SupabaseUrl` and `SupabaseKey` in `SaunakulaApp/Services/SupabaseService.cs` with values from your project settings.
 
 ## Next integration step
 
-The database, home screen, house details screen, auth screens, booking flow, bookings page and profile page are ready for local testing. After that, the remaining cleanup is mostly polish: check the less central pages (`PricingPage`, `HouseFinderPage`, `SplashPage`) and decide whether the teacher expects every page to have its own ViewModel or only the main user flows.
+The database, home screen, house details screen, auth screens, booking flow, bookings page and profile page are ready for local testing. After that, the remaining cleanup is mostly polish: check the less central pages (`PricingPage`, `HouseFinderPage`, `SplashPage`) and decide whether every page needs a dedicated ViewModel or whether the main user flows are enough for the project requirements.
