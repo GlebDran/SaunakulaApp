@@ -6,8 +6,8 @@ namespace SaunakulaApp.Services;
 
 public class SupabaseService
 {
-    private const string SupabaseUrl = "https://agsocpclacqwrbxbvmpa.supabase.co";
-    private const string SupabaseKey = "sb_publishable_HhxJ2THI7QsgSrGix9I4TA_frsEqPpv";
+    private const string SupabaseUrl = "https://pqfaxavhwafzsnfnvxtl.supabase.co";
+    private const string SupabaseKey = "sb_publishable_34KSEXYms2DI15KcaSey_Q_I6Q-LJlm";
 
     private readonly Client _supabaseClient;
 
