@@ -363,26 +363,16 @@ public class BookingViewModel : BaseViewModel
 
             var selectedAddons = Addons.Where(addon => addon.Count > 0).ToList();
             var totalAmount = _houseTotal + _addonsTotal;
+            var booking = BuildLocalBooking(selectedAddons, totalAmount);
 
-            var createdInCentralDatabase = await _supabaseService.BookHouseAsync(
-                _house.Id,
-                _sessionService.CurrentUser!.FullName,
-                StartDate,
-                EndDate,
-                GuestCount,
-                totalAmount,
-                Notes ?? string.Empty);
-
-            if (!createdInCentralDatabase)
+            var createdCount = await _databaseService.InsertBookingAsync(booking);
+            if (createdCount <= 0)
             {
                 StatusMessage = "This house is already booked for the selected dates.";
                 await LoadReservationsAsync();
                 RebuildCalendar();
                 return;
             }
-
-            var booking = BuildLocalBooking(selectedAddons, totalAmount);
-            await _databaseService.InsertBookingAsync(booking);
 
             var houseTitle = _house.GetTitle(_sessionService.Language);
             await _notificationService.RequestPermissionAsync();
