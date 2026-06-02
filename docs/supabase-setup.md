@@ -16,17 +16,20 @@ Both phones can book the same house for the same dates because they do not see e
 After:
 
 ```text
-MAUI View -> ViewModel -> HouseService/SupabaseService -> Supabase PostgreSQL
+MAUI View -> ViewModel -> DatabaseService/SupabaseService -> Supabase PostgreSQL
 ```
 
-Every device loads the same house data and checks the same `reservations` table before creating a booking.
+Every device loads the same house data, user data, favourites and reservations from the same central database.
 
 ## What changed in the app
 
 - `HouseService` no longer stores a hardcoded list of houses.
 - `HouseService` now loads house business data through `SupabaseService`.
 - `SupabaseService` loads normalized tables: `houses`, `house_translations`, `house_amenities`, `house_photos`.
-- `BookingViewModel` loads confirmed reservations from Supabase and builds an online availability calendar.
+- `DatabaseService` now routes users, bookings, favourites and VIP state through Supabase instead of local SQLite.
+- `LoginViewModel` and `RegisterViewModel` read and write users through the `app_users` table.
+- `BookingViewModel` creates reservations with `user_id`, so `BookingsPage` can show the current user's central bookings.
+- `HouseDetailsViewModel` and `ProfileViewModel` use the central `favourites` table.
 - Booked dates are shown as grey calendar cells, and the confirm button is disabled if the selected period overlaps a confirmed reservation.
 - `reservations` has a PostgreSQL exclusion constraint that blocks overlapping confirmed bookings for the same house.
 - The seed data includes all four app house IDs: `soome`, `vene`, `jahimees`, and `spa`.
@@ -48,14 +51,15 @@ The branch now has real ViewModels instead of empty placeholders:
 
 1. Open Supabase SQL Editor.
 2. Run [`database/supabase-schema.sql`](../database/supabase-schema.sql).
-3. Run [`database/supabase-app-tables.sql`](../database/supabase-app-tables.sql).
+3. Run [`database/supabase-app-tables.sql`](../database/supabase-app-tables.sql). Run it again if the project was already set up before this branch update; it adds the `reservations.user_id` relation.
 4. Start the MAUI app from this branch.
 5. Test that houses load from the central database.
-6. Register or log in and check that account navigation still works correctly.
+6. Register or log in and check that the new user appears in `app_users`.
 7. Open a house details page and check that photos, amenities, prices, favourite and booking navigation still work.
 8. Open a house booking page and check that confirmed Supabase reservations appear as grey unavailable dates.
-9. Open bookings and profile screens to check user bookings, favourites, language switching and VIP progress.
-10. Test booking the same house for overlapping dates from two devices or two runs; the second booking should be rejected.
+9. Create a booking and check that `reservations.user_id` is filled with the logged-in user's id.
+10. Open bookings and profile screens to check user bookings, favourites, language switching and VIP progress.
+11. Test booking the same house for overlapping dates from two devices or two runs; the second booking should be rejected.
 
 ## Tables
 
@@ -78,4 +82,4 @@ The current `SupabaseService` contains one Supabase URL/key pair. If you create 
 
 ## Next integration step
 
-The database, home screen, house details screen, auth screens, booking flow, bookings page and profile page are ready for local testing. After that, the remaining cleanup is mostly polish: check the less central pages (`PricingPage`, `HouseFinderPage`, `SplashPage`) and decide whether every page needs a dedicated ViewModel or whether the main user flows are enough for the project requirements.
+The database, user accounts, favourites, home screen, house details screen, auth screens, booking flow, bookings page and profile page are ready for local testing. After that, the remaining cleanup is mostly polish: check the less central pages (`PricingPage`, `HouseFinderPage`, `SplashPage`) and decide whether every page needs a dedicated ViewModel or whether the main user flows are enough for the project requirements.
