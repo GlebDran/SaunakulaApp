@@ -7,6 +7,7 @@ namespace SaunakulaApp.ViewModels;
 public class LoginViewModel : BaseViewModel
 {
     private readonly DatabaseService _databaseService;
+    private readonly SupabaseService _supabaseService;
     private readonly SessionService _sessionService;
 
     private string _email = string.Empty;
@@ -18,9 +19,10 @@ public class LoginViewModel : BaseViewModel
     public IAsyncRelayCommand LoginCommand { get; }
     public IAsyncRelayCommand GoToRegisterCommand { get; }
 
-    public LoginViewModel(DatabaseService databaseService, SessionService sessionService)
+    public LoginViewModel(DatabaseService databaseService, SupabaseService supabaseService, SessionService sessionService)
     {
         _databaseService = databaseService;
+        _supabaseService = supabaseService;
         _sessionService = sessionService;
 
         InitializeCommand = new AsyncRelayCommand(InitializeAsync);
@@ -62,7 +64,7 @@ public class LoginViewModel : BaseViewModel
 
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
         {
-            ShowError("Palun t\u00e4ida k\u00f5ik v\u00e4ljad.");
+            ShowError("Palun täida kõik väljad.");
             return;
         }
 
@@ -70,10 +72,11 @@ public class LoginViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            var user = await _databaseService.GetUserByEmailAsync(email);
-            if (user is null || user.PasswordHash != PasswordService.HashPassword(password))
+            var passwordHash = PasswordService.HashPassword(password);
+            var user = await _supabaseService.LoginAppUserAsync(email, passwordHash);
+            if (user is null)
             {
-                ShowError("Vale e-post v\u00f5i parool.");
+                ShowError("Vale e-post või parool.");
                 return;
             }
 
@@ -83,6 +86,10 @@ public class LoginViewModel : BaseViewModel
             Password = string.Empty;
 
             await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            ShowError($"Login failed: {ex.Message}");
         }
         finally
         {
