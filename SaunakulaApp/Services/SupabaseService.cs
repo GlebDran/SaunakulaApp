@@ -336,8 +336,8 @@ public class SupabaseService
         return response.Models ?? new List<SupabaseReservation>();
     }
 
-    public Task DeleteReservationAsync(long reservationId)
-        => CancelReservationAsync(reservationId);
+    public async Task DeleteReservationAsync(long reservationId)
+        => await CancelReservationAsync(reservationId);
 
     private async Task<IReadOnlyList<SupabaseReservation>> GetReservationsForHouseAsync(long remoteHouseId)
     {
