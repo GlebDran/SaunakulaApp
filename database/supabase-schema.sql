@@ -1,6 +1,6 @@
 -- SaunakulaApp central Supabase/PostgreSQL schema and seed data.
 -- Run this in Supabase SQL Editor before testing the cloud database branch.
--- The schema also upgrades the small teacher prototype tables if they already exist.
+-- Existing tables are upgraded in place when possible.
 
 create extension if not exists btree_gist;
 
@@ -65,7 +65,7 @@ insert into house_translations (house_id, language, title, description) values
     (4, 'et', 'SPA maja', 'Kolm eri sauna: puuküttega Soome saun, aurusaun ja infrapunasaun. Lisaks bassein, kümblustünn ja karaoke.'),
     (4, 'ru', 'СПА дом', 'Три сауны: финская на дровах, паровая и инфракрасная. Также бассейн, купель и караоке.'),
     (4, 'en', 'SPA House', 'Three saunas: wood-fired Finnish sauna, steam room and infrared sauna. Also pool, hot tub and karaoke.'),
-    (4, 'fi', 'SPA-talo', 'Kolme saunaa: puulämmitteinen sauna, höyrysauna ja infrapunasauna. Lisäksi allas, kylpytynnyri ja karaoke.')
+    (4, 'fi', 'SPA-talo', 'Kolme saunaa: puulämmitteinen sauna, höyrysauna ja infrapunasauna. Lisaks allas, kylpytynnyri ja karaoke.')
 on conflict (house_id, language) do update set
     title = excluded.title,
     description = excluded.description;
