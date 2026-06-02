@@ -1,4 +1,5 @@
-using Postgrest.Constants;
+using System.Text.Json;
+using static Postgrest.Constants;
 using SaunakulaApp.Models;
 using Supabase;
 
@@ -196,7 +197,7 @@ public class SupabaseService
             ? customerName.Trim()
             : user?.FullName ?? $"User {booking.UserId}";
 
-        return await InsertReservationAsync(
+        var reservation = await InsertReservationAsync(
             remoteHouseId,
             booking.UserId > 0 ? booking.UserId : null,
             resolvedCustomerName,
@@ -205,6 +206,11 @@ public class SupabaseService
             booking.GuestCount,
             booking.TotalPrice,
             booking.Notes ?? string.Empty);
+
+        if (reservation is not null)
+            await InsertReservationAddonsAsync(reservation.Id, booking.AddonsJson);
+
+        return reservation;
     }
 
     public async Task<List<Booking>> GetBookingsByUserAsync(int userId)
@@ -385,6 +391,37 @@ public class SupabaseService
         }
     }
 
+    private async Task InsertReservationAddonsAsync(long reservationId, string addonsJson)
+    {
+        if (reservationId <= 0 || string.IsNullOrWhiteSpace(addonsJson))
+            return;
+
+        List<BookingAddonPayload>? addons;
+        try
+        {
+            addons = JsonSerializer.Deserialize<List<BookingAddonPayload>>(addonsJson);
+        }
+        catch (JsonException)
+        {
+            return;
+        }
+
+        if (addons is null || addons.Count == 0)
+            return;
+
+        foreach (var addon in addons.Where(item => !string.IsNullOrWhiteSpace(item.Id) && item.Count > 0))
+        {
+            await _supabaseClient.From<SupabaseReservationAddon>().Insert(new SupabaseReservationAddon
+            {
+                ReservationId = reservationId,
+                AddonId = addon.Id,
+                Quantity = addon.Count,
+                UnitPrice = addon.Price,
+                CreatedAt = DateTime.UtcNow
+            });
+        }
+    }
+
     private async Task<long> ResolveRemoteHouseIdAsync(string houseId)
     {
         var response = await _supabaseClient
@@ -509,5 +546,12 @@ public class SupabaseService
                 house.DescriptionEt = translation.Description;
                 break;
         }
+    }
+
+    private sealed class BookingAddonPayload
+    {
+        public string Id { get; set; } = string.Empty;
+        public int Count { get; set; }
+        public decimal Price { get; set; }
     }
 }
