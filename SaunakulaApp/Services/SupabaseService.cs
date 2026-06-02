@@ -66,15 +66,16 @@ public class SupabaseService
             PasswordHash = user.PasswordHash,
             Phone = user.Phone.Trim(),
             IsVip = user.IsVip,
-            VipGrantedAt = user.VipGrantedAt
+            VipGrantedAt = user.VipGrantedAt,
+            CreatedAt = DateTime.UtcNow
         };
 
-        var response = await _supabaseClient
+        await _supabaseClient
             .From<SupabaseAppUser>()
             .Insert(remoteUser);
 
-        return response.Models?.FirstOrDefault()
-            ?? throw new InvalidOperationException("User was not returned after registration.");
+        return await GetAppUserByEmailAsync(email)
+            ?? throw new InvalidOperationException("User was not found after registration.");
     }
 
     public async Task<User?> LoginAppUserAsync(string email, string passwordHash)
