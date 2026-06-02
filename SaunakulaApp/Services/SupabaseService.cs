@@ -42,6 +42,50 @@ public class SupabaseService
             .ToList();
     }
 
+    public async Task<SupabaseAppUser?> GetAppUserByEmailAsync(string email)
+    {
+        var response = await _supabaseClient
+            .From<SupabaseAppUser>()
+            .Filter("email", Operator.Equals, email.Trim())
+            .Get();
+
+        return response.Models?.FirstOrDefault();
+    }
+
+    public async Task<SupabaseAppUser> RegisterAppUserAsync(User user)
+    {
+        var email = user.Email.Trim();
+        var existing = await GetAppUserByEmailAsync(email);
+        if (existing is not null)
+            throw new InvalidOperationException("This email is already registered.");
+
+        var remoteUser = new SupabaseAppUser
+        {
+            FullName = user.FullName.Trim(),
+            Email = email,
+            PasswordHash = user.PasswordHash,
+            Phone = user.Phone.Trim(),
+            IsVip = user.IsVip,
+            VipGrantedAt = user.VipGrantedAt
+        };
+
+        var response = await _supabaseClient
+            .From<SupabaseAppUser>()
+            .Insert(remoteUser);
+
+        return response.Models?.FirstOrDefault()
+            ?? throw new InvalidOperationException("User was not returned after registration.");
+    }
+
+    public async Task<User?> LoginAppUserAsync(string email, string passwordHash)
+    {
+        var remoteUser = await GetAppUserByEmailAsync(email);
+        if (remoteUser is null || remoteUser.PasswordHash != passwordHash)
+            return null;
+
+        return ToLocalUser(remoteUser);
+    }
+
     public async Task<bool> BookHouseAsync(
         string houseId,
         string customerName,
@@ -146,6 +190,21 @@ public class SupabaseService
 
         var house = response.Models?.FirstOrDefault();
         return house?.Id ?? throw new InvalidOperationException($"House '{houseId}' does not exist in the central database.");
+    }
+
+    private static User ToLocalUser(SupabaseAppUser source)
+    {
+        return new User
+        {
+            Id = checked((int)source.Id),
+            FullName = source.FullName,
+            Email = source.Email,
+            PasswordHash = source.PasswordHash,
+            Phone = source.Phone,
+            IsVip = source.IsVip,
+            VipGrantedAt = source.VipGrantedAt,
+            CreatedAt = source.CreatedAt == default ? DateTime.Now : source.CreatedAt
+        };
     }
 
     private static House ToHouse(
