@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="SaunakulaApp.Views.HouseDetailsPage"
+    x:Name="PageRoot"
     Shell.NavBarIsVisible="False">
 
     <Grid RowDefinitions="*,Auto">
@@ -13,6 +14,8 @@
                 <!-- Photo Gallery -->
                 <Grid HeightRequest="300">
                     <CollectionView x:Name="PhotoGallery"
+                                    ItemsSource="{Binding Photos}"
+                                    Scrolled="PhotoGallery_Scrolled"
                                     HeightRequest="300"
                                     HorizontalScrollBarVisibility="Never">
                         <CollectionView.ItemsLayout>
@@ -51,7 +54,7 @@
                                TextColor="{StaticResource TextPrimary}"
                                HorizontalOptions="Center" VerticalOptions="Center">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="Back_Tapped"/>
+                                <TapGestureRecognizer Command="{Binding BackCommand}"/>
                             </Label.GestureRecognizers>
                         </Label>
                     </Frame>
@@ -64,18 +67,28 @@
                            Padding="0" Margin="0,48,16,0"
                            HorizontalOptions="End" VerticalOptions="Start"
                            HasShadow="False">
-                        <Label x:Name="FavLabel" Text="🤍" FontSize="20"
+                        <Label Text="{Binding FavouriteIcon}" FontSize="20"
                                HorizontalOptions="Center" VerticalOptions="Center">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="Favourite_Tapped"/>
+                                <TapGestureRecognizer Command="{Binding ToggleFavouriteCommand}"/>
                             </Label.GestureRecognizers>
                         </Label>
                     </Frame>
 
-                    <HorizontalStackLayout x:Name="DotsLayout"
-                                           HorizontalOptions="Center"
+                    <HorizontalStackLayout HorizontalOptions="Center"
                                            VerticalOptions="End"
-                                           Spacing="6" Margin="0,0,0,14"/>
+                                           Spacing="6" Margin="0,0,0,14"
+                                           BindableLayout.ItemsSource="{Binding PhotoDots}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <BoxView WidthRequest="{Binding Width}"
+                                         HeightRequest="7"
+                                         CornerRadius="4"
+                                         Color="{Binding Color}"
+                                         VerticalOptions="Center"/>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
                 </Grid>
 
                 <!-- Content -->
@@ -83,14 +96,13 @@
 
                     <!-- Title + Rating -->
                     <VerticalStackLayout Spacing="8">
-                        <Label x:Name="TitleLabel"
+                        <Label Text="{Binding HouseTitle}"
                                FontSize="24" FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
                         <Grid ColumnDefinitions="*,Auto">
                             <HorizontalStackLayout Spacing="6">
                                 <Label Text="📍" FontSize="13"/>
-                                <Label x:Name="LocationAddressLabel"
-                                       Text="Saue vald, Harjumaa"
+                                <Label Text="{Binding LocationAddressText}"
                                        Style="{StaticResource MutedLabel}"
                                        VerticalOptions="Center"/>
                             </HorizontalStackLayout>
@@ -113,11 +125,11 @@
                                CornerRadius="12" Padding="10" BorderColor="Transparent">
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
                                 <Label Text="👥" FontSize="18" HorizontalOptions="Center"/>
-                                <Label x:Name="GuestsUntilLabel"
-                                       Text="Kuni" FontSize="10"
+                                <Label Text="{Binding GuestsUntilText}"
+                                       FontSize="10"
                                        TextColor="{StaticResource TextSecondary}"
                                        HorizontalOptions="Center"/>
-                                <Label x:Name="GuestsLabel"
+                                <Label Text="{Binding GuestsText}"
                                        FontSize="13" FontAttributes="Bold"
                                        TextColor="{StaticResource TextPrimary}"
                                        HorizontalOptions="Center"/>
@@ -129,11 +141,11 @@
                                CornerRadius="12" Padding="10" BorderColor="Transparent">
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
                                 <Label Text="📐" FontSize="18" HorizontalOptions="Center"/>
-                                <Label x:Name="SizeHeaderLabel"
-                                       Text="Suurus" FontSize="10"
+                                <Label Text="{Binding SizeHeaderText}"
+                                       FontSize="10"
                                        TextColor="{StaticResource TextSecondary}"
                                        HorizontalOptions="Center"/>
-                                <Label x:Name="SizeLabel"
+                                <Label Text="{Binding SizeText}"
                                        FontSize="13" FontAttributes="Bold"
                                        TextColor="{StaticResource TextPrimary}"
                                        HorizontalOptions="Center"/>
@@ -145,11 +157,11 @@
                                CornerRadius="12" Padding="10" BorderColor="Transparent">
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
                                 <Label Text="⏱" FontSize="18" HorizontalOptions="Center"/>
-                                <Label x:Name="MinTimeLabel"
-                                       Text="Min aeg" FontSize="10"
+                                <Label Text="{Binding MinTimeText}"
+                                       FontSize="10"
                                        TextColor="{StaticResource TextSecondary}"
                                        HorizontalOptions="Center"/>
-                                <Label x:Name="MinHoursLabel"
+                                <Label Text="{Binding MinHoursText}"
                                        FontSize="13" FontAttributes="Bold"
                                        TextColor="{StaticResource TextPrimary}"
                                        HorizontalOptions="Center"/>
@@ -160,22 +172,20 @@
 
                     <!-- Description -->
                     <VerticalStackLayout Spacing="8">
-                        <Label x:Name="DescriptionHeaderLabel"
-                               Text="Kirjeldus"
+                        <Label Text="{Binding DescriptionHeaderText}"
                                FontSize="18" FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
-                        <Label x:Name="DescLabel"
+                        <Label Text="{Binding DescriptionText}"
                                Style="{StaticResource MutedLabel}"
                                LineBreakMode="WordWrap" LineHeight="1.5"/>
                     </VerticalStackLayout>
 
                     <!-- Amenities -->
                     <VerticalStackLayout Spacing="10">
-                        <Label x:Name="AmenitiesHeaderLabel"
-                               Text="Mugavused"
+                        <Label Text="{Binding AmenitiesHeaderText}"
                                FontSize="18" FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
-                        <CollectionView x:Name="AmenitiesView">
+                        <CollectionView ItemsSource="{Binding Amenities}">
                             <CollectionView.ItemsLayout>
                                 <GridItemsLayout Orientation="Vertical" Span="2"
                                                  HorizontalItemSpacing="8"
@@ -204,8 +214,7 @@
 
                     <!-- Pricing -->
                     <VerticalStackLayout Spacing="8">
-                        <Label x:Name="PricingHeaderLabel"
-                               Text="Hinnakiri"
+                        <Label Text="{Binding PricingHeaderText}"
                                FontSize="18" FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
                         <Frame BackgroundColor="{StaticResource SecondaryBackground}"
@@ -213,10 +222,9 @@
                             <VerticalStackLayout Spacing="10">
 
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <Label x:Name="HourlyPriceHeaderLabel"
-                                           Text="Tunnihind (4–7h)"
+                                    <Label Text="{Binding HourlyPriceHeaderText}"
                                            Style="{StaticResource MutedLabel}"/>
-                                    <Label x:Name="HourlyPriceLabel"
+                                    <Label Text="{Binding HourlyPriceText}"
                                            Grid.Column="1"
                                            FontAttributes="Bold"
                                            TextColor="{StaticResource TextPrimary}"/>
@@ -226,15 +234,14 @@
                                          BackgroundColor="{StaticResource Border}"/>
 
                                 <Grid ColumnDefinitions="*,Auto,Auto">
-                                    <Label x:Name="DayPriceHeaderLabel"
-                                           Text="24h hind"
+                                    <Label Text="{Binding DayPriceHeaderText}"
                                            Style="{StaticResource MutedLabel}"/>
-                                    <Label x:Name="RegularPriceLabel"
+                                    <Label Text="{Binding RegularPriceText}"
                                            Grid.Column="1" FontSize="13"
                                            TextColor="{StaticResource TextSecondary}"
                                            TextDecorations="Strikethrough"
                                            Margin="0,0,8,0" VerticalOptions="Center"/>
-                                    <Label x:Name="DayPriceLabel"
+                                    <Label Text="{Binding DayPriceText}"
                                            Grid.Column="2"
                                            FontSize="16" FontAttributes="Bold"
                                            TextColor="{StaticResource Primary}"/>
@@ -245,8 +252,7 @@
 
                                 <HorizontalStackLayout Spacing="6">
                                     <Label Text="⏱" FontSize="13"/>
-                                    <Label x:Name="MinHoursNoteLabel"
-                                           Text="Minimaalne broneerimisaeg 4h"
+                                    <Label Text="{Binding MinHoursNoteText}"
                                            Style="{StaticResource MutedLabel}"
                                            FontSize="12" VerticalOptions="Center"/>
                                 </HorizontalStackLayout>
@@ -257,27 +263,24 @@
 
                     <!-- Location Map -->
                     <VerticalStackLayout Spacing="8">
-                        <Label x:Name="LocationHeaderLabel"
-                               Text="Asukoht"
+                        <Label Text="{Binding LocationHeaderText}"
                                FontSize="18" FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
                         <Frame CornerRadius="14" Padding="0"
                                BorderColor="{StaticResource Border}"
                                HasShadow="False" HeightRequest="200"
                                IsClippedToBounds="True">
-                            <WebView x:Name="MapView" HeightRequest="200"/>
+                            <WebView Source="{Binding MapSource}" HeightRequest="200"/>
                         </Frame>
-                        <Button x:Name="OpenMapsButton"
-                                Text="🗺  Ava Google Maps"
+                        <Button Text="{Binding OpenMapsText}"
                                 Style="{StaticResource SecondaryButton}"
                                 HeightRequest="46"
-                                Clicked="OpenMaps_Clicked"/>
+                                Command="{Binding OpenMapsCommand}"/>
                     </VerticalStackLayout>
 
                     <!-- Contact -->
                     <VerticalStackLayout Spacing="8">
-                        <Label x:Name="ContactHeaderLabel"
-                               Text="Kontakt"
+                        <Label Text="{Binding ContactHeaderText}"
                                FontSize="18" FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
                         <Frame Style="{StaticResource Card}" Padding="0">
@@ -296,8 +299,7 @@
                                     </Frame>
                                     <VerticalStackLayout Grid.Column="1"
                                                          VerticalOptions="Center" Spacing="2">
-                                        <Label x:Name="CallLabel"
-                                               Text="Helista"
+                                        <Label Text="{Binding CallText}"
                                                FontSize="14" FontAttributes="Bold"
                                                TextColor="{StaticResource TextPrimary}"/>
                                         <Label Text="+372 5500 075" FontSize="12"
@@ -307,7 +309,7 @@
                                            TextColor="{StaticResource TextSecondary}"
                                            VerticalOptions="Center"/>
                                     <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Call_Tapped"/>
+                                        <TapGestureRecognizer Command="{Binding CallCommand}"/>
                                     </Grid.GestureRecognizers>
                                 </Grid>
 
@@ -328,8 +330,7 @@
                                     </Frame>
                                     <VerticalStackLayout Grid.Column="1"
                                                          VerticalOptions="Center" Spacing="2">
-                                        <Label x:Name="EmailLabel"
-                                               Text="Saada e-kiri"
+                                        <Label Text="{Binding EmailText}"
                                                FontSize="14" FontAttributes="Bold"
                                                TextColor="{StaticResource TextPrimary}"/>
                                         <Label Text="sauna@saunamaailm.ee" FontSize="12"
@@ -339,7 +340,7 @@
                                            TextColor="{StaticResource TextSecondary}"
                                            VerticalOptions="Center"/>
                                     <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Email_Tapped"/>
+                                        <TapGestureRecognizer Command="{Binding EmailCommand}"/>
                                     </Grid.GestureRecognizers>
                                 </Grid>
 
@@ -370,7 +371,7 @@
                                            TextColor="{StaticResource TextSecondary}"
                                            VerticalOptions="Center"/>
                                     <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Instagram_Tapped"/>
+                                        <TapGestureRecognizer Command="{Binding InstagramCommand}"/>
                                     </Grid.GestureRecognizers>
                                 </Grid>
 
@@ -393,20 +394,18 @@
                      VerticalOptions="Start"/>
             <Grid ColumnDefinitions="*,*" ColumnSpacing="16" Margin="0,4,0,0">
                 <VerticalStackLayout VerticalOptions="Center">
-                    <Label x:Name="BottomPriceHeaderLabel"
-                           Text="Hind 24h"
+                    <Label Text="{Binding BottomPriceHeaderText}"
                            Style="{StaticResource MutedLabel}"
                            FontSize="12"/>
-                    <Label x:Name="BottomPriceLabel"
+                    <Label Text="{Binding BottomPriceText}"
                            FontSize="24" FontAttributes="Bold"
                            TextColor="{StaticResource Primary}"/>
                 </VerticalStackLayout>
-                <Button x:Name="BookButton"
-                        Grid.Column="1"
-                        Text="Broneeri"
+                <Button Grid.Column="1"
+                        Text="{Binding BookButtonText}"
                         Style="{StaticResource PrimaryButton}"
                         HorizontalOptions="FillAndExpand"
-                        Clicked="Book_Clicked"/>
+                        Command="{Binding BookCommand}"/>
             </Grid>
         </Grid>
 

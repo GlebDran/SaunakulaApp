@@ -1,133 +1,97 @@
-﻿using SQLite;
 using SaunakulaApp.Models;
 
 namespace SaunakulaApp.Services;
 
 public class DatabaseService
 {
-    private SQLiteAsyncConnection _db = null!;
+    private readonly SupabaseService _supabaseService;
 
-    public async Task InitAsync()
+    public DatabaseService(SupabaseService supabaseService)
     {
-        if (_db != null) return;
-        var path = Path.Combine(FileSystem.AppDataDirectory, "saunakula.db3");
-        _db = new SQLiteAsyncConnection(path);
-        await _db.CreateTableAsync<User>();
-        await _db.CreateTableAsync<Booking>();
-        await _db.CreateTableAsync<Favourite>();
+        _supabaseService = supabaseService;
     }
 
-    // ─── USERS ────────────────────────────────────────────────
+    public Task InitAsync() => Task.CompletedTask;
 
-    public Task<int> InsertUserAsync(User u) => _db.InsertAsync(u);
-
-    public Task<User?> GetUserByEmailAsync(string email)
-        => _db.Table<User>().Where(u => u.Email == email).FirstOrDefaultAsync();
-
-    public Task<User?> GetUserByIdAsync(int id)
-        => _db.Table<User>().Where(u => u.Id == id).FirstOrDefaultAsync();
-
-    public Task<int> UpdateUserAsync(User u) => _db.UpdateAsync(u);
-
-    // ─── VIP ──────────────────────────────────────────────────
-
-    /// <summary>
-    /// Считает подтверждённые бронирования за последние 12 месяцев.
-    /// Если >= 10 — присваивает VIP. Если год прошёл — сбрасывает.
-    /// Возвращает (count за год, isVipActive).
-    /// </summary>
-    public async Task<(int Count, bool IsVip)> CheckAndUpdateVipAsync(int userId)
+    public async Task<int> InsertUserAsync(User user)
     {
-        var oneYearAgo = DateTime.Now.AddYears(-1);
-
-        var bookings = await _db.Table<Booking>()
-            .Where(b => b.UserId == userId &&
-                        b.Status == "Confirmed" &&
-                        b.CreatedAt >= oneYearAgo)
-            .ToListAsync();
-
-        var count = bookings.Count;
-        var user = await GetUserByIdAsync(userId);
-        if (user is null) return (count, false);
-
-        // Сбрасываем если год прошёл
-        if (user.IsVip && user.VipGrantedAt.HasValue &&
-            user.VipGrantedAt.Value.AddYears(1) <= DateTime.Now)
-        {
-            user.IsVip = false;
-            user.VipGrantedAt = null;
-            await UpdateUserAsync(user);
-        }
-
-        // Даём VIP если достиг 10
-        if (count >= 10 && !user.IsVip)
-        {
-            user.IsVip = true;
-            user.VipGrantedAt = DateTime.Now;
-            await UpdateUserAsync(user);
-        }
-
-        user = await GetUserByIdAsync(userId);
-        return (count, user?.IsVipActive ?? false);
+        var created = await _supabaseService.RegisterAppUserAsync(user);
+        CopyToUser(created, user);
+        return 1;
     }
 
-    // ─── BOOKINGS ─────────────────────────────────────────────
+    public async Task<User?> GetUserByEmailAsync(string email)
+    {
+        var remoteUser = await _supabaseService.GetAppUserByEmailAsync(email);
+        return remoteUser is null ? null : SupabaseService.ToLocalUser(remoteUser);
+    }
 
-    public Task<int> InsertBookingAsync(Booking b) => _db.InsertAsync(b);
+    public async Task<User?> GetUserByIdAsync(int id)
+    {
+        var remoteUser = await _supabaseService.GetAppUserByIdAsync(id);
+        return remoteUser is null ? null : SupabaseService.ToLocalUser(remoteUser);
+    }
+
+    public async Task<int> UpdateUserAsync(User user)
+    {
+        await _supabaseService.UpdateAppUserAsync(user);
+        return 1;
+    }
+
+    public Task<(int Count, bool IsVip)> CheckAndUpdateVipAsync(int userId)
+        => _supabaseService.CheckAndUpdateVipAsync(userId);
+
+    public async Task<int> InsertBookingAsync(Booking booking)
+    {
+        var created = await _supabaseService.CreateReservationAsync(booking);
+        if (created is null)
+            return 0;
+
+        booking.Id = checked((int)created.Id);
+        booking.Status = ToLocalStatus(created.Status);
+        booking.CreatedAt = created.CreatedAt == default ? DateTime.Now : created.CreatedAt;
+        return 1;
+    }
 
     public Task<List<Booking>> GetBookingsByUserAsync(int userId)
-        => _db.Table<Booking>().Where(b => b.UserId == userId).ToListAsync();
+        => _supabaseService.GetBookingsByUserAsync(userId);
 
     public Task<int> CancelBookingAsync(int id)
-        => _db.ExecuteAsync("UPDATE Booking SET Status='Cancelled' WHERE Id=?", id);
+        => _supabaseService.CancelReservationAsync(id);
 
-    public async Task<bool> IsHouseBookedAsync(string houseId,
-                                               DateTime start,
-                                               DateTime end,
-                                               int? excludeBookingId = null)
-    {
-        var bookings = await _db.Table<Booking>()
-            .Where(b => b.HouseId == houseId && b.Status == "Confirmed")
-            .ToListAsync();
+    public Task<bool> IsHouseBookedAsync(
+        string houseId,
+        DateTime start,
+        DateTime end,
+        int? excludeBookingId = null)
+        => _supabaseService.IsHouseBookedAsync(houseId, start, end, excludeBookingId);
 
-        foreach (var b in bookings)
-        {
-            if (excludeBookingId.HasValue && b.Id == excludeBookingId.Value)
-                continue;
-            if (start < b.EndDateTime && end > b.StartDateTime) return true;
-        }
-        return false;
-    }
-
-    public async Task<List<(DateTime Start, DateTime End)>> GetBookedPeriodsAsync(string houseId)
-    {
-        var bookings = await _db.Table<Booking>()
-            .Where(b => b.HouseId == houseId && b.Status == "Confirmed")
-            .ToListAsync();
-        return bookings.Select(b => (b.StartDateTime, b.EndDateTime)).ToList();
-    }
-
-    // ─── FAVOURITES ───────────────────────────────────────────
+    public Task<List<(DateTime Start, DateTime End)>> GetBookedPeriodsAsync(string houseId)
+        => _supabaseService.GetBookedPeriodsAsync(houseId);
 
     public Task<List<Favourite>> GetFavouritesByUserAsync(int userId)
-        => _db.Table<Favourite>().Where(f => f.UserId == userId).ToListAsync();
+        => _supabaseService.GetFavouritesByUserAsync(userId);
 
-    public async Task<bool> IsFavouriteAsync(int userId, string houseId)
+    public Task<bool> IsFavouriteAsync(int userId, string houseId)
+        => _supabaseService.IsFavouriteAsync(userId, houseId);
+
+    public Task ToggleFavouriteAsync(int userId, string houseId)
+        => _supabaseService.ToggleFavouriteAsync(userId, houseId);
+
+    private static void CopyToUser(SupabaseAppUser source, User target)
     {
-        var count = await _db.Table<Favourite>()
-            .Where(f => f.UserId == userId && f.HouseId == houseId)
-            .CountAsync();
-        return count > 0;
+        target.Id = checked((int)source.Id);
+        target.FullName = source.FullName;
+        target.Email = source.Email;
+        target.PasswordHash = source.PasswordHash;
+        target.Phone = source.Phone;
+        target.IsVip = source.IsVip;
+        target.VipGrantedAt = source.VipGrantedAt;
+        target.CreatedAt = source.CreatedAt == default ? DateTime.Now : source.CreatedAt;
     }
 
-    public async Task ToggleFavouriteAsync(int userId, string houseId)
-    {
-        var existing = await _db.Table<Favourite>()
-            .Where(f => f.UserId == userId && f.HouseId == houseId)
-            .FirstOrDefaultAsync();
-        if (existing != null)
-            await _db.DeleteAsync(existing);
-        else
-            await _db.InsertAsync(new Favourite { UserId = userId, HouseId = houseId });
-    }
+    private static string ToLocalStatus(string status)
+        => status.Equals("cancelled", StringComparison.OrdinalIgnoreCase)
+            ? "Cancelled"
+            : "Confirmed";
 }
